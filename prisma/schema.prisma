@@ -9,21 +9,33 @@ datasource db {
 }
 
 model User {
-  id           String   @id @default(cuid())
-  email        String   @unique
-  fullname     String
-  phone_number BigInt
-  password     String
-  role         UserRole @default(STUDENT)
-  avatar       String?
-  created_at   DateTime @default(now())
-  updated_at   DateTime @updatedAt
+  id         String   @id @default(cuid())
+  email      String   @unique
+  fullname   String
+  phone      String   @db.VarChar(15)
+  role       UserRole @default(USER)
+  password   String?
+  avatar     String?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  Otp        Otp[]
 
   @@map("users")
 }
 
+model Otp {
+  id        String   @id @default(cuid())
+  userId    String
+  code      String
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("otps")
+}
+
 enum UserRole {
   ADMIN
-  STUDENT
-  INSTRUCTOR
+  USER
+  ANONYMOUS
 }

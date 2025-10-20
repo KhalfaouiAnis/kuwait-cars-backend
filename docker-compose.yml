@@ -3,9 +3,9 @@ services:
     image: postgres
     container_name: Kuwait-cars-database
     environment:
-      - POSTGRES_USER=lms
-      - POSTGRES_PASSWORD=lms
-      - POSTGRES_DB=lms
+      - POSTGRES_USER=cars
+      - POSTGRES_PASSWORD=cars
+      - POSTGRES_DB=kuwait_cars
     ports:
       - 5432:5432
     volumes:

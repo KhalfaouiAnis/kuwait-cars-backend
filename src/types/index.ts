@@ -54,18 +54,11 @@ export const LoginSchema = z.object({
 export const SignupSchema = z.object({
   fullname: z.string().min(3),
   email: z.email(),
+  phone: z.string().min(6).max(15),
   password: z.string().min(6),
   role: z.optional(z.enum(UserRole)),
   avatar: z.optional(AvatarSchema.shape.avatar),
 });
-
-export interface User {
-  id: string;
-  fullname: string;
-  email: string;
-  role: UserRole;
-  avatar?: string;
-}
 
 export type SignupInterface = z.infer<typeof SignupSchema>;
 export type LoginInterface = z.infer<typeof LoginSchema>;

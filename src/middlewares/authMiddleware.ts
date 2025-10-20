@@ -1,22 +1,22 @@
-import Logger from '@libs/logger';
-import { verifyToken } from '@utils/jwt';
-import { NextFunction, Request, Response } from 'express';
+import Logger from "@libs/logger";
+import { verifyToken } from "@utils/jwt";
+import { NextFunction, Request, Response } from "express";
 
 export const authenticateJWT = (
   req: Request,
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ) => {
-  const token = req.headers.authorization?.split(' ')[1];
-  if (!token) {
-    return res.status(401).json({ message: 'Access denied' });
-  }
-
+  const token = req.header("Authorization")?.replace("Bearer ", "");
+  if (!token) return next(); // No token → anonymous access
+  
   try {
-    req.user = verifyToken(token);
+    const decoded = verifyToken(token, true);
+    if (decoded.role === "ANONYMOUS") return next();
+    req.user = decoded;
     next();
   } catch (error) {
     Logger.error(error);
-    res.status(403).json({ message: 'Invalid token' });
+    res.status(401).json({ message: "Invalid token" });
   }
 };
