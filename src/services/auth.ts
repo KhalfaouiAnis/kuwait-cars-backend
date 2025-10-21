@@ -11,7 +11,6 @@ import jwt from "jsonwebtoken";
 import { generateToken, UserPayload } from "@utils/jwt";
 import { UserRole } from "generated/prisma";
 import BadRequestError from "@libs/error/BadRequestError";
-import { transporter } from "./mailer";
 import { generateOTPCode } from "@utils/otp";
 
 import { OAuth2Client } from "google-auth-library";
@@ -34,7 +33,7 @@ export const authenticateUser = async (data: LoginInterface) => {
       ...user,
       password: undefined,
     },
-    acessToken: generateToken({ role: user.role, userId: user.id }, true),
+    accessToken: generateToken({ role: user.role, userId: user.id }, true),
     refreshToken: generateToken({ role: user.role, userId: user.id }, false),
   };
 };
@@ -73,8 +72,8 @@ export const createAccount = async (data: SignupInterface) => {
   return user;
 };
 
-export const generateAndSendOTP = async (email: string) => {
-  const user = await prisma.user.findUnique({ where: { email } });
+export const generateAndSendOTP = async (phone: string) => {
+  const user = await prisma.user.findUnique({ where: { phone } });
   if (!user) throw new BadRequestError({ message: "User not found" });
 
   const otp = generateOTPCode(1);
@@ -87,15 +86,29 @@ export const generateAndSendOTP = async (email: string) => {
     data: { userId: user.id, code: hashedOtp, expiresAt, used: false },
   });
 
-  await transporter.sendMail({
-    to: email,
-    subject: "Your OTP Code",
-    text: `Your OTP is ${otp}. It expires in 10 minutes.`,
-  });
+  // Send via WhatsApp Business API
+  await fetch(
+    `https://graph.facebook.com/${process.env.WHATSAPP_VERSION}/${process.env.WHATSAPP_PHONE_ID}/messages`,
+    {
+      method: "POST",
+      body: JSON.stringify({
+        messaging_product: "whatsapp",
+        to: phone,
+        type: "text",
+        text: {
+          body: `Your OTP is ${otp}. It expires in 10 minutes.`,
+        },
+      }),
+      headers: {
+        Authorization: `Bearer ${process.env.WHATSAPP_TOKEN}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
 };
 
-export const verifyOTP = async (email: string, otp: string) => {
-  const user = await prisma.user.findUnique({ where: { email } });
+export const verifyOTP = async (phone: string, otp: string) => {
+  const user = await prisma.user.findUnique({ where: { phone } });
   if (!user) throw new BadRequestError({ message: "User not found" });
 
   const dbOtp = await prisma.otp.findFirst({

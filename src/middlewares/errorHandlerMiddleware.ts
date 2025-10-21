@@ -26,5 +26,5 @@ export default function errorHandler(err: Error, _: Request, res: Response) {
   console.error(JSON.stringify(err, null, 2));
   return res
     .status(500)
-    .send({ errors: [{ message: "Something went wrong" }] });
+    .json({ errors: [{ message: "Something went wrong" }] });
 }

@@ -14,11 +14,11 @@ import BadRequestError from "@libs/error/BadRequestError";
 
 export const loginUser = async (req: Request, res: Response) => {
   const { email, password } = req.body;
-  const { acessToken, refreshToken, user } = await authenticateUser({
+  const { accessToken, refreshToken, user } = await authenticateUser({
     email,
     password,
   });
-  res.status(200).json({ acessToken, refreshToken, user });
+  res.status(200).json({ accessToken, refreshToken, user });
 };
 
 export const registerUser = async (req: Request, res: Response) => {

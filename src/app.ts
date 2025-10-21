@@ -11,6 +11,7 @@ import path from "path";
 
 import morganMiddleware from "@middlewares/morganMiddleware";
 import indexRouter from "@routes/indexRouter";
+import translationRouter from "@routes/translationRouter";
 import authRouter from "@routes/authRouter";
 import userRouter from "@routes/userRouter";
 import errorHandler from "@middlewares/errorHandlerMiddleware";
@@ -29,6 +30,7 @@ expressApp.use(
 );
 
 expressApp.use("/", indexRouter);
+expressApp.use("/api/translations", translationRouter);
 expressApp.use("/api/auth", authRouter);
 expressApp.use("/api/users", userRouter);
 
@@ -37,7 +39,7 @@ const swaggerOptions = {
     info: {
       title: "Kuwait cars backend",
       version: "1.0.0",
-      description: "API docs for the kuwait cars backend",
+      description: "API docs for kuwait cars application backend",
     },
   },
   apis: ["./src/routes/*.ts"],
