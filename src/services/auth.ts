@@ -2,6 +2,10 @@ import { prisma } from "database";
 import {
   LoginInterface,
   LoginSchema,
+  RequestResetPasswordInterface,
+  RequestResetPasswordSchema,
+  ResetPasswordInterface,
+  ResetPasswordSchema,
   SignupInterface,
   SignupSchema,
 } from "types";
@@ -15,6 +19,7 @@ import { generateOTPCode } from "@utils/otp";
 
 import { OAuth2Client } from "google-auth-library";
 import jwksClient from "jwks-rsa";
+import { transporter } from "./mailer";
 
 export const authenticateUser = async (data: LoginInterface) => {
   const { email, password } = LoginSchema.parse(data);
@@ -72,12 +77,62 @@ export const createAccount = async (data: SignupInterface) => {
   return user;
 };
 
-export const generateAndSendOTP = async (phone: string) => {
+export const handleForgotPasswordRequest = async (
+  data: RequestResetPasswordInterface
+) => {
+  const { email, phone } = RequestResetPasswordSchema.parse(data);
+
+  if (phone) {
+    await generateAndSendPhoneOTP(phone, 10);
+  } else {
+    await generateAndSendEmailOTP(email!, 10);
+  }
+
+  return { message: "OTP sent" };
+};
+
+export async function handleResetPassword(
+  data: ResetPasswordInterface
+): Promise<{ message: string }> {
+  const { identifier, otp, newPassword } = ResetPasswordSchema.parse(data);
+  let user;
+  const isPhone = identifier.startsWith("+");
+
+  if (isPhone) {
+    user = await prisma.user.findUnique({ where: { phone: identifier } });
+  } else {
+    user = await prisma.user.findUnique({ where: { email: identifier } });
+  }
+
+  if (!user) throw new Error("User not found");
+
+  const dbOtp = await prisma.otp.findFirst({
+    where: { userId: user.id, used: false, expiresAt: { gt: new Date() } },
+  });
+
+  if (!dbOtp || !(await bcrypt.compare(otp, dbOtp.code))) {
+    throw new Error("Invalid or expired OTP");
+  }
+
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { password: hashedPassword },
+  });
+
+  await prisma.otp.update({ where: { id: dbOtp.id }, data: { used: true } });
+
+  return { message: "Password reset successful" };
+}
+
+export const generateAndSendPhoneOTP = async (
+  phone: string,
+  length?: number
+) => {
   const user = await prisma.user.findUnique({ where: { phone } });
   if (!user) throw new BadRequestError({ message: "User not found" });
 
-  const otp = generateOTPCode(1);
-  const hashedOtp = await bcrypt.hash(otp, 10);
+  const { otp, hashedOtp } = await generateOTPCode(length || 1);
   const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
 
   await prisma.otp.deleteMany({ where: { userId: user.id } });
@@ -86,25 +141,26 @@ export const generateAndSendOTP = async (phone: string) => {
     data: { userId: user.id, code: hashedOtp, expiresAt, used: false },
   });
 
-  // Send via WhatsApp Business API
-  await fetch(
-    `https://graph.facebook.com/${process.env.WHATSAPP_VERSION}/${process.env.WHATSAPP_PHONE_ID}/messages`,
-    {
-      method: "POST",
-      body: JSON.stringify({
-        messaging_product: "whatsapp",
-        to: phone,
-        type: "text",
-        text: {
-          body: `Your OTP is ${otp}. It expires in 10 minutes.`,
-        },
-      }),
-      headers: {
-        Authorization: `Bearer ${process.env.WHATSAPP_TOKEN}`,
-        "Content-Type": "application/json",
-      },
-    }
-  );
+  await sendWhatsAppOtp(phone, otp);
+};
+
+export const generateAndSendEmailOTP = async (
+  email: string,
+  length?: number
+) => {
+  const user = await prisma.user.findUnique({ where: { email } });
+  if (!user) throw new BadRequestError({ message: "User not found" });
+
+  const { otp, hashedOtp } = await generateOTPCode(length || 1);
+  const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
+
+  await prisma.otp.deleteMany({ where: { userId: user.id } });
+
+  await prisma.otp.create({
+    data: { userId: user.id, code: hashedOtp, expiresAt, used: false },
+  });
+
+  await sendMailOtp(email, otp);
 };
 
 export const verifyOTP = async (phone: string, otp: string) => {
@@ -340,4 +396,33 @@ export const verifyAppleToken = async (
   } catch (error) {
     console.error("Apple auth failed:", error);
   }
+};
+
+async function sendWhatsAppOtp(phone: string, otp: string) {
+  return fetch(
+    `https://graph.facebook.com/${process.env.WHATSAPP_VERSION}/${process.env.WHATSAPP_PHONE_ID}/messages`,
+    {
+      method: "POST",
+      body: JSON.stringify({
+        messaging_product: "whatsapp",
+        to: phone,
+        type: "text",
+        text: {
+          body: `Your OTP is ${otp}. It expires in 10 minutes.`,
+        },
+      }),
+      headers: {
+        Authorization: `Bearer ${process.env.WHATSAPP_TOKEN}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+}
+
+export const sendMailOtp = async (email: string, otp: string) => {
+  return transporter.sendMail({
+    to: email,
+    subject: "Your OTP Code",
+    text: `Your OTP is ${otp}. It expires in 2 minutes.`,
+  });
 };

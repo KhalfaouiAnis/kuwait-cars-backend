@@ -2,8 +2,10 @@ import { Request, Response } from "express";
 import {
   authenticateUser,
   createAccount,
-  generateAndSendOTP,
+  generateAndSendEmailOTP,
   generateAnonymousSessionToken,
+  handleForgotPasswordRequest,
+  handleResetPassword,
   refreshTokenHelper,
   verifyAppleToken,
   verifyFacebookToken,
@@ -26,12 +28,28 @@ export const registerUser = async (req: Request, res: Response) => {
   res.status(201).json(user);
 };
 
+export const forgotPassword = async (req: Request, res: Response) => {
+  const result = await handleForgotPasswordRequest({
+    email: req.body.email,
+    phone: req.body.phone,
+  });
+
+  res.json(result);
+};
+
+export const resetPassword = async (req: Request, res: Response) => {
+  const { identifier, otp, newPassword } = req.body;
+
+  const result = await handleResetPassword({ identifier, otp, newPassword });
+  res.json(result);
+};
+
 export const generateAndSendOTPByEmail = async (
   req: Request,
   res: Response
 ) => {
   try {
-    await generateAndSendOTP(req.body.email);
+    await generateAndSendEmailOTP(req.body.email, 10);
     res.send({ ok: true });
   } catch {
     throw new BadRequestError();
