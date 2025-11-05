@@ -1,8 +1,8 @@
 import { ApiError } from "./ApiError";
 import { GENERIC_ERROR } from "./error-code";
 
-export default class BadRequestError extends ApiError {
-  private static readonly _statusCode = 400;
+export default class ServerError extends ApiError {
+  private static readonly _statusCode = 500;
   private readonly _code: number;
   private readonly _error_code: string;
   private readonly _logging: boolean;
@@ -16,20 +16,20 @@ export default class BadRequestError extends ApiError {
     context?: { [key: string]: any };
   }) {
     const {
-      code = BadRequestError._statusCode,
+      code = ServerError._statusCode,
       message,
       logging,
       error_code = GENERIC_ERROR,
     } = params || {};
 
-    super(message || "Bad request");
-    this.name = "BadRequestError";
+    super(message || "Server error");
+    this.name = "ServerError";
     this._code = code;
     this._error_code = error_code;
     this._logging = logging !== undefined ? logging : false;
     this._context = params?.context || {};
 
-    Object.setPrototypeOf(this, BadRequestError.prototype);
+    Object.setPrototypeOf(this, ServerError.prototype);
   }
 
   get errors() {

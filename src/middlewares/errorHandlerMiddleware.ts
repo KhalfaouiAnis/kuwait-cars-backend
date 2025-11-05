@@ -1,7 +1,7 @@
 import { ApiError } from "@libs/error/ApiError";
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 
-export default function errorHandler(err: Error, _: Request, res: Response) {
+export default function errorHandler(err: Error, req: Request, res: Response, next: NextFunction) {
   // Handled errors
   if (err instanceof ApiError) {
     const { statusCode, errors, logging } = err;
@@ -19,7 +19,7 @@ export default function errorHandler(err: Error, _: Request, res: Response) {
       );
     }
 
-    return res.status(statusCode).send({ errors });
+    return res.status(statusCode).json(errors);
   }
 
   // Unhandled errors

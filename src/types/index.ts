@@ -7,47 +7,29 @@ import {
 import { UserRole } from "generated/prisma";
 import z from "zod";
 
-export const AvatarSchema = z.object({
-  avatar: z
-    .custom<Express.Multer.File>((val) => {
-      return (
-        typeof val === "object" &&
-        val !== null &&
-        "mimetype" in val &&
-        typeof val.mimetype === "string" &&
-        val.mimetype?.startsWith("image/") &&
-        "size" in val &&
-        (val.size as number) <= 5 * 1024 * 1024 // 5MB
-      );
-    }, "Avatar must be a valid image file under 5MB")
-    .refine(
-      (file) => file.size <= MAX_IMAGE_SIZE,
-      `File size must be less than ${MAX_IMAGE_SIZE / (1024 * 1024)}MB`
-    )
-    .refine(
-      (file) => ACCEPTED_IMAGE_TYPES.includes(file.mimetype),
-      `File must be a supported image format (${ACCEPTED_IMAGE_TYPES.join(",")})`
-    ),
-});
+export const FileSchema = z
+  .custom<Express.Multer.File>((val) => {
+    const typedValue = val as Express.Multer.File;
 
-export const VideoSchema = z.object({
-  video: z
-    .custom<Express.Multer.File>(
-      () => {},
-      `Video must be a valid video file under ${MAX_VIDEO_SIZE}MB`
-    )
-    .refine(
-      (file) => file.size <= MAX_VIDEO_SIZE,
-      `File size must be less than ${MAX_VIDEO_SIZE / (1024 * 1024)}MB`
-    )
-    .refine(
-      (file) => ACCEPTED_VIDEO_TYPES.includes(file.mimetype),
-      `File must be a supported video format (${ACCEPTED_VIDEO_TYPES.join(",")})`
-    ),
-});
+    return (
+      (typedValue !== undefined && typedValue.mimetype.startsWith("image/")) ||
+      typedValue.mimetype.startsWith("video/")
+    );
+  }, "Only image or video files are supported.")
+  .refine(
+    (file) => file.size <= MAX_IMAGE_SIZE && file.size <= MAX_VIDEO_SIZE,
+    `File size must be less than ${MAX_IMAGE_SIZE / (1024 * 1024)}MB for image and ${MAX_VIDEO_SIZE / (1024 * 1024)}MB for video`
+  )
+  .refine(
+    (file) =>
+      [...ACCEPTED_IMAGE_TYPES, ...ACCEPTED_VIDEO_TYPES].includes(
+        file.mimetype
+      ),
+    `File must be a supported format (${[...ACCEPTED_IMAGE_TYPES, ...ACCEPTED_VIDEO_TYPES].join(",")})`
+  );
 
 export const LoginSchema = z.object({
-  email: z.email(),
+  phone: z.string().min(6),
   password: z.string().min(6),
 });
 
@@ -57,7 +39,7 @@ export const SignupSchema = z.object({
   phone: z.string().min(6).max(15),
   password: z.string().min(6),
   role: z.optional(z.enum(UserRole)),
-  avatar: z.optional(AvatarSchema.shape.avatar),
+  avatar: FileSchema.optional(),
 });
 
 export const RequestResetPasswordSchema = z.object({
@@ -73,7 +55,7 @@ export const ResetPasswordSchema = z.object({
 
 export type SignupInterface = z.infer<typeof SignupSchema>;
 export type LoginInterface = z.infer<typeof LoginSchema>;
-export type AvatarValidationType = z.infer<typeof AvatarSchema>;
+export type AvatarValidationType = z.infer<typeof FileSchema>;
 export type RequestResetPasswordInterface = z.infer<
   typeof RequestResetPasswordSchema
 >;

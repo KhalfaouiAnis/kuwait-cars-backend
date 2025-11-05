@@ -3,13 +3,13 @@ services:
     image: postgres
     container_name: Kuwait-cars-database
     environment:
-      - POSTGRES_USER=cars
-      - POSTGRES_PASSWORD=cars
+      - POSTGRES_USER=kuwait_cars
+      - POSTGRES_PASSWORD=kuwait_cars
       - POSTGRES_DB=kuwait_cars
     ports:
       - 5432:5432
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - kuwait_cars_pd_data:/var/lib/postgresql/data
 
 volumes:
-  pgdata:
+  kuwait_cars_pd_data:

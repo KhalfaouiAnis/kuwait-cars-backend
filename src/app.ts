@@ -14,11 +14,14 @@ import indexRouter from "@routes/indexRouter";
 import translationRouter from "@routes/translationRouter";
 import authRouter from "@routes/authRouter";
 import userRouter from "@routes/userRouter";
+import adRouter from "@routes/adRouter";
+import categoryRouter from "@routes/categoryRouter";
 import errorHandler from "@middlewares/errorHandlerMiddleware";
 
 const expressApp = express();
 const port = process.env.PORT || 5000;
 
+expressApp.use(express.urlencoded({ extended: true, }));
 expressApp.use(express.json());
 expressApp.use(helmet());
 expressApp.use(cors());
@@ -32,6 +35,8 @@ expressApp.use(
 expressApp.use("/", indexRouter);
 expressApp.use("/api/translations", translationRouter);
 expressApp.use("/api/auth", authRouter);
+expressApp.use("/api/ads", adRouter);
+expressApp.use("/api/categories", categoryRouter);
 expressApp.use("/api/users", userRouter);
 
 const swaggerOptions = {

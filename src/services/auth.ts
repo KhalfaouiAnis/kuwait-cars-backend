@@ -20,17 +20,18 @@ import { generateOTPCode } from "@utils/otp";
 import { OAuth2Client } from "google-auth-library";
 import jwksClient from "jwks-rsa";
 import { transporter } from "./mailer";
+import { BAD_CREDENTIALS } from "@libs/error/error-code";
 
 export const authenticateUser = async (data: LoginInterface) => {
-  const { email, password } = LoginSchema.parse(data);
+  const { phone, password } = LoginSchema.parse(data);
 
   const user = await prisma.user.findUnique({
-    where: { email },
+    where: { phone },
     omit: { created_at: true, updated_at: true },
   });
 
   if (!user || !(await bcrypt.compare(password, user.password!))) {
-    throw new BadRequestError({ message: "Invalid Credentials" });
+    throw new BadRequestError({ error_code: BAD_CREDENTIALS, message: "Invalid credentials" });
   }
 
   return {
@@ -107,7 +108,7 @@ export async function handleResetPassword(
   if (!user) throw new Error("User not found");
 
   const dbOtp = await prisma.otp.findFirst({
-    where: { userId: user.id, used: false, expiresAt: { gt: new Date() } },
+    where: { user_id: user.id, used: false, expires_at: { gt: new Date() } },
   });
 
   if (!dbOtp || !(await bcrypt.compare(otp, dbOtp.code))) {
@@ -133,12 +134,12 @@ export const generateAndSendPhoneOTP = async (
   if (!user) throw new BadRequestError({ message: "User not found" });
 
   const { otp, hashedOtp } = await generateOTPCode(length || 1);
-  const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
+  const expires_at = new Date(Date.now() + 10 * 60 * 1000);
 
-  await prisma.otp.deleteMany({ where: { userId: user.id } });
+  await prisma.otp.deleteMany({ where: { user_id: user.id } });
 
   await prisma.otp.create({
-    data: { userId: user.id, code: hashedOtp, expiresAt, used: false },
+    data: { user_id: user.id, code: hashedOtp, expires_at, used: false },
   });
 
   await sendWhatsAppOtp(phone, otp);
@@ -152,12 +153,12 @@ export const generateAndSendEmailOTP = async (
   if (!user) throw new BadRequestError({ message: "User not found" });
 
   const { otp, hashedOtp } = await generateOTPCode(length || 1);
-  const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
+  const expires_at = new Date(Date.now() + 10 * 60 * 1000);
 
-  await prisma.otp.deleteMany({ where: { userId: user.id } });
+  await prisma.otp.deleteMany({ where: { user_id: user.id } });
 
   await prisma.otp.create({
-    data: { userId: user.id, code: hashedOtp, expiresAt, used: false },
+    data: { user_id: user.id, code: hashedOtp, expires_at, used: false },
   });
 
   await sendMailOtp(email, otp);
@@ -168,7 +169,7 @@ export const verifyOTP = async (phone: string, otp: string) => {
   if (!user) throw new BadRequestError({ message: "User not found" });
 
   const dbOtp = await prisma.otp.findFirst({
-    where: { userId: user.id, used: false, expiresAt: { gt: new Date() } },
+    where: { user_id: user.id, used: false, expires_at: { gt: new Date() } },
   });
 
   if (!dbOtp || !(await bcrypt.compare(otp, dbOtp.code))) {

@@ -1,6 +1,7 @@
 export type ApiErrorContent = {
   message: string;
   context?: { [key: string]: any };
+  error_code?: string
 };
 
 export abstract class ApiError extends Error {

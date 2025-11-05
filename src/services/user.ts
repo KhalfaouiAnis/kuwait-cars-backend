@@ -1,7 +1,7 @@
-import { prisma } from 'database';
-import fs from 'fs';
-import path from 'path';
-import { AvatarSchema } from 'types';
+import { prisma } from "database";
+import fs from "fs";
+import path from "path";
+import { FileSchema } from "types";
 
 export const fetchUsers = async () => {
   return prisma.user.findMany();
@@ -17,11 +17,11 @@ export const deleteUser = async (userId: string) => {
 
 export const updateAvatar = async (
   userId: string,
-  file?: Express.Multer.File,
+  file?: Express.Multer.File
 ) => {
-  if (!file) throw new Error('Image file required');
+  if (!file) throw new Error("Image file required");
 
-  AvatarSchema.parse(file);
+  FileSchema.parse(file);
 
   const newAvatarUrl = `/uploads/images/${file.filename}`;
 
@@ -31,7 +31,7 @@ export const updateAvatar = async (
   });
 
   if (!currentUser) {
-    throw new Error('User not found');
+    throw new Error("User not found");
   }
 
   const oldFilePath = currentUser.avatar

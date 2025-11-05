@@ -18,20 +18,126 @@ model User {
   avatar     String?
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
-  Otp        Otp[]
+
+  otp Otp[]
+  ads Ad[]
 
   @@map("users")
 }
 
 model Otp {
-  id        String   @id @default(cuid())
-  userId    String
-  code      String
-  expiresAt DateTime
-  used      Boolean  @default(false)
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id         String   @id @default(cuid())
+  code       String
+  expires_at DateTime
+  used       Boolean  @default(false)
+
+  user_id String
+  user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
   @@map("otps")
+}
+
+model Category {
+  id          String   @id @default(cuid())
+  name        String
+  image       String?
+  description String?
+  created_at  DateTime @default(now())
+
+  Subcategories Subcategory[]
+  ads           Ad[]
+
+  @@map("categories")
+}
+
+model Subcategory {
+  id          String   @id @default(cuid())
+  name        String
+  image       String?
+  description String?
+  created_at  DateTime @default(now())
+
+  category_id String
+  category    Category @relation(fields: [category_id], references: [id], onDelete: Cascade)
+  ads         Ad[]
+
+  @@unique([category_id, name])
+  @@map("subcategories")
+}
+
+model Car {
+  id String @id @default(cuid())
+
+  mileage        String
+  exterior_color String
+
+  model          String?
+  body_type      String?
+  fuel_type      String?
+  interior_color String?
+  seats_material String?
+  body_condition String?
+  cylinders      String?
+  transmission   String?
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  ad Ad?
+
+  @@map("cars")
+}
+
+model Media {
+  id         String   @id @default(cuid())
+  url        String
+  type       String
+  file_name  String
+  created_at DateTime @default(now())
+
+  ad_id String
+  ad    Ad     @relation(fields: [ad_id], references: [id], onDelete: Cascade)
+
+  @@map("media")
+}
+
+model Location {
+  id       String @id @default(cuid())
+  district String
+  area     String
+  block    String
+
+  ad Ad?
+}
+
+model Ad {
+  id                String  @id @default(cuid())
+  title             String
+  description       String  @db.Text
+  year              Int
+  price             Int
+  additional_number String?
+
+  car_id String? @unique
+  car    Car?   @relation(fields: [car_id], references: [id])
+
+  location_id String   @unique
+  location    Location @relation(fields: [location_id], references: [id])
+
+  thambnail_url String
+  media         Media[]
+
+  category_id    String
+  subcategory_id String
+  category       Category    @relation(fields: [category_id], references: [id])
+  subcategory    Subcategory @relation(fields: [subcategory_id], references: [id])
+
+  user_id String
+  user    User   @relation(fields: [user_id], references: [id])
+
+  created_at DateTime @default(now())
+
+  @@map("ads")
 }
 
 enum UserRole {
@@ -39,3 +145,9 @@ enum UserRole {
   USER
   ANONYMOUS
 }
+
+// enum PLAN {
+//   BASIC
+//   STANDARD
+//   PRO
+// }
