@@ -10,7 +10,7 @@ if (!fs.existsSync(uploadDir)) {
 
 const storage = multer.diskStorage({
   destination: (_, file, cb) => {
-    const dest = ["thambnail", "image", "images"].includes(file.fieldname)
+    const dest = ["thumbnail", "image", "images"].includes(file.fieldname)
       ? path.join(uploadDir, "images")
       : path.join(uploadDir, "videos");
 
@@ -30,7 +30,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage,
-  limits: { fileSize: 100 * 1024 * 1024 }, // 100MB
+  limits: { fileSize: 100 * 1024 * 1024 },
   fileFilter: (_, file, cb) => {
     if (
       file.mimetype.startsWith("video/") ||
@@ -48,16 +48,24 @@ export const uploadImage = upload.single("image");
 export const uploadMultiImage = upload.array("images", 10);
 
 export const uploadAdFiles = upload.fields([
-  { name: "thambnail", maxCount: 1 },
+  { name: "thumbnail", maxCount: 1 },
   { name: "images", maxCount: 10 },
   { name: "video", maxCount: 1 },
 ]);
 
-export const handleUpload = (uploadHandler: any) => {
-  return (req: Request, res: Response, next: NextFunction) => {
-    uploadHandler(req, res, (err: Error) => {
-      if (err) return res.status(400).json(err.message);
+export const handleUpload =
+  (uploadHandler: any) => (req: Request, res: Response, next: NextFunction) => {
+    uploadHandler(req, res, (err: any) => {
+      console.log({ "multer-body": req.body });
+
+      if (err) {
+        if (err.code === "LIMIT_UNEXPECTED_FILE") {
+          return res
+            .status(400)
+            .json({ error: "Unexpected file field - check field names" });
+        }
+        return res.status(400).json({ error: err.message });
+      }
       next();
     });
   };
-};

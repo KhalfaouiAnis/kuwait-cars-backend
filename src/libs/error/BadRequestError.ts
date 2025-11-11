@@ -1,4 +1,4 @@
-import { ApiError } from "./ApiError";
+import { ApiError, getErrorCode } from "./ApiError";
 import { GENERIC_ERROR } from "./error-code";
 
 export default class BadRequestError extends ApiError {
@@ -19,7 +19,7 @@ export default class BadRequestError extends ApiError {
       code = BadRequestError._statusCode,
       message,
       logging,
-      error_code = GENERIC_ERROR,
+      error_code = getErrorCode(code),
     } = params || {};
 
     super(message || "Bad request");

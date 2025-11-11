@@ -1,6 +1,9 @@
 export const BAD_CREDENTIALS = "BAD_CREDS"
+export const UNAUTHORIZED = "UNAUTHORIZED"
+export const FORBIDDEN = "FORBIDDEN"
 export const PARSING_ERROR = "PARSING"
 export const BAD_REQUEST_ERROR = "BAD_REQUEST"
+export const NOT_FOUND_ERROR = "NOT_FOUND"
 export const SERVER_ERROR = "SERVER"
 
 export const GENERIC_ERROR = "GENERIC"

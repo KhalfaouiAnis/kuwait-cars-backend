@@ -2,8 +2,11 @@ import { FileSchema } from "types";
 import z from "zod";
 
 export const CarModelSchema = z.object({
+  mark: z.string(),
   mileage: z.string(),
   exterior_color: z.string().min(3),
+  name: z.string().optional(),
+  brand: z.string().optional(),
   model: z.string().optional(),
   body_type: z.string().optional(),
   fuel_type: z.string().optional(),
@@ -29,12 +32,12 @@ export const MediaModelSchema = z.object({
 export const AdModelSchema = z.object({
   title: z.string(),
   description: z.string(),
-  year: z.coerce.number().min(0).max(2050),
+  year: z.coerce.number().min(0).max(new Date().getFullYear()),
   price: z.coerce.number(),
   category_id: z.string(),
   subcategory_id: z.string(),
   location: LocationModelSchema,
-  thambnail_image: FileSchema,
+  thumbnail: FileSchema,
   images: z.array(FileSchema),
   video: FileSchema,
   additional_number: z.string().optional(),
@@ -44,7 +47,7 @@ export const AdModelSchema = z.object({
 
 export const AdFiltersSchema = z.object({
   title: z.string().optional(),
-  year: z.string().optional(),
+  year: z.coerce.number().optional(),
   price: z.array(z.number()).optional(),
   model: z.string().optional(),
 });

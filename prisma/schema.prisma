@@ -44,7 +44,7 @@ model Category {
   description String?
   created_at  DateTime @default(now())
 
-  Subcategories Subcategory[]
+  subcategories Subcategory[]
   ads           Ad[]
 
   @@map("categories")
@@ -68,9 +68,11 @@ model Subcategory {
 model Car {
   id String @id @default(cuid())
 
+  mark           String
   mileage        String
   exterior_color String
 
+  brand          String?
   model          String?
   body_type      String?
   fuel_type      String?
@@ -108,24 +110,26 @@ model Location {
   block    String
 
   ad Ad?
+
+  @@map("location")
 }
 
 model Ad {
   id                String  @id @default(cuid())
-  title             String
-  description       String  @db.Text
-  year              Int
-  price             Int
+  title             String?
+  description       String?  @db.Text
+  year              Int?
+  price             Int?
   additional_number String?
 
   car_id String? @unique
-  car    Car?   @relation(fields: [car_id], references: [id])
+  car    Car?    @relation(fields: [car_id], references: [id], onDelete: Cascade)
 
-  location_id String   @unique
-  location    Location @relation(fields: [location_id], references: [id])
+  location_id String?   @unique
+  location    Location? @relation(fields: [location_id], references: [id], onDelete: Cascade)
 
-  thambnail_url String
-  media         Media[]
+  thumbnail String
+  media     Media[]
 
   category_id    String
   subcategory_id String

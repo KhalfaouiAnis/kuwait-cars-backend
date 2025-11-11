@@ -11,14 +11,21 @@ export const FileSchema = z
   .custom<Express.Multer.File>((val) => {
     const typedValue = val as Express.Multer.File;
 
+    console.log({ fileSize: typedValue.size / (1024 * 1024) });
+
     return (
       (typedValue !== undefined && typedValue.mimetype.startsWith("image/")) ||
       typedValue.mimetype.startsWith("video/")
     );
   }, "Only image or video files are supported.")
   .refine(
-    (file) => file.size <= MAX_IMAGE_SIZE && file.size <= MAX_VIDEO_SIZE,
-    `File size must be less than ${MAX_IMAGE_SIZE / (1024 * 1024)}MB for image and ${MAX_VIDEO_SIZE / (1024 * 1024)}MB for video`
+    (file) => {
+      if (file.mimetype.startsWith("image/")) {
+        return file.size <= MAX_IMAGE_SIZE;
+      }
+      return file.size <= MAX_VIDEO_SIZE;
+    },
+    `File size must be less than ${MAX_IMAGE_SIZE / (1024 * 1024)}MB for image and ${MAX_VIDEO_SIZE / (1024 * 1024)}MB for video.`
   )
   .refine(
     (file) =>
@@ -64,4 +71,10 @@ export type ResetPasswordInterface = z.infer<typeof ResetPasswordSchema>;
 export interface PagingParams {
   page?: string;
   pageSize?: string;
+}
+
+export interface CursorPaginationQuery {
+  limit?: string;
+  cursor?: string;
+  direction?: "forward" | "backward";
 }

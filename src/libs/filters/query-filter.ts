@@ -1,6 +1,14 @@
+import { ADS_PAGE_SIZE } from "constatnts";
 import { Prisma } from "generated/prisma";
+import { CursorPaginationQuery } from "types";
 
-export const buildAdFilters = (filters: any, cursor?: string, limit = 20) => {
+type FiltersParams = CursorPaginationQuery & {
+  filters: any;
+};
+
+export const buildAdFilters = (params: FiltersParams) => {
+  const { filters, cursor, limit = ADS_PAGE_SIZE, direction } = params;
+
   const where: Prisma.AdWhereInput = {};
 
   if (filters.title)
@@ -32,8 +40,8 @@ export const buildAdFilters = (filters: any, cursor?: string, limit = 20) => {
   }
 
   const orderBy: Prisma.AdOrderByWithRelationInput[] = [
-    { created_at: "desc" },
-    { id: "desc" },
+    { created_at: direction === "forward" ? "asc" : "desc" },
+    { id: direction === "forward" ? "asc" : "desc" },
   ];
 
   let cursorCondition: Prisma.AdWhereInput = {};
@@ -51,5 +59,5 @@ export const buildAdFilters = (filters: any, cursor?: string, limit = 20) => {
     };
   }
 
-  return { where: { ...where, ...cursorCondition }, orderBy, take: limit + 1 };
+  return { where: { ...where, ...cursorCondition }, orderBy, take: parseInt(limit + 1) };
 };
