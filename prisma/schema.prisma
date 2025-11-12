@@ -14,6 +14,8 @@ model User {
   fullname   String
   phone      String   @unique @db.VarChar(15)
   role       UserRole @default(USER)
+  city       String?
+  zip_code   String?
   password   String?
   avatar     String?
   created_at DateTime @default(now())
@@ -94,11 +96,10 @@ model Media {
   id         String   @id @default(cuid())
   url        String
   type       String
-  file_name  String
   created_at DateTime @default(now())
 
   ad_id String
-  ad    Ad     @relation(fields: [ad_id], references: [id], onDelete: Cascade)
+  ad    Ad     @relation(fields: [ad_id], references: [id])
 
   @@map("media")
 }
@@ -117,16 +118,16 @@ model Location {
 model Ad {
   id                String  @id @default(cuid())
   title             String?
-  description       String?  @db.Text
+  description       String? @db.Text
   year              Int?
   price             Int?
   additional_number String?
 
   car_id String? @unique
-  car    Car?    @relation(fields: [car_id], references: [id], onDelete: Cascade)
+  car    Car?    @relation(fields: [car_id], references: [id])
 
-  location_id String?   @unique
-  location    Location? @relation(fields: [location_id], references: [id], onDelete: Cascade)
+  location_id String   @unique
+  location    Location @relation(fields: [location_id], references: [id])
 
   thumbnail String
   media     Media[]

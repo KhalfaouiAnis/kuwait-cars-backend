@@ -17,7 +17,6 @@ import userRouter from "@routes/userRouter";
 import adRouter from "@routes/adRouter";
 import categoryRouter from "@routes/categoryRouter";
 import errorHandler from "@middlewares/errorHandlerMiddleware";
-import { prisma } from "database";
 import { seedCategories } from "@utils/db";
 
 const expressApp = express();
@@ -26,7 +25,7 @@ const port = process.env.PORT || 5000;
 expressApp.use(express.urlencoded({ extended: true }));
 expressApp.use(express.json());
 expressApp.use(helmet());
-expressApp.use(cors({origin: "http://localhost:8081", credentials: true}));
+expressApp.use(cors());
 expressApp.use(morganMiddleware);
 
 expressApp.use(
@@ -63,4 +62,3 @@ expressApp.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 expressApp.use(errorHandler);
 
 export { expressApp, port };
-

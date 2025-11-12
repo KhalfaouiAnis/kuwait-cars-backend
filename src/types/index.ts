@@ -11,8 +11,6 @@ export const FileSchema = z
   .custom<Express.Multer.File>((val) => {
     const typedValue = val as Express.Multer.File;
 
-    console.log({ fileSize: typedValue.size / (1024 * 1024) });
-
     return (
       (typedValue !== undefined && typedValue.mimetype.startsWith("image/")) ||
       typedValue.mimetype.startsWith("video/")

@@ -5,8 +5,10 @@ import { toJson } from "@libs/transformer";
 import { ADS_PAGE_SIZE } from "constatnts";
 import { prisma } from "database";
 import { Request } from "express";
+
 import { CursorPaginationQuery } from "types";
 import { AdFiltersSchema, AdInterface, AdModelSchema } from "types/ad";
+import { deleteFile } from "@utils/upload";
 
 export const saveAd = async (req: Request) => {
   const files = req.files as { [fieldname: string]: Express.Multer.File[] };
@@ -20,11 +22,7 @@ export const saveAd = async (req: Request) => {
     car: req.body.car ? toJson(req.body.car) : undefined,
   };
 
-  console.log({ data });
-
   const validated = AdModelSchema.safeParse(data);
-
-  console.log({ validated });
 
   if (!validated.success) {
     throw new BadRequestError({ context: validated.error.issues });
@@ -62,8 +60,6 @@ export const saveAd = async (req: Request) => {
   return prisma.$transaction(async (tx) => {
     const thumbnail_url = `/uploads/images/${thumbnail.filename}`;
 
-    console.log({ thumbnail_url });
-
     const ad = await tx.ad.create({
       data: {
         description,
@@ -81,7 +77,7 @@ export const saveAd = async (req: Request) => {
 
     if (Array.isArray(images)) {
       const imagesMediaData = images.map((file) => ({
-        url: `/uploads/${file.filename}`,
+        url: `/uploads/images/${file.filename}`,
         type: "image",
         file_name: file.originalname,
         ad_id: ad.id,
@@ -91,7 +87,7 @@ export const saveAd = async (req: Request) => {
     }
 
     const videoMediaData = {
-      url: `/uploads/${video.filename}`,
+      url: `/uploads/videos/${video.filename}`,
       type: "video",
       file_name: video.originalname,
       ad_id: ad.id,
@@ -129,7 +125,7 @@ export const fetchAds = async (req: Request) => {
     prisma.ad.findMany({
       ...{ where, orderBy, take },
       include: {
-        car: { select: { model: true } },
+        car: { select: { mark: true, brand: true } },
         media: { select: { url: true, type: true } },
       },
     }),
@@ -154,12 +150,35 @@ export const fetchAds = async (req: Request) => {
 };
 
 export const deleteAd = async (id: string) => {
-  const ad = await prisma.ad.findUnique({ where: { id } });
+  const ad = await prisma.ad.findUnique({
+    where: { id },
+    select: {
+      car_id: true,
+      location_id: true,
+      media: { select: { url: true, type: true } },
+      thumbnail: true,
+    },
+  });
   if (!ad)
     throw new BadRequestError({
       message: "Ad not found.",
       error_code: BAD_REQUEST_ERROR,
     });
 
-  return prisma.ad.delete({ where: { id } });
+  await prisma.$transaction(async (tx) => {
+      deleteFile(ad.thumbnail)
+    ad.media.forEach((media) =>
+      deleteFile(media.url)
+    );
+
+    await tx.media.deleteMany({ where: { ad_id: id } });
+    await tx.ad.delete({ where: { id } });
+
+    if (ad.location_id) {
+      await tx.location.delete({ where: { id: ad.location_id } });
+    }
+    if (ad.car_id) {
+      await tx.car.delete({ where: { id: ad.car_id } });
+    }
+  });
 };

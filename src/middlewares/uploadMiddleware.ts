@@ -3,7 +3,8 @@ import multer from "multer";
 import path from "path";
 import fs from "fs";
 
-const uploadDir = process.env.UPLOAD_DIR || path.join(process.cwd(), "uploads");
+const uploadDir = path.join(process.cwd(), process.env.UPLOAD_DIR || "uploads");
+
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
@@ -56,8 +57,6 @@ export const uploadAdFiles = upload.fields([
 export const handleUpload =
   (uploadHandler: any) => (req: Request, res: Response, next: NextFunction) => {
     uploadHandler(req, res, (err: any) => {
-      console.log({ "multer-body": req.body });
-
       if (err) {
         if (err.code === "LIMIT_UNEXPECTED_FILE") {
           return res
