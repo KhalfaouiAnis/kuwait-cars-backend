@@ -166,11 +166,6 @@ export const deleteAd = async (id: string) => {
     });
 
   await prisma.$transaction(async (tx) => {
-      deleteFile(ad.thumbnail)
-    ad.media.forEach((media) =>
-      deleteFile(media.url)
-    );
-
     await tx.media.deleteMany({ where: { ad_id: id } });
     await tx.ad.delete({ where: { id } });
 
@@ -180,5 +175,7 @@ export const deleteAd = async (id: string) => {
     if (ad.car_id) {
       await tx.car.delete({ where: { id: ad.car_id } });
     }
+    deleteFile(ad.thumbnail);
+    ad.media.forEach((media) => deleteFile(media.url));
   });
 };

@@ -1,7 +1,14 @@
+import BadRequestError from "@libs/error/BadRequestError";
+import { NOT_FOUND_ERROR } from "@libs/error/error-code";
 import { prisma } from "database";
+import { Request } from "express";
 import fs from "fs";
 import path from "path";
 import { FileSchema } from "types";
+import { UpdateProfileSchema } from "types/user";
+import { hashPassword } from "./auth";
+import { deleteFile } from "@utils/upload";
+import { User } from "generated/prisma";
 
 export const fetchUsers = async () => {
   return prisma.user.findMany();
@@ -13,6 +20,59 @@ export const fetchUserDetails = async (userId: string) => {
 
 export const deleteUser = async (userId: string) => {
   return prisma.user.delete({ where: { id: userId } });
+};
+
+export const updateProfile = async (req: Request) => {
+  const userId = req.user?.userId;
+  const avatar = req.file;
+
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { avatar: true },
+  });
+
+  if (!user) {
+    throw new BadRequestError({
+      message: "User not found.",
+      error_code: NOT_FOUND_ERROR,
+    });
+  }
+
+  const { success, error, data } = UpdateProfileSchema.safeParse({
+    ...req.body,
+    avatar,
+  });
+
+  if (!success) {
+    throw new BadRequestError({ context: error.issues });
+  }
+
+  const { avatar: newAvatar, ...rest } = data;
+
+  const userData: Partial<User> = {
+    ...user,
+    ...rest,
+  };
+
+  if (data.password) {
+    userData.password = await hashPassword(data.password);
+  }
+
+  if (data.avatar) {
+    userData.avatar = `/uploads/images/${data.avatar.filename}`;
+  }
+
+  const updatedUser = await prisma.user.update({
+    where: { id: userId },
+    data: userData,
+    omit: { password: true, created_at: true, updated_at: true },
+  });
+
+  if (updatedUser.avatar && user.avatar && newAvatar) {
+    deleteFile(user.avatar);
+  }
+
+  return updatedUser;
 };
 
 export const updateAvatar = async (

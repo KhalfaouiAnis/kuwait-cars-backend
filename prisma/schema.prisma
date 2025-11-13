@@ -15,6 +15,7 @@ model User {
   phone      String   @unique @db.VarChar(15)
   role       UserRole @default(USER)
   city       String?
+  province   String?
   zip_code   String?
   password   String?
   avatar     String?

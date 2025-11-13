@@ -8,7 +8,7 @@ import {
   ResetPasswordSchema,
   SignupInterface,
   SignupSchema,
-} from "types";
+} from "types/user";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
@@ -31,7 +31,10 @@ export const authenticateUser = async (data: LoginInterface) => {
   });
 
   if (!user || !(await bcrypt.compare(password, user.password!))) {
-    throw new BadRequestError({ error_code: BAD_CREDENTIALS, message: "Invalid credentials" });
+    throw new BadRequestError({
+      error_code: BAD_CREDENTIALS,
+      message: "Invalid credentials",
+    });
   }
 
   return {
@@ -46,19 +49,14 @@ export const authenticateUser = async (data: LoginInterface) => {
 
 export const hashPassword = (password: string) => bcrypt.hash(password, 10);
 
-export const createAccount = async (data: SignupInterface) => {
+export const createAccount = async (data: Omit<SignupInterface, "avatar">) => {
   const parsedData = SignupSchema.parse(data);
   const hashedPassword = await hashPassword(parsedData.password);
-
-  const avatarUrl = parsedData.avatar
-    ? `/uploads/images/${parsedData.avatar.filename}`
-    : null;
-
+  
   const user = await prisma.user.create({
     data: {
-      ...parsedData,
+      ...data,
       password: hashedPassword,
-      avatar: avatarUrl,
       role: parsedData.role ? parsedData.role : UserRole.USER,
     },
     select: {
