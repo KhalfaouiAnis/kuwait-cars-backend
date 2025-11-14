@@ -208,7 +208,7 @@ export const refreshTokenHelper = async (refreshToken: string) => {
 
 export const generateAnonymousSessionToken = () => {
   const payload = { role: UserRole.ANONYMOUS };
-  const token = jwt.sign(payload, process.env.JWT_SECRET || "30m", {
+  const token = jwt.sign(payload, process.env.JWT_SECRET!, {
     expiresIn: "30m",
   });
 

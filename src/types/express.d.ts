@@ -1,11 +1,11 @@
-import { UserPayload } from '@utils/jwt';
+import { UserPayload } from "@utils/jwt";
 
 declare global {
   namespace Express {
     interface Request {
-      user?: UserPayload;
+      user: UserPayload;
+      isAnonymous: boolean;
       file?: Express.Multer.File;
-      // params: {};
       query: {
         page?: string;
         pageSize?: string;

@@ -1,5 +1,5 @@
 import BadRequestError from "@libs/error/BadRequestError";
-import { BAD_REQUEST_ERROR } from "@libs/error/error-code";
+import { BAD_REQUEST_ERROR, NOT_FOUND_ERROR } from "@libs/error/error-code";
 import { buildAdFilters } from "@libs/filters/query-filter";
 import { toJson } from "@libs/transformer";
 import { ADS_PAGE_SIZE } from "constatnts";
@@ -127,16 +127,34 @@ export const fetchAds = async (req: Request) => {
       include: {
         car: { select: { mark: true, brand: true } },
         media: { select: { url: true, type: true } },
+        ...(req.isAnonymous
+          ? {}
+          : {
+              favorited_by: {
+                where: { id: req.user.userId },
+                select: { id: true },
+              },
+            }),
       },
     }),
     prisma.ad.count({ where }),
   ]);
 
+  const adsWithFavorites = ads.map((ad) => ({
+    ...ad,
+    ...(!req.isAnonymous ? { isFavorited: ad.favorited_by.length > 0 } : {}),
+  }));
+
   const hasMore = ads.length > parseInt(limit);
   const nextCursor = hasMore
     ? encodeURIComponent(ads[ads.length - 1].id)
     : null;
-  const paginatedAds = hasMore ? ads.slice(0, parseInt(limit)) : ads;
+
+  const paginatedAds = hasMore
+    ? (req.isAnonymous ? ads : adsWithFavorites).slice(0, parseInt(limit))
+    : req.isAnonymous
+      ? ads
+      : adsWithFavorites;
 
   return {
     data: paginatedAds,
@@ -146,6 +164,37 @@ export const fetchAds = async (req: Request) => {
       total,
       limit: parseInt(limit),
     },
+  };
+};
+
+export const fetchUserAds = async (user_id: string) => {
+  return prisma.ad.findMany({
+    where: { user_id },
+    select: { id: true, price: true, title: true, car: true },
+  });
+};
+
+export const fetchAdDetails = async (
+  id: string,
+  user_id: string,
+  isAnonymous: boolean
+) => {
+  const ad = await prisma.ad.findUnique({
+    where: { id },
+    include: {
+      favorited_by: { where: { id: user_id }, select: { id: true } },
+    },
+  });
+
+  if (!ad)
+    throw new BadRequestError({
+      error_code: NOT_FOUND_ERROR,
+      message: "Ad not found",
+    });
+
+  return {
+    ...ad,
+    ...(isAnonymous ? {} : { is_favorited: ad.favorited_by.length > 0 }),
   };
 };
 
@@ -177,5 +226,26 @@ export const deleteAd = async (id: string) => {
     }
     deleteFile(ad.thumbnail);
     ad.media.forEach((media) => deleteFile(media.url));
+  });
+};
+
+export const toggleFavoriteAd = async (user_id: string, id: string) => {
+  return prisma.$transaction(async (tx) => {
+    const existing = await tx.ad.findFirst({
+      where: { id, favorited_by: { some: { id: user_id } } },
+      select: { id: true },
+    });
+
+    if (existing) {
+      return tx.ad.update({
+        where: { id },
+        data: { favorited_by: { disconnect: [{ id: user_id }] } },
+      });
+    }
+
+    return tx.ad.update({
+      where: { id },
+      data: { favorited_by: { connect: [{ id: user_id }] } },
+    });
   });
 };

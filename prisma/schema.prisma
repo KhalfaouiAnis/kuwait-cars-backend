@@ -24,6 +24,7 @@ model User {
 
   otp Otp[]
   ads Ad[]
+  favorited_ads Ad[] @relation("UserFavoritedAds")
 
   @@map("users")
 }
@@ -140,6 +141,7 @@ model Ad {
 
   user_id String
   user    User   @relation(fields: [user_id], references: [id])
+  favorited_by User[] @relation("UserFavoritedAds")
 
   created_at DateTime @default(now())
 

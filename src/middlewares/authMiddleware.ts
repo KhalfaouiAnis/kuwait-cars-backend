@@ -8,12 +8,13 @@ export const authenticateJWT = (
   next: NextFunction
 ) => {
   const token = req.header("Authorization")?.replace("Bearer ", "");
-  if (!token) return next(); // No token → anonymous access
-  
+  if (!token)
+    return res.status(401).json({ error: "Authentication is required" });
+
   try {
     const decoded = verifyToken(token, true);
-    if (decoded.role === "ANONYMOUS") return next();
-    req.user = decoded;
+    req.user = { role: decoded.role, userId: "" };
+    req.isAnonymous = decoded.role === 'ANONYMOUS';
     next();
   } catch (error) {
     Logger.error(error);
