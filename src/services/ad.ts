@@ -198,19 +198,20 @@ export const fetchAdDetails = async (
   };
 };
 
-export const deleteAd = async (id: string) => {
+export const deleteAd = async (id: string, user_id: string) => {
   const ad = await prisma.ad.findUnique({
     where: { id },
     select: {
+      user_id: true,
       car_id: true,
       location_id: true,
       media: { select: { url: true, type: true } },
       thumbnail: true,
     },
   });
-  if (!ad)
+  if (!ad || ad.user_id !== user_id)
     throw new BadRequestError({
-      message: "Ad not found.",
+      message: "Can only deleted own ads.",
       error_code: BAD_REQUEST_ERROR,
     });
 
@@ -246,6 +247,27 @@ export const toggleFavoriteAd = async (user_id: string, id: string) => {
     return tx.ad.update({
       where: { id },
       data: { favorited_by: { connect: [{ id: user_id }] } },
+    });
+  });
+};
+
+export const flagAd = async (user_id: string, id: string) => {
+  return prisma.$transaction(async (tx) => {
+    const existing = await tx.ad.findFirst({
+      where: { id, flagged_by: { some: { id: user_id } } },
+      select: { id: true },
+    });
+
+    if (existing) {
+      throw new BadRequestError({
+        error_code: BAD_REQUEST_ERROR,
+        message: "Already flagged this Ad.",
+      });
+    }
+
+    return tx.ad.update({
+      where: { id },
+      data: { flagged_by: { connect: [{ id: user_id }] } },
     });
   });
 };

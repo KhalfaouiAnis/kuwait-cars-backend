@@ -22,9 +22,10 @@ model User {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  otp Otp[]
-  ads Ad[]
-  favorited_ads Ad[] @relation("UserFavoritedAds")
+  otp           Otp[]
+  ads           Ad[]
+  favorited_ads Ad[]  @relation("UserFavoritedAds")
+  flagged_ads    Ad[]  @relation("UserFlaggededAds")
 
   @@map("users")
 }
@@ -139,9 +140,10 @@ model Ad {
   category       Category    @relation(fields: [category_id], references: [id])
   subcategory    Subcategory @relation(fields: [subcategory_id], references: [id])
 
-  user_id String
-  user    User   @relation(fields: [user_id], references: [id])
+  user_id      String
+  user         User   @relation(fields: [user_id], references: [id])
   favorited_by User[] @relation("UserFavoritedAds")
+  flagged_by    User[] @relation("UserFlaggededAds")
 
   created_at DateTime @default(now())
 

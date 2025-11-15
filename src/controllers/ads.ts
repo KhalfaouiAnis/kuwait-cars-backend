@@ -3,6 +3,7 @@ import {
   fetchAdDetails,
   fetchAds,
   fetchUserAds,
+  flagAd,
   saveAd,
   toggleFavoriteAd,
 } from "@services/ad";
@@ -36,12 +37,18 @@ export const adDetails = async (req: Request, res: Response) => {
 
 export const removeAd = async (req: Request, res: Response) => {
   if (req.isAnonymous) return res.status(403).json();
-  await deleteAd(req.params.id);
+  await deleteAd(req.params.id, req.user.userId);
   res.status(204).json();
 };
 
 export const toggleFavorite = async (req: Request, res: Response) => {
   if (req.isAnonymous) return res.status(403).json();
   await toggleFavoriteAd(req.user!.userId, req.params.id);
+  res.status(200).json();
+};
+
+export const handleFlagAd = async (req: Request, res: Response) => {
+  if (req.isAnonymous) return res.status(403).json();
+  await flagAd(req.user.userId, req.params.id);
   res.status(200).json();
 };
