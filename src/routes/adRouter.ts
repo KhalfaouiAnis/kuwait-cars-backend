@@ -5,15 +5,20 @@ import {
   handleFlagAd,
   listAds,
   listUserAds,
-  postAd,
   removeAd,
   toggleFavorite,
 } from "@controllers/ads";
+import { postAdFlowOne } from "@controllers/flowOne/ads";
 
 const router = Router();
 
-// use grouped routes for each category ex router.use("/vehicles",vehiclesRouter)
-router.post("/create", authenticateJWT, handleUpload(uploadAdFiles), postAd);
+router.post(
+  "/flow-one/create",
+  authenticateJWT,
+  handleUpload(uploadAdFiles),
+  postAdFlowOne
+);
+
 router.post("/:id/toggle-favorite", authenticateJWT, toggleFavorite);
 router.post("/:id/flag", authenticateJWT, handleFlagAd);
 router.post("/", authenticateJWT, listAds);

@@ -13,7 +13,6 @@ export const buildAdFilters = (params: FiltersParams) => {
 
   if (filters.title)
     where.title = { contains: filters.name, mode: "insensitive" };
-  if (filters.year) where.year = parseInt(filters.year);
 
   if (filters.price) {
     where.price = {};
@@ -29,7 +28,7 @@ export const buildAdFilters = (params: FiltersParams) => {
 
   if (filters.model) {
     where.car = {};
-    where.car.model = { contains: filters.carModel, mode: "insensitive" };
+    where.car.brand = { contains: filters.carModel, mode: "insensitive" };
   }
 
   if (filters.search) {

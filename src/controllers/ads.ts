@@ -4,16 +4,9 @@ import {
   fetchAds,
   fetchUserAds,
   flagAd,
-  saveAd,
   toggleFavoriteAd,
 } from "@services/ad";
 import { Request, Response } from "express";
-
-export const postAd = async (req: Request, res: Response) => {
-  if (req.isAnonymous) return res.status(403).json();
-  const newAd = await saveAd(req);
-  res.json(newAd);
-};
 
 export const listAds = async (req: Request, res: Response) => {
   const ads = await fetchAds(req);

@@ -25,7 +25,7 @@ model User {
   otp           Otp[]
   ads           Ad[]
   favorited_ads Ad[]  @relation("UserFavoritedAds")
-  flagged_ads    Ad[]  @relation("UserFlaggededAds")
+  flagged_ads   Ad[]  @relation("UserFlaggededAds")
 
   @@map("users")
 }
@@ -49,43 +49,26 @@ model Category {
   description String?
   created_at  DateTime @default(now())
 
-  subcategories Subcategory[]
-  ads           Ad[]
+  ads Ad[]
 
   @@map("categories")
-}
-
-model Subcategory {
-  id          String   @id @default(cuid())
-  name        String
-  image       String?
-  description String?
-  created_at  DateTime @default(now())
-
-  category_id String
-  category    Category @relation(fields: [category_id], references: [id], onDelete: Cascade)
-  ads         Ad[]
-
-  @@unique([category_id, name])
-  @@map("subcategories")
 }
 
 model Car {
   id String @id @default(cuid())
 
-  mark           String
-  mileage        String
-  exterior_color String
+  mark  String?
+  brand String?
 
-  brand          String?
-  model          String?
-  body_type      String?
+  year           Int
+  exterior_color String
+  mileage        String
+
   fuel_type      String?
-  interior_color String?
-  seats_material String?
-  body_condition String?
   cylinders      String?
   transmission   String?
+  under_warranty Boolean?
+  roof           String?
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -119,12 +102,16 @@ model Location {
 }
 
 model Ad {
-  id                String  @id @default(cuid())
+  id                String   @id @default(cuid())
   title             String?
-  description       String? @db.Text
-  year              Int?
+  description       String?  @db.Text
   price             Int?
+  plan              String
   additional_number String?
+  contact_whatsapp  Boolean?
+  receive_calls     Boolean?
+  xcar_calls        Boolean?
+  xcar_chat         Boolean?
 
   car_id String? @unique
   car    Car?    @relation(fields: [car_id], references: [id])
@@ -135,15 +122,13 @@ model Ad {
   thumbnail String
   media     Media[]
 
-  category_id    String
-  subcategory_id String
-  category       Category    @relation(fields: [category_id], references: [id])
-  subcategory    Subcategory @relation(fields: [subcategory_id], references: [id])
+  category_id String
+  category    Category @relation(fields: [category_id], references: [id])
 
   user_id      String
   user         User   @relation(fields: [user_id], references: [id])
   favorited_by User[] @relation("UserFavoritedAds")
-  flagged_by    User[] @relation("UserFlaggededAds")
+  flagged_by   User[] @relation("UserFlaggededAds")
 
   created_at DateTime @default(now())
 
