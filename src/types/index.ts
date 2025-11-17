@@ -11,8 +11,11 @@ export const FileSchema = z
   .custom<Express.Multer.File>((val) => {
     const typedValue = val as Express.Multer.File;
 
+    console.log(typedValue.fieldname);
+
     return (
-      (typedValue !== undefined && typedValue.mimetype.startsWith("image/")) ||
+      typedValue.mimetype.startsWith("image/") ||
+      typedValue.mimetype.startsWith("audio/") ||
       typedValue.mimetype.startsWith("video/")
     );
   }, "Only image or video files are supported.")
@@ -26,10 +29,15 @@ export const FileSchema = z
     `File size must be less than ${MAX_IMAGE_SIZE / (1024 * 1024)}MB for image and ${MAX_VIDEO_SIZE / (1024 * 1024)}MB for video.`
   )
   .refine(
-    (file) =>
-      [...ACCEPTED_IMAGE_TYPES, ...ACCEPTED_VIDEO_TYPES].includes(
-        file.mimetype
-      ),
+    (file) => {
+      const result = [
+        ...ACCEPTED_IMAGE_TYPES,
+        ...ACCEPTED_VIDEO_TYPES,
+      ].includes(file.mimetype);
+      console.log({ result });
+
+      return result;
+    },
     `File must be a supported format (${[...ACCEPTED_IMAGE_TYPES, ...ACCEPTED_VIDEO_TYPES].join(",")})`
   );
 

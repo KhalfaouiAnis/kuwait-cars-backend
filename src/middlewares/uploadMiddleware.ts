@@ -35,6 +35,7 @@ const upload = multer({
   fileFilter: (_, file, cb) => {
     if (
       file.mimetype.startsWith("video/") ||
+      file.mimetype.startsWith("audio/") ||
       file.mimetype.startsWith("image/")
     ) {
       cb(null, true);
@@ -52,6 +53,7 @@ export const uploadAdFiles = upload.fields([
   { name: "thumbnail", maxCount: 1 },
   { name: "images", maxCount: 10 },
   { name: "video", maxCount: 1 },
+  { name: "audio", maxCount: 1 },
 ]);
 
 export const handleUpload =

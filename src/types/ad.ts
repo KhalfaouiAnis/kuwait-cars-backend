@@ -37,9 +37,10 @@ export const AdModelSchema = z.object({
   province: z.string().optional(),
   zip_code: z.string().optional(),
 
-  thumbnail: FileSchema,
-  images: z.array(FileSchema),
-  video: FileSchema,
+  thumbnail: FileSchema.optional(),
+  images: z.array(FileSchema).optional(),
+  audio: FileSchema.optional(),
+  video: FileSchema.optional(),
 
   car: CarModelSchema.optional(),
 
