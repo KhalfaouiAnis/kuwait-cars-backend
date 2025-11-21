@@ -5,8 +5,8 @@ import { toJson } from "@libs/transformer";
 import { prisma } from "database";
 
 import { AdInterface, AdModelSchema } from "types/ad";
-import { editVideo } from "@libs/media/edit-video";
-import { editImage, frextendImage } from "@libs/media/edit-image";
+import { prepareAndUploadVideo } from "@libs/media/edit-video";
+import { prepareAndUploadImage } from "@libs/media/edit-image";
 
 export const saveAdFlowOne = async (req: Request) => {
   const files = req.files as { [fieldname: string]: Express.Multer.File[] };
@@ -15,7 +15,8 @@ export const saveAdFlowOne = async (req: Request) => {
     ...req.body,
     thumbnail: files.thumbnail?.[0],
     images: files.images,
-    video: files.video[0],
+    video: files.video?.[0],
+    audio: files.audio?.[0],
     location: toJson(req.body.location),
     car: toJson(req.body.car),
   };
@@ -34,8 +35,8 @@ export const saveAdFlowOne = async (req: Request) => {
     title,
     car,
     location,
-    images,
     thumbnail,
+    images,
     video,
     audio,
     category_id,
@@ -43,53 +44,70 @@ export const saveAdFlowOne = async (req: Request) => {
     ...rest
   } = parsedData;
 
-  // const category = await prisma.category.findUnique({
-  //   where: { id: category_id },
-  // });
+  const category = await prisma.category.findUnique({
+    where: { id: category_id },
+  });
 
-  // if (!category) throw new BadRequestError({ message: "Category not found" });
-  // await editImage(thumbnail);
-  // await editVideo(video, audio, false);
-  await frextendImage(thumbnail);
+  if (!category) throw new BadRequestError({ message: "Category not found" });
 
-  // return prisma.$transaction(async (tx) => {
-  //   const thumbnail_url = `/uploads/images/${thumbnail.filename}`;
+  return prisma.$transaction(async (tx) => {
+    const thumbnailToUpload = await prepareAndUploadImage(thumbnail!);
 
-  //   const ad = await tx.ad.create({
-  //     data: {
-  //       description,
-  //       price,
-  //       title,
-  //       plan,
-  //       thumbnail: thumbnail_url,
-  //       location: { create: location },
-  //       car: car ? { create: car } : undefined,
-  //       category: { connect: { id: category.id } },
-  //       user: { connect: { id: req.user!.userId } },
-  //       ...rest,
-  //     },
-  //   });
+    if (!thumbnailToUpload)
+      throw new BadRequestError({ message: "Unable to upload image" });
 
-  //   if (Array.isArray(images)) {
-  //     const imagesMediaData = images.map((file) => ({
-  //       url: `/uploads/images/${file.filename}`,
-  //       type: "image",
-  //       file_name: file.originalname,
-  //       ad_id: ad.id,
-  //     }));
+    const videoToUpload = await prepareAndUploadVideo(video, audio, false);
 
-  //     await tx.media.createMany({ data: imagesMediaData });
-  //   }
+    const ad = await tx.ad.create({
+      data: {
+        description,
+        price,
+        title,
+        plan,
+        thumbnail: thumbnailToUpload?.secure_url,
+        location: { create: location },
+        car: car ? { create: car } : undefined,
+        category: { connect: { id: category.id } },
+        user: { connect: { id: req.user!.userId } },
+        ...rest,
+      },
+    });
 
-  //   const videoMediaData = {
-  //     url: `/uploads/videos/${video.filename}`,
-  //     type: "video",
-  //     file_name: video.originalname,
-  //     ad_id: ad.id,
-  //   };
+    if (Array.isArray(images)) {
+      const imagesToUpload = images.map(async (image) => {
+        const result = await prepareAndUploadImage(image);
+        return result;
+      });
 
-  //   await tx.media.create({ data: videoMediaData });
+      const imageUploads = await Promise.all(imagesToUpload);
 
-  //   return ad;
-  // });
+      if (Array.isArray(imageUploads)) {
+        const imagesMediaData = imageUploads.map((image) => {
+          if (image) {
+            return {
+              url: image.secure_url,
+              type: image.resource_type,
+              ad_id: ad.id,
+            };
+          } else {
+            throw new Error("Invalid image");
+          }
+        });
+
+        await tx.media.createMany({ data: imagesMediaData });
+      }
+    }
+
+    if (videoToUpload) {
+      await tx.media.create({
+        data: {
+          url: videoToUpload.secure_url,
+          type: videoToUpload.resource_type,
+          ad_id: ad.id,
+        },
+      });
+    }
+
+    return ad;
+  });
 };

@@ -107,6 +107,7 @@ model Ad {
   description       String?  @db.Text
   price             Int?
   plan              String
+  status            String?
   additional_number String?
   contact_whatsapp  Boolean?
   receive_calls     Boolean?
@@ -119,7 +120,7 @@ model Ad {
   location_id String   @unique
   location    Location @relation(fields: [location_id], references: [id])
 
-  thumbnail String
+  thumbnail String?
   media     Media[]
 
   category_id String

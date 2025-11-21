@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import util from "util";
 
 export function deleteFile(url: string) {
   try {
@@ -21,7 +22,12 @@ export function unlinkFiles(files: {
   if (files.video) {
     deleteFile(files.video[0].path);
   }
+  if (files.audio) {
+    deleteFile(files.audio[0].path);
+  }
   if (files.images) {
     files.images.forEach((file) => deleteFile(file.path));
   }
 }
+
+export const unlinkFile = util.promisify(fs.unlink);

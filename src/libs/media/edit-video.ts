@@ -2,18 +2,18 @@ import ffmpegStatic from "ffmpeg-static";
 import { spawn } from "child_process";
 import fs from "fs";
 import path from "path";
+import cloudinary from "config/cloudinary";
+import { UploadApiResponse } from "cloudinary";
+import { unlinkFile } from "@utils/upload";
 
 export async function editVideo(
-  video?: Express.Multer.File,
+  video: Express.Multer.File,
   audio?: Express.Multer.File,
   mute?: boolean
-): Promise<void> {
-  if (!video) throw new Error("Video is required");
-
+) {
   const outputPath = path.join("temp", `${Date.now()}.mp4`);
   const logoPath = path.join(process.cwd(), "public/assets/watermark.png");
   const audioPath = audio?.path;
-  //   const audioPath = path.join(process.cwd(), "public/assets/audio.mp3");
 
   fs.mkdirSync(path.dirname(outputPath), { recursive: true });
 
@@ -60,8 +60,6 @@ export async function editVideo(
   //   }
 
   if (audioInputIndex !== null) {
-    console.log("audio 2");
-
     args.push("-map", `${audioInputIndex}:a:0`);
     args.push("-c:a", "aac", "-b:a", "128k");
   } else if (mute) {
@@ -85,7 +83,7 @@ export async function editVideo(
 
   const ffmpegExe = ffmpegStatic!;
 
-  return new Promise<void>((resolve, reject) => {
+  return new Promise<string | null>((resolve, reject) => {
     const ffmpegProcess = spawn(ffmpegExe, args, {
       stdio: ["inherit", "inherit", "pipe"],
     });
@@ -101,13 +99,15 @@ export async function editVideo(
         return reject(new Error(`FFmpeg failed with code ${code}`));
       }
       console.log(`FFmpeg succeeded. Output written to ${outputPath}`);
-      resolve();
+      resolve(outputPath);
     });
 
     ffmpegProcess.on("error", (err) => {
       console.error("Spawn error:", err);
-      reject(err);
+      reject(err.message);
     });
+
+    resolve(null);
   }).catch((err) => {
     console.log(err);
   });
@@ -131,7 +131,6 @@ export async function editVideo(
 //   let complexFilter: string;
 
 //   if (audioPath && fs.existsSync(audioPath)) {
-//     // We add the audio input with looping flags
 //     args.push(
 //         "-stream_loop", "-1", // Loop the audio indefinitely
 //         "-i", audioPath        // Input 2: New audio file
@@ -139,7 +138,6 @@ export async function editVideo(
 //     audioInputIndex = 2;
 //     mapAudio = false; // We'll manage audio via filter complex
 
-//     // The filter complex now needs to handle both video overlay and audio trimming
 //     complexFilter = [
 //         // Video processing (overlay watermark)
 //         "[1:v]scale=(iw*0.5):-1[scaled_logo];",
@@ -159,10 +157,7 @@ export async function editVideo(
 //     ].join('');
 //   }
 
-//   // Apply the filter complex
 //   args.push("-filter_complex", complexFilter);
-
-//   // --- MAPPING AND OUTPUT OPTIONS ---
 
 //   args.push("-map", "[watermarked_video]"); // Map the processed video
 
@@ -175,7 +170,6 @@ export async function editVideo(
 //     args.push("-map", "0:a?", "-c:a", "copy");
 //   }
 
-//   // --- Video Output Options ---
 //   args.push(
 //     "-c:v", "libx264",
 //     "-crf", "23",
@@ -185,3 +179,29 @@ export async function editVideo(
 
 //     outputPath
 //   );
+
+export async function prepareAndUploadVideo(
+  video?: Express.Multer.File,
+  audio?: Express.Multer.File,
+  mute?: boolean
+) {
+  if (!video) throw new Error("Video is required");
+  
+  const path = await editVideo(video, audio, mute);
+
+  if (typeof path !== "string") throw new Error("Unvalid video");
+
+  return new Promise<UploadApiResponse | undefined>((resolve, reject) => {
+    cloudinary.uploader.upload_large(
+      path,
+      {
+        resource_type: "video",
+      },
+      (error, result) => {
+        unlinkFile(video.path);
+        if (error) reject(error);
+        resolve(result);
+      }
+    );
+  });
+}

@@ -7,7 +7,6 @@ import { Request } from "express";
 
 import { CursorPaginationQuery } from "types";
 import { AdFiltersSchema } from "types/ad";
-import { deleteFile } from "@utils/upload";
 
 export const fetchAds = async (req: Request) => {
   const {
@@ -135,8 +134,6 @@ export const deleteAd = async (id: string, user_id: string) => {
     if (ad.car_id) {
       await tx.car.delete({ where: { id: ad.car_id } });
     }
-    deleteFile(ad.thumbnail);
-    ad.media.forEach((media) => deleteFile(media.url));
   });
 };
 

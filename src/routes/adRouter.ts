@@ -8,7 +8,7 @@ import {
   removeAd,
   toggleFavorite,
 } from "@controllers/ads";
-import { postAdFlowOne } from "@controllers/flowOne/ads";
+import { createAdFlowOne } from "@controllers/flowOne/ads";
 
 const router = Router();
 
@@ -16,7 +16,7 @@ router.post(
   "/flow-one/create",
   authenticateJWT,
   handleUpload(uploadAdFiles),
-  postAdFlowOne
+  createAdFlowOne
 );
 
 router.post("/:id/toggle-favorite", authenticateJWT, toggleFavorite);

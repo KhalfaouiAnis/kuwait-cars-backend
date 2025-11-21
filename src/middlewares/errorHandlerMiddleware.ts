@@ -11,7 +11,7 @@ export default function errorHandler(
   if (req.files) {
     unlinkFiles(req.files as { [fieldname: string]: Express.Multer.File[] });
   }
-  
+
   // Handled errors
   if (err instanceof ApiError) {
     const { statusCode, errors, logging } = err;

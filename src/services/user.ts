@@ -7,7 +7,6 @@ import path from "path";
 import { FileSchema } from "types";
 import { UpdateProfileSchema } from "types/user";
 import { hashPassword } from "./auth";
-import { deleteFile } from "@utils/upload";
 import { User } from "generated/prisma";
 
 export const fetchUsers = async () => {
@@ -69,7 +68,7 @@ export const updateProfile = async (req: Request) => {
   });
 
   if (updatedUser.avatar && user.avatar && newAvatar) {
-    deleteFile(user.avatar);
+    // TODO: replace file in cloudinary
   }
 
   return updatedUser;

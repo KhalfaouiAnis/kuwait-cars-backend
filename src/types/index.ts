@@ -10,9 +10,6 @@ import z from "zod";
 export const FileSchema = z
   .custom<Express.Multer.File>((val) => {
     const typedValue = val as Express.Multer.File;
-
-    console.log(typedValue.fieldname);
-
     return (
       typedValue.mimetype.startsWith("image/") ||
       typedValue.mimetype.startsWith("audio/") ||
@@ -34,8 +31,6 @@ export const FileSchema = z
         ...ACCEPTED_IMAGE_TYPES,
         ...ACCEPTED_VIDEO_TYPES,
       ].includes(file.mimetype);
-      console.log({ result });
-
       return result;
     },
     `File must be a supported format (${[...ACCEPTED_IMAGE_TYPES, ...ACCEPTED_VIDEO_TYPES].join(",")})`

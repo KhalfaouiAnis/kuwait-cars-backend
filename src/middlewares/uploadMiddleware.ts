@@ -52,8 +52,8 @@ export const uploadMultiImage = upload.array("images", 10);
 export const uploadAdFiles = upload.fields([
   { name: "thumbnail", maxCount: 1 },
   { name: "images", maxCount: 10 },
-  { name: "video", maxCount: 1 },
   { name: "audio", maxCount: 1 },
+  { name: "video", maxCount: 1 },
 ]);
 
 export const handleUpload =
