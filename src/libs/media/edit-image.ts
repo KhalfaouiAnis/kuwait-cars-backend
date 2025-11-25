@@ -1,4 +1,5 @@
 import { unlinkFile } from "@utils/upload";
+import { UploadApiOptions } from "cloudinary";
 import cloudinary from "config/cloudinary";
 
 export async function prepareAndUploadImage(image?: Express.Multer.File) {
@@ -9,11 +10,12 @@ export async function prepareAndUploadImage(image?: Express.Multer.File) {
     image.mimetype === "image/jpeg" || image.mimetype === "image/jpg";
 
   try {
-    const uploadOptions: any = {
+    const uploadOptions: UploadApiOptions = {
+      eager: true,
       resource_type: "image",
       folder: "x_cars/images",
       transformation: [
-        ...(isJpeg ? [{ format: "jpg", background: "white" }] : [{}]),
+        ...(!isJpeg ? [{ format: "jpg", background: "white" }] : [{}]),
         {
           width: 1080,
           height: 608,
@@ -29,8 +31,6 @@ export async function prepareAndUploadImage(image?: Express.Multer.File) {
         },
       ],
     };
-
-    uploadOptions.transformation.push();
 
     const result = await cloudinary.uploader.upload(filePath, uploadOptions);
 

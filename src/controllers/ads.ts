@@ -4,6 +4,7 @@ import {
   fetchAds,
   fetchUserAds,
   flagAd,
+  signCloudinaryRequest,
   toggleFavoriteAd,
 } from "@services/ad";
 import { Request, Response } from "express";
@@ -44,4 +45,10 @@ export const handleFlagAd = async (req: Request, res: Response) => {
   if (req.isAnonymous) return res.status(403).json();
   await flagAd(req.user.userId, req.params.id);
   res.status(200).json();
+};
+
+export const signCloudinaryUploadRequest = (req: Request, res: Response) => {
+  const data = signCloudinaryRequest(req.body);
+
+  res.json(data);
 };

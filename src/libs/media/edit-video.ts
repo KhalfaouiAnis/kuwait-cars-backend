@@ -22,24 +22,17 @@ export async function editVideo(
   let audioInputIndex: number | null = null;
 
   if (audioPath) {
-    console.log("audio 1");
-
     args.push("-i", audioPath);
     audioInputIndex = 2;
   }
 
-  if (fs.existsSync(logoPath)) {
-    args.push(
-      "-filter_complex",
-      [
-        "[1:v]scale=(iw*0.5):-1[scaled_logo];",
-        "[0:v][scaled_logo]overlay=x=10:y=(H-h)-10[watermarked_video]",
-      ].join("")
-    );
-  } else {
-    console.warn(`Logo not found at ${logoPath}—skipping watermark`);
-    args.push("-map", "0:v:0");
-  }
+  args.push(
+    "-filter_complex",
+    [
+      "[1:v]scale=(iw*4):-1[scaled_logo];",
+      "[0:v][scaled_logo]overlay=x=10:y=(H-h)-10[watermarked_video]",
+    ].join("")
+  );
 
   args.push("-map", "[watermarked_video]");
 
@@ -106,8 +99,6 @@ export async function editVideo(
       console.error("Spawn error:", err);
       reject(err.message);
     });
-
-    resolve(null);
   }).catch((err) => {
     console.log(err);
   });
@@ -186,19 +177,21 @@ export async function prepareAndUploadVideo(
   mute?: boolean
 ) {
   if (!video) throw new Error("Video is required");
-  
+
   const path = await editVideo(video, audio, mute);
 
   if (typeof path !== "string") throw new Error("Unvalid video");
 
   return new Promise<UploadApiResponse | undefined>((resolve, reject) => {
-    cloudinary.uploader.upload_large(
+    cloudinary.uploader.upload(
       path,
       {
         resource_type: "video",
+        folder: "x_cars/videos",
+        eager: true,
       },
       (error, result) => {
-        unlinkFile(video.path);
+        unlinkFile(path);
         if (error) reject(error);
         resolve(result);
       }

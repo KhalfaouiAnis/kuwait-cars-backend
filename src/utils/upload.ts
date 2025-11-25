@@ -6,7 +6,7 @@ export function deleteFile(url: string) {
   try {
     const normalizedPath = path.join(...url.split("/"));
     if (fs.existsSync(normalizedPath)) {
-      fs.unlinkSync(normalizedPath);
+      unlinkFile(normalizedPath);
     }
   } catch (unlinkError) {
     console.error(`Failed to delete ${url}:`, unlinkError);

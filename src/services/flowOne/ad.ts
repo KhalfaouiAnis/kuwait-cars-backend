@@ -50,21 +50,29 @@ export const saveAdFlowOne = async (req: Request) => {
 
   if (!category) throw new BadRequestError({ message: "Category not found" });
 
+  // const imagesToPrepare = [thumbnail];
+
+  // if (Array.isArray(images)) {
+  //   imagesToPrepare.concat(images);
+  // }
+
+  // const imagesToUpload = imagesToPrepare.map(async (image) => {
+  //   const result = await prepareAndUploadImage(image);
+  //   return result;
+  // });
+
+  // const imageUploads = await Promise.all(imagesToUpload);
+  const videoToUpload = await prepareAndUploadVideo(video, audio, false);
+
+  console.log({ videoToUpload: videoToUpload?.secure_url });
+
   return prisma.$transaction(async (tx) => {
-    const thumbnailToUpload = await prepareAndUploadImage(thumbnail!);
-
-    if (!thumbnailToUpload)
-      throw new BadRequestError({ message: "Unable to upload image" });
-
-    const videoToUpload = await prepareAndUploadVideo(video, audio, false);
-
     const ad = await tx.ad.create({
       data: {
         description,
         price,
         title,
         plan,
-        thumbnail: thumbnailToUpload?.secure_url,
         location: { create: location },
         car: car ? { create: car } : undefined,
         category: { connect: { id: category.id } },
@@ -73,35 +81,30 @@ export const saveAdFlowOne = async (req: Request) => {
       },
     });
 
-    if (Array.isArray(images)) {
-      const imagesToUpload = images.map(async (image) => {
-        const result = await prepareAndUploadImage(image);
-        return result;
-      });
+    // if (Array.isArray(imageUploads)) {
+    //   const imagesMediaData = imageUploads.map((image) => {
+    //     if (image) {
+    //       return {
+    //         url: image.secure_url,
+    //         public_id: image.public_id,
+    //         type: image.original_filename.includes("thumbnail")
+    //           ? "thumbnail"
+    //           : image.resource_type,
+    //         ad_id: ad.id,
+    //       };
+    //     } else {
+    //       throw new Error("Invalid image");
+    //     }
+    //   });
 
-      const imageUploads = await Promise.all(imagesToUpload);
-
-      if (Array.isArray(imageUploads)) {
-        const imagesMediaData = imageUploads.map((image) => {
-          if (image) {
-            return {
-              url: image.secure_url,
-              type: image.resource_type,
-              ad_id: ad.id,
-            };
-          } else {
-            throw new Error("Invalid image");
-          }
-        });
-
-        await tx.media.createMany({ data: imagesMediaData });
-      }
-    }
+    //   await tx.media.createMany({ data: imagesMediaData });
+    // }
 
     if (videoToUpload) {
       await tx.media.create({
         data: {
           url: videoToUpload.secure_url,
+          public_id: videoToUpload.public_id,
           type: videoToUpload.resource_type,
           ad_id: ad.id,
         },

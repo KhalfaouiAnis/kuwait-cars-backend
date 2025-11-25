@@ -6,6 +6,7 @@ import {
   listAds,
   listUserAds,
   removeAd,
+  signCloudinaryUploadRequest,
   toggleFavorite,
 } from "@controllers/ads";
 import { createAdFlowOne } from "@controllers/flowOne/ads";
@@ -17,6 +18,12 @@ router.post(
   authenticateJWT,
   handleUpload(uploadAdFiles),
   createAdFlowOne
+);
+
+router.post(
+  "/generate-upload-signature",
+  authenticateJWT,
+  signCloudinaryUploadRequest
 );
 
 router.post("/:id/toggle-favorite", authenticateJWT, toggleFavorite);

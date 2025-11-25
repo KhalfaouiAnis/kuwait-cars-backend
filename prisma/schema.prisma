@@ -80,6 +80,7 @@ model Car {
 
 model Media {
   id         String   @id @default(cuid())
+  public_id  String
   url        String
   type       String
   created_at DateTime @default(now())
@@ -120,8 +121,7 @@ model Ad {
   location_id String   @unique
   location    Location @relation(fields: [location_id], references: [id])
 
-  thumbnail String?
-  media     Media[]
+  media Media[]
 
   category_id String
   category    Category @relation(fields: [category_id], references: [id])
