@@ -1,10 +1,43 @@
 {
-  "welcome": "Welcome!",
-  "login": "Log In",
-  "email": "Email",
-  "password": "Password",
-  "English": "English",
-  "Español": "Spanish",
-  "Français": "Frensh",
-  "Arabic": "Arabic"
+  "languages": {
+    "english": "English",
+    "frensh": "Frensh",
+    "spanish": "Spanish",
+    "arabic": "Arabic",
+    "urdu": "Hindi",
+    "hindi": "Urdu"
+  },
+  "adCategories": {
+    "used_cars": "Used cars",
+    "new_cars": "New cars",
+    "motorcycles": "Motorcycles",
+    "classic_cars": "Classic cars",
+    "show": "Show cars",
+    "car_rental_agencies": "Car rental agencies",
+    "spare_parts": "Part cars",
+    "home_services": "Home services",
+    "damaged_cars": "Damaged cars",
+    "accessories": "Accessories",
+    "logistics": "Winch + External Charging",
+    "rims_and_tires": "Rims and tires",
+    "repair_garages": "Repair garages",
+    "other": "Other"
+  },
+  "advancedSearch": {
+    "chooseYourCar": "Choose your car"
+  },
+  "welcome": "Welcome to Kuwait Car",
+  "subWelcome": "Your trusted Vehicle Sale",
+  "signIn": "Sign In",
+  "signUp": "Sign Up",
+  "asAGuest": "As a Guest",
+  "skip": "Skip",
+  "submit": "Submit",
+  "reset": "Reset",
+  "search": "Search",
+  "or": "Or",
+  "confirm": "Confirm",
+  "orContinueWith": "or continue with",
+  "nothingHere": "Nothing here at the moment",
+  "requireSignIn": "Please sign in to continue."
 }

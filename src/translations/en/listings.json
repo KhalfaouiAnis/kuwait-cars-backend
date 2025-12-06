@@ -1,0 +1,61 @@
+{
+  "filters": {
+    "filter": "Filter",
+    "brand": "Brand",
+    "model": "Model",
+    "year": "Year",
+    "price": "Price"
+  },
+  "sort": {
+    "sortBy": "Sort by",
+    "bestMatch": "Best match",
+    "lowestPrice": "Lowest price",
+    "highestPrice": "Highest price",
+    "newest": "Newest",
+    "oldest": "Oldest"
+  },
+  "regions": {
+    "all": "All",
+    "asian": "Asian",
+    "american": "American",
+    "european": "European",
+    "chinese": "Chinese"
+  },
+  "brands": {
+    "ford": "Ford",
+    "lesax": "Lesax",
+    "nissan": "Nissan",
+    "kia": "Kia",
+    "renault": "Renault"
+  },
+  "unit": {
+    "km": "KM",
+    "ml": "ML"
+  },
+  "changeView": "Change view",
+  "priceRange": "Price range",
+  "min": "Min",
+  "max": "Max",
+  "specification": "Specification",
+  "transmission": "Transmission",
+  "description": "Description",
+  "since": "Since",
+  "chatCall": "Chat & Call",
+  "whatsApp": "WhatsApp",
+  "contact": "Contact",
+  "similarAds": "Similar ads",
+  "bikesCategories": "Bikes Categories",
+  "sportsMotorcycles": "Sports motorcycles",
+  "quadBikes": "Quad bikes",
+  "bikes": "Bikes",
+  "scooter": "Scooter",
+  "newArrivals": "New Arrivals",
+  "homeServicesCategories": "Home services Categories",
+  "washingPolishing": "Washing and polishing",
+  "protectionShading": "Protection and shading",
+  "tireRepairBatteries": "Tire repair, batteries",
+  "checkOilFilter": "Check, oil, filter",
+  "keysAndRemote": "Keys and remote",
+  "insurance": "Insurance",
+  "": ""
+}

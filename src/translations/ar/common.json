@@ -3,8 +3,26 @@
   "login": "تسجيل الدخول",
   "email": "البريد الإلكتروني",
   "password": "كلمة المرور",
-  "English": "الإنجليزية",
-  "Español": "الإسبانية",
-  "Français": "الفرنسية",
-  "Arabic": "العربية"
+  "english": "الإنجليزية",
+  "spanish": "الإسبانية",
+  "frensh": "الفرنسية",
+  "arabic": "العربية",
+  "urdu": "العربية",
+  "hindi": "العربية",
+  "adCategories": {
+    "used_cars": "سيارات مستعملة",
+    "new_cars": "سيارات جديدة",
+    "motorcycles": "دراجات نارية",
+    "classic_cars": "السيارات الكلاسيكية",
+    "show": "عرض السيارات",
+    "car_rental_agencies": "خدمات منزلية للسيارات",
+    "spare_parts": "part cars",
+    "home_services": "خدمات منزلية للسيارات",
+    "damaged_cars": "خدمات منزلية للسيارات",
+    "accessories": "إكسسوارات",
+    "logistics": "Winch + External Charging",
+    "rims_and_tires": "Rims and tires",
+    "repair_garages": "إصلاح المرائب",
+    "other": "أخرى"
+  }
 }

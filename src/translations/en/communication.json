@@ -1,0 +1,21 @@
+{
+  "call": {
+    "decline": "Decline",
+    "accept": "Accept",
+    "speaker": "Speaker",
+    "end": "End",
+    "mute": "Mute",
+    "connecting": "Connecting..."
+  },
+  "chat": {
+    "chat": "Chat",
+    "typeMsgHere": "Type message here...",
+    "recentChats": "Recent chats",
+    "min": "min",
+    "deleteMessage": "Delete message?",
+    "confirmDeleteConversation?": "Do you really want to delete this conversation?",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "MsgDeletedSucc": "That message deleted succesfully."
+  }
+}
