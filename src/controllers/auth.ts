@@ -94,6 +94,7 @@ export const googleSignIn = async (req: Request, res: Response) => {
     return res.json({
       accessToken: response.accessToken,
       refreshToken: response.refreshToken,
+      user: response.user,
     });
   }
 

@@ -1,0 +1,16 @@
+{
+  "chooseYourCar": "Choose your car",
+  "filters": {
+    "brand": "Brand",
+    "model": "Model",
+    "year": "Year",
+    "color": "Color",
+    "price": "Price",
+    "budget": "Budget",
+    "location": "Location",
+    "brand_model": "Brand & Model",
+    "model_year": "Model year",
+    "kms_driven": "Kms driven",
+    "offersFound": "{{OffersCount}} offers"
+  }
+}

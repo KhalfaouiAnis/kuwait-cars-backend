@@ -14,9 +14,8 @@ model User {
   fullname   String
   phone      String   @unique @db.VarChar(15)
   role       UserRole @default(USER)
-  city       String?
+  area       String?
   province   String?
-  zip_code   String?
   password   String?
   avatar     String?
   created_at DateTime @default(now())

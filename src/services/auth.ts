@@ -13,7 +13,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 import { generateToken, UserPayload } from "@utils/jwt";
-import { UserRole } from "generated/prisma";
+import { User, UserRole } from "generated/prisma";
 import BadRequestError from "@libs/error/BadRequestError";
 import { generateOTPCode } from "@utils/otp";
 
@@ -52,7 +52,7 @@ export const hashPassword = (password: string) => bcrypt.hash(password, 10);
 export const createAccount = async (data: Omit<SignupInterface, "avatar">) => {
   const parsedData = SignupSchema.parse(data);
   const hashedPassword = await hashPassword(parsedData.password);
-  
+
   const user = await prisma.user.create({
     data: {
       ...data,
@@ -217,7 +217,9 @@ export const generateAnonymousSessionToken = () => {
 
 export const verifyGoogleIdToken = async (
   idToken: string
-): Promise<{ accessToken: string; refreshToken: string } | undefined> => {
+): Promise<
+  { accessToken: string; refreshToken: string; user: User } | undefined
+> => {
   if (!idToken) throw new BadRequestError({ message: "ID token required" });
 
   const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
@@ -235,10 +237,10 @@ export const verifyGoogleIdToken = async (
     const { email, name: fullname, picture: avatar, sub: googleId } = payload;
 
     const user = await prisma.user.upsert({
-      where: { email }, // Or use googleId if preferred
+      where: { email },
       update: { fullname, avatar, updated_at: new Date() },
       create: {
-        id: googleId, // Use Google's ID as unique
+        id: googleId,
         email: email ? email : "",
         fullname: fullname ? fullname : "",
         avatar,
@@ -250,6 +252,7 @@ export const verifyGoogleIdToken = async (
     return {
       accessToken: generateToken({ userId: user.id, role: user.role }, true),
       refreshToken: generateToken({ userId: user.id, role: user.role }),
+      user,
     };
   } catch (error) {
     console.log(error);

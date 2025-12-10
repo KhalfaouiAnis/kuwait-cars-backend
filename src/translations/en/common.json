@@ -1,11 +1,11 @@
 {
   "languages": {
-    "english": "English",
-    "frensh": "Frensh",
-    "spanish": "Spanish",
     "arabic": "Arabic",
-    "urdu": "Hindi",
-    "hindi": "Urdu"
+    "english": "English",
+    "spanish": "Spanish",
+    "frensh": "Frensh",
+    "urdu": "Urdu",
+    "hindi": "Hindi"
   },
   "adCategories": {
     "used_cars": "Used cars",
@@ -39,5 +39,6 @@
   "confirm": "Confirm",
   "orContinueWith": "or continue with",
   "nothingHere": "Nothing here at the moment",
-  "requireSignIn": "Please sign in to continue."
+  "requireSignIn": "Please sign in to continue.",
+  "chooseLang": "Choose language"
 }

@@ -11,6 +11,7 @@
     "chat": "Chat",
     "typeMsgHere": "Type message here...",
     "recentChats": "Recent chats",
+    "min": "min",
     "deleteMessage": "Delete message?",
     "confirmDeleteConversation?": "Do you really want to delete this conversation?",
     "cancel": "Cancel",
