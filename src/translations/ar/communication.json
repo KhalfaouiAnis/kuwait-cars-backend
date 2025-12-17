@@ -1,21 +1,20 @@
 {
   "call": {
-    "decline": "Decline",
-    "accept": "Accept",
-    "speaker": "Speaker",
-    "end": "End",
-    "mute": "Mute",
-    "connecting": "Connecting..."
+    "decline": "رفض",
+    "accept": "قبول",
+    "speaker": "المتحدث",
+    "end": "إنهاء",
+    "mute": "كتم الصوت",
+    "connecting": "... الاتصال جارٍ"
   },
   "chat": {
-    "chat": "Chat",
-    "typeMsgHere": "Type message here...",
-    "recentChats": "Recent chats",
-    "min": "min",
-    "deleteMessage": "Delete message?",
-    "confirmDeleteConversation?": "Do you really want to delete this conversation?",
-    "cancel": "Cancel",
-    "delete": "Delete",
-    "MsgDeletedSucc": "That message deleted succesfully."
+    "chat": "الدردشة",
+    "typeMsgHere": " ...اكتب الرسالة هنا",
+    "recentChats": "الدردشات الأخيرة",
+    "deleteMessage": "حذف الرسالة ؟",
+    "confirmDeleteConversation?": "هل تريد حقا حذف هذه المحادثة ؟",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "MsgDeletedSucc": ".تم حذف هذه الرسالة بنجاح"
   }
 }

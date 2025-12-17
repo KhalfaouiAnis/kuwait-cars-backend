@@ -1,0 +1,37 @@
+spec:
+  name: w-cars-backend
+  region: nyc
+  services:
+  - name: api
+    github:
+      repo: KhalfaouiAnis/kuwait-cars-backend
+      branch: main
+      deploy_on_push: true
+    dockerfile_path: Dockerfile
+    http_port: 5000
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    envs:
+    - key: DATABASE_URL
+      scope: RUN_AND_BUILD_TIME
+      value: ${db.DATABASE_URL}
+  # --- PRISMA MIGRATION JOB ---
+  jobs:
+  - name: prisma-db-migration
+    kind: PRE_DEPLOY
+    github:
+      repo: KhalfaouiAnis/kuwait-cars-backend
+      branch: main
+    dockerfile_path: Dockerfile
+    run_command: npx prisma migrate deploy
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    envs:
+    - key: DATABASE_URL
+      scope: RUN_AND_BUILD_TIME
+      value: ${db.DATABASE_URL}
+
+  databases:
+  - name: db
+    engine: PG
+    production: true

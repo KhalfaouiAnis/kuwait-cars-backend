@@ -1,5 +1,5 @@
-import BadRequestError from "./error/BadRequestError";
-import { PARSING_ERROR } from "./error/error-code";
+import BadRequestError from "./error/BadRequestError.js";
+import { PARSING_ERROR } from "./error/error-code.js";
 
 export const toJson = (data: string) => {
   if (data) {

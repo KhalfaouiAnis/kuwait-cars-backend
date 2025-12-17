@@ -1,25 +1,29 @@
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
   output   = "../src/generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 model User {
   id         String   @id @default(cuid())
-  email      String   @unique
   fullname   String
   phone      String   @unique @db.VarChar(15)
   role       UserRole @default(USER)
-  area       String?
-  province   String?
+  email      String?  @unique
+  province   Json?
+  area       Json?
+  location   Json?
   password   String?
   avatar     String?
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
+
+  google_id   String?
+  apple_id    String?
+  facebook_id String?
 
   otp           Otp[]
   ads           Ad[]
@@ -41,48 +45,13 @@ model Otp {
   @@map("otps")
 }
 
-model Category {
-  id          String   @id @default(cuid())
-  name        String
-  image       String?
-  description String?
-  created_at  DateTime @default(now())
-
-  ads Ad[]
-
-  @@map("categories")
-}
-
-model Car {
-  id String @id @default(cuid())
-
-  mark  String?
-  brand String?
-
-  year           Int
-  exterior_color String
-  mileage        String
-
-  fuel_type      String?
-  cylinders      String?
-  transmission   String?
-  under_warranty Boolean?
-  roof           String?
-
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-
-  ad Ad?
-
-  @@map("cars")
-}
-
 model Media {
-  id         String   @id @default(cuid())
-  public_id  String
-  url        String
-  type       String
-  created_at DateTime @default(now())
+  id              String    @id @default(cuid())
+  public_id       String
+  original_url    String
+  transformed_url String?
+  media_type      MediaType @default(THUMBNAIL)
+  created_at      DateTime  @default(now())
 
   ad_id String
   ad    Ad     @relation(fields: [ad_id], references: [id])
@@ -90,47 +59,53 @@ model Media {
   @@map("media")
 }
 
-model Location {
-  id       String @id @default(cuid())
-  district String
-  area     String
-  block    String
-
-  ad Ad?
-
-  @@map("location")
-}
-
 model Ad {
-  id                String   @id @default(cuid())
-  title             String?
-  description       String?  @db.Text
-  price             Int?
-  plan              String
-  status            String?
-  additional_number String?
-  contact_whatsapp  Boolean?
-  receive_calls     Boolean?
-  xcar_calls        Boolean?
-  xcar_chat         Boolean?
+  id          String @id @default(cuid())
+  title       String
+  ad_type     String
+  description String @db.Text
+  plan        Json
 
-  car_id String? @unique
-  car    Car?    @relation(fields: [car_id], references: [id])
+  status      AdStatus? @default(ACTIVE)
+  brand       String?
+  model       String?
+  ad_category String?
+  price       Int?
 
-  location_id String   @unique
-  location    Location @relation(fields: [location_id], references: [id])
+  province Json?
+  area     Json?
+  location Json?
 
-  media Media[]
+  year           Int?
+  exterior_color String?
+  mileage        Int?
+  mileage_unit   String? @db.VarChar(2)
 
-  category_id String
-  category    Category @relation(fields: [category_id], references: [id])
+  fuel_type      String?
+  cylinders      String?
+  transmission   String?
+  under_warranty Boolean?
+  roof           String?
+
+  additional_number        String?
+  second_additional_number String?
+  hide_license_plate       Boolean?
+
+  contact_whatsapp Boolean?
+  receive_calls    Boolean?
+  xcar_calls       Boolean?
+  xcar_chat        Boolean?
 
   user_id      String
   user         User   @relation(fields: [user_id], references: [id])
   favorited_by User[] @relation("UserFavoritedAds")
   flagged_by   User[] @relation("UserFlaggededAds")
 
-  created_at DateTime @default(now())
+  media Media[]
+
+  expires_in Int       @default(30)
+  created_at DateTime  @default(now())
+  deleted_at DateTime?
 
   @@map("ads")
 }
@@ -141,8 +116,13 @@ enum UserRole {
   ANONYMOUS
 }
 
-// enum PLAN {
-//   BASIC
-//   STANDARD
-//   PRO
-// }
+enum AdStatus {
+  ACTIVE
+  COMPLETED
+}
+
+enum MediaType {
+  THUMBNAIL
+  IMAGE
+  VIDEO
+}

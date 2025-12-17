@@ -1,4 +1,4 @@
-import { expressApp, port } from "app";
+import { expressApp, port } from "app.js";
 
 const initServer = async () => {
   expressApp.listen(port, () =>

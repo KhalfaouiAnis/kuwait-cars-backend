@@ -1,35 +1,21 @@
 import { Router } from "express";
-import { authenticateJWT } from "@middlewares/authMiddleware";
-import { handleUpload, uploadAdFiles } from "@middlewares/uploadMiddleware";
+import { authenticateJWT } from "@middlewares/authMiddleware.js";
 import {
   handleFlagAd,
   listAds,
   listUserAds,
   removeAd,
-  signCloudinaryUploadRequest,
   toggleFavorite,
-} from "@controllers/ads";
-import { createAdFlowOne } from "@controllers/flowOne/ads";
+} from "@controllers/ads.js";
+import { createNewAd } from "@controllers/ads.js";
 
 const router = Router();
 
-router.post(
-  "/flow-one/create",
-  authenticateJWT,
-  handleUpload(uploadAdFiles),
-  createAdFlowOne
-);
-
-router.post(
-  "/generate-upload-signature",
-  authenticateJWT,
-  signCloudinaryUploadRequest
-);
-
+router.post("/create", authenticateJWT, createNewAd);
+router.post("/", authenticateJWT, listAds);
+router.delete("/:id", authenticateJWT, removeAd);
 router.post("/:id/toggle-favorite", authenticateJWT, toggleFavorite);
 router.post("/:id/flag", authenticateJWT, handleFlagAd);
-router.post("/", authenticateJWT, listAds);
 router.get("/myads", authenticateJWT, listUserAds);
-router.delete("/:id", authenticateJWT, removeAd);
 
 export default router;

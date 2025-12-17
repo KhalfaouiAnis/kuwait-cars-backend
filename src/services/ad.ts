@@ -1,14 +1,76 @@
-import BadRequestError from "@libs/error/BadRequestError";
-import { BAD_REQUEST_ERROR, NOT_FOUND_ERROR } from "@libs/error/error-code";
-import { buildAdFilters } from "@libs/filters/query-filter";
-import { SignApiOptions } from "cloudinary";
-import cloudinary from "config/cloudinary";
-import { ADS_PAGE_SIZE } from "constatnts";
-import { prisma } from "database";
+import BadRequestError from "@libs/error/BadRequestError.js";
+import { BAD_REQUEST_ERROR, NOT_FOUND_ERROR } from "@libs/error/error-code.js";
+import { buildAdFilters } from "@libs/filters/query-filter.js";
+import cloudinary from "config/cloudinary.js";
+import { ADS_PAGE_SIZE } from "constatnts.js";
+import { prisma } from "database/index.js";
 import { Request } from "express";
 
-import { CursorPaginationQuery } from "types";
-import { AdFiltersSchema } from "types/ad";
+import { CursorPaginationQuery } from "types/index.js";
+import { AdFiltersSchema, AdInterface, AdModelSchema } from "types/ad.js";
+
+export const createAd = async (id: string, data: AdInterface) => {
+  const user = await prisma.user.findUnique({ where: { id } });
+
+  if (!user) {
+    throw new BadRequestError({
+      message: "User unfound",
+    });
+  }
+
+  const validated = AdModelSchema.safeParse(data);
+
+  if (!validated.success) {
+    throw new BadRequestError({
+      context: validated.error.issues,
+      message: validated.error.message,
+    });
+  }
+
+  const { media, ...adData } = validated.data;
+
+  const mediaArray = media.map(
+    ({ media_type, original_url, transformed_url, public_id }) => ({
+      public_id,
+      media_type,
+      original_url,
+      transformed_url,
+    })
+  );
+
+  const ad = await prisma.ad.create({
+    data: {
+      ...adData,
+      user: { connect: { id: user.id } },
+      media: {
+        createMany: {
+          data: mediaArray,
+        },
+      },
+    },
+    include: {
+      user: {
+        omit: {
+          password: true,
+          created_at: true,
+          updated_at: true,
+          role: true,
+        },
+      },
+      media: {
+        omit: { created_at: true },
+      },
+    },
+  });
+
+  if (!ad) {
+    throw new BadRequestError({
+      message: "Unable to create the add, something went wrong.",
+    });
+  }
+
+  return ad;
+};
 
 export const fetchAds = async (req: Request) => {
   const {
@@ -36,12 +98,22 @@ export const fetchAds = async (req: Request) => {
     prisma.ad.findMany({
       ...{ where, orderBy, take },
       include: {
-        car: { select: { mark: true, brand: true } },
-        media: { select: { url: true, type: true } },
+        media: {
+          select: {
+            original_url: true,
+            transformed_url: true,
+            media_type: true,
+            public_id: true,
+          },
+        },
         ...(req.isAnonymous
           ? {}
           : {
               favorited_by: {
+                where: { id: req.user.userId },
+                select: { id: true },
+              },
+              flagged_by: {
                 where: { id: req.user.userId },
                 select: { id: true },
               },
@@ -51,9 +123,14 @@ export const fetchAds = async (req: Request) => {
     prisma.ad.count({ where }),
   ]);
 
-  const adsWithFavorites = ads.map((ad) => ({
+  const favoritedAndFlaggedAds = ads.map((ad) => ({
     ...ad,
-    ...(!req.isAnonymous ? { isFavorited: ad.favorited_by.length > 0 } : {}),
+    ...(!req.isAnonymous
+      ? {
+          isFavorited: ad.favorited_by.length > 0,
+          isFlagged: ad.flagged_by.length > 0,
+        }
+      : {}),
   }));
 
   const hasMore = ads.length > parseInt(limit);
@@ -62,10 +139,10 @@ export const fetchAds = async (req: Request) => {
     : null;
 
   const paginatedAds = hasMore
-    ? (req.isAnonymous ? ads : adsWithFavorites).slice(0, parseInt(limit))
+    ? (req.isAnonymous ? ads : favoritedAndFlaggedAds).slice(0, parseInt(limit))
     : req.isAnonymous
       ? ads
-      : adsWithFavorites;
+      : favoritedAndFlaggedAds;
 
   return {
     data: paginatedAds,
@@ -81,7 +158,6 @@ export const fetchAds = async (req: Request) => {
 export const fetchUserAds = async (user_id: string) => {
   return prisma.ad.findMany({
     where: { user_id },
-    select: { id: true, price: true, title: true, car: true },
   });
 };
 
@@ -94,6 +170,7 @@ export const fetchAdDetails = async (
     where: { id },
     include: {
       favorited_by: { where: { id: user_id }, select: { id: true } },
+      flagged_by: { where: { id: user_id }, select: { id: true } },
     },
   });
 
@@ -105,7 +182,12 @@ export const fetchAdDetails = async (
 
   return {
     ...ad,
-    ...(isAnonymous ? {} : { is_favorited: ad.favorited_by.length > 0 }),
+    ...(isAnonymous
+      ? {}
+      : {
+          is_favorited: ad.favorited_by.length > 0,
+          isFlagged: ad.flagged_by.length > 0,
+        }),
   };
 };
 
@@ -114,9 +196,14 @@ export const deleteAd = async (id: string, user_id: string) => {
     where: { id },
     select: {
       user_id: true,
-      car_id: true,
-      location_id: true,
-      media: { select: { url: true, type: true, public_id: true } },
+      media: {
+        select: {
+          original_url: true,
+          transformed_url: true,
+          media_type: true,
+          public_id: true,
+        },
+      },
     },
   });
   if (!ad || ad.user_id !== user_id)
@@ -128,13 +215,6 @@ export const deleteAd = async (id: string, user_id: string) => {
   await prisma.$transaction(async (tx) => {
     await tx.media.deleteMany({ where: { ad_id: id } });
     await tx.ad.delete({ where: { id } });
-
-    if (ad.location_id) {
-      await tx.location.delete({ where: { id: ad.location_id } });
-    }
-    if (ad.car_id) {
-      await tx.car.delete({ where: { id: ad.car_id } });
-    }
 
     ad.media.forEach((media) => cloudinary.uploader.destroy(media.public_id));
   });
@@ -180,34 +260,4 @@ export const flagAd = async (user_id: string, id: string) => {
       data: { flagged_by: { connect: [{ id: user_id }] } },
     });
   });
-};
-
-export const signCloudinaryRequest = (data: any) => {
-  const { mediaType, audioFlag } = data;
-
-  const baseParams: SignApiOptions = {
-    timestamp: Math.round(new Date().getTime() / 1000),
-  };
-
-  if (mediaType === "image") {
-    baseParams.upload_preset = "x_cars_images";
-  } else if (mediaType === "video") {
-    baseParams.upload_preset = "x_cars_videos";
-    if (audioFlag === "mute") baseParams.audio_codec = "none";
-  }
-
-  const signature = cloudinary.utils.api_sign_request(
-    {
-      ...baseParams,
-    },
-    cloudinary.config().api_secret!
-  );
-
-  return {
-    signature,
-    params: { ...baseParams },
-    cloudName: cloudinary.config().cloud_name,
-    apiKey: cloudinary.config().api_key,
-    uploadUrl: `https://api.cloudinary.com/v1_1/${cloudinary.config().cloud_name}/auto/upload`,
-  };
 };

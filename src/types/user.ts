@@ -1,9 +1,13 @@
-import { UserRole } from "generated/prisma";
-import { FileSchema } from "types";
+import { UserRole } from "generated/prisma/client.js";
+import { AreaSchema, LocationSchema, ProvinceSchema } from "types/index.js";
 import z from "zod";
 
 export const LoginSchema = z.object({
   phone: z.string().min(6),
+  password: z.string().min(6),
+});
+
+export const UpdatePasswordSchema = z.object({
   password: z.string().min(6),
 });
 
@@ -12,9 +16,20 @@ export const SignupSchema = z.object({
   email: z.email(),
   phone: z.string().min(6).max(15),
   password: z.string().min(6),
-  role: z.enum(UserRole).optional(),
-  city: z.string().optional(),
-  zip_code: z.string().optional(),
+  role: z.optional(z.enum(UserRole)),
+  province: ProvinceSchema.optional(),
+  area: AreaSchema.optional(),
+  avatar: z.string().optional(),
+});
+
+export const UpdateProfileSchema = z.object({
+  fullname: z.string().min(3),
+  email: z.email(),
+  phone: z.string().min(6).max(15),
+  province: ProvinceSchema.optional(),
+  area: AreaSchema.optional(),
+  location: LocationSchema.optional(),
+  avatar: z.string().optional(),
 });
 
 export const RequestResetPasswordSchema = z.object({
@@ -28,14 +43,10 @@ export const ResetPasswordSchema = z.object({
   newPassword: SignupSchema.shape.password,
 });
 
-export const UpdateProfileSchema = SignupSchema.partial().extend({
-  province: z.string().optional(),
-  avatar: FileSchema.optional(),
-});
-
 export type SignupInterface = z.infer<typeof SignupSchema>;
 export type LoginInterface = z.infer<typeof LoginSchema>;
-export type AvatarValidationType = z.infer<typeof FileSchema>;
+export type UpdatePasswordInterface = z.infer<typeof UpdatePasswordSchema>;
+export type UpdateProfileInterface = z.infer<typeof UpdateProfileSchema>;
 export type RequestResetPasswordInterface = z.infer<
   typeof RequestResetPasswordSchema
 >;

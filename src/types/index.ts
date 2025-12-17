@@ -1,73 +1,37 @@
-import {
-  ACCEPTED_IMAGE_TYPES,
-  ACCEPTED_VIDEO_TYPES,
-  MAX_IMAGE_SIZE,
-  MAX_VIDEO_SIZE,
-} from "constatnts";
-import { UserRole } from "generated/prisma";
+import { MediaType } from "generated/prisma/enums.js";
 import z from "zod";
 
-export const FileSchema = z
-  .custom<Express.Multer.File>((val) => {
-    const typedValue = val as Express.Multer.File;
-    return (
-      typedValue.mimetype.startsWith("image/") ||
-      typedValue.mimetype.startsWith("audio/") ||
-      typedValue.mimetype.startsWith("video/")
-    );
-  }, "Only image or video files are supported.")
-  .refine(
-    (file) => {
-      if (file.mimetype.startsWith("image/")) {
-        return file.size <= MAX_IMAGE_SIZE;
-      }
-      return file.size <= MAX_VIDEO_SIZE;
-    },
-    `File size must be less than ${MAX_IMAGE_SIZE / (1024 * 1024)}MB for image and ${MAX_VIDEO_SIZE / (1024 * 1024)}MB for video.`
-  )
-  .refine(
-    (file) => {
-      const result = [
-        ...ACCEPTED_IMAGE_TYPES,
-        ...ACCEPTED_VIDEO_TYPES,
-      ].includes(file.mimetype);
-      return result;
-    },
-    `File must be a supported format (${[...ACCEPTED_IMAGE_TYPES, ...ACCEPTED_VIDEO_TYPES].join(",")})`
-  );
-
-export const LoginSchema = z.object({
-  phone: z.string().min(6),
-  password: z.string().min(6),
+export const LocationSchema = z.object({
+  latitude: z.coerce.number(),
+  longitude: z.coerce.number(),
 });
 
-export const SignupSchema = z.object({
-  fullname: z.string().min(3),
-  email: z.email(),
-  phone: z.string().min(6).max(15),
-  password: z.string().min(6),
-  role: z.optional(z.enum(UserRole)),
-  avatar: FileSchema.optional(),
+export const AreaSchema = z.object({
+  area: z.string(),
+  latitude: z.coerce.number(),
+  longitude: z.coerce.number(),
 });
 
-export const RequestResetPasswordSchema = z.object({
-  email: z.optional(SignupSchema.shape.email),
-  phone: z.optional(SignupSchema.shape.phone),
+export const ProvinceSchema = z.object({
+  province: z.string(),
+  latitude: z.coerce.number(),
+  longitude: z.coerce.number(),
 });
 
-export const ResetPasswordSchema = z.object({
-  identifier: z.string().min(1),
-  otp: z.string().min(4),
-  newPassword: SignupSchema.shape.password,
+export const MediaModelSchema = z.object({
+  public_id: z.string(),
+  media_type: z.enum(MediaType),
+  original_url: z.string(),
+  transformed_url: z.string(),
 });
 
-export type SignupInterface = z.infer<typeof SignupSchema>;
-export type LoginInterface = z.infer<typeof LoginSchema>;
-export type AvatarValidationType = z.infer<typeof FileSchema>;
-export type RequestResetPasswordInterface = z.infer<
-  typeof RequestResetPasswordSchema
->;
-export type ResetPasswordInterface = z.infer<typeof ResetPasswordSchema>;
+export const PlanSchema = z.object({
+  type: z.string(),
+  title: z.string(),
+  price: z.coerce.number(),
+  durationInDays: z.coerce.number(),
+  features: z.array(z.string()),
+});
 
 export interface PagingParams {
   page?: string;

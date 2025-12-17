@@ -1,5 +1,4 @@
-import { ApiError } from "@libs/error/ApiError";
-import { unlinkFiles } from "@utils/upload";
+import { ApiError } from "@libs/error/ApiError.js";
 import { NextFunction, Request, Response } from "express";
 
 export default function errorHandler(
@@ -8,10 +7,6 @@ export default function errorHandler(
   res: Response,
   next: NextFunction
 ) {
-  if (req.files) {
-    unlinkFiles(req.files as { [fieldname: string]: Express.Multer.File[] });
-  }
-
   // Handled errors
   if (err instanceof ApiError) {
     const { statusCode, errors, logging } = err;

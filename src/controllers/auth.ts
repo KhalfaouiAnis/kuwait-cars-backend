@@ -6,13 +6,14 @@ import {
   generateAnonymousSessionToken,
   handleForgotPasswordRequest,
   handleResetPassword,
+  handleUpdatePassword,
   refreshTokenHelper,
-  verifyAppleToken,
-  verifyFacebookToken,
-  verifyGoogleIdToken,
+  handleFacebookSignin,
+  handleGoogleSignin,
   verifyOTP,
-} from "@services/auth";
-import BadRequestError from "@libs/error/BadRequestError";
+  handleAppleSignin,
+} from "@services/auth.js";
+import BadRequestError from "@libs/error/BadRequestError.js";
 
 export const loginUser = async (req: Request, res: Response) => {
   const { phone, password } = req.body;
@@ -24,7 +25,7 @@ export const loginUser = async (req: Request, res: Response) => {
 };
 
 export const registerUser = async (req: Request, res: Response) => {
-  const user = await createAccount({ ...req.body, avatar: req.file });
+  const user = await createAccount({ ...req.body });
   res.status(201).json(user);
 };
 
@@ -42,6 +43,11 @@ export const resetPassword = async (req: Request, res: Response) => {
 
   const result = await handleResetPassword({ identifier, otp, newPassword });
   res.json(result);
+};
+
+export const updatePassword = async (req: Request, res: Response) => {
+  await handleUpdatePassword(req.user.userId, req.body);
+  res.status(200).json({ ok: true });
 };
 
 export const generateAndSendOTPByEmail = async (
@@ -88,7 +94,7 @@ export const anonymousSession = (_: Request, res: Response) => {
 };
 
 export const googleSignIn = async (req: Request, res: Response) => {
-  const response = await verifyGoogleIdToken(req.body.idToken);
+  const response = await handleGoogleSignin(req.body.idToken);
 
   if (response) {
     return res.json({
@@ -102,10 +108,7 @@ export const googleSignIn = async (req: Request, res: Response) => {
 };
 
 export const appleSignIn = async (req: Request, res: Response) => {
-  const response = await verifyAppleToken(
-    req.body.identityToken,
-    req.body.fullName
-  );
+  const response = await handleAppleSignin(req.body.idToken);
 
   if (response) {
     return res.json({
@@ -118,7 +121,7 @@ export const appleSignIn = async (req: Request, res: Response) => {
 };
 
 export const facebookSignIn = async (req: Request, res: Response) => {
-  const response = await verifyFacebookToken(req.body.accessToken);
+  const response = await handleFacebookSignin(req.body.accessToken);
 
   if (response) {
     return res.json({

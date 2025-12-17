@@ -1,13 +1,19 @@
 import {
+  createAd,
   deleteAd,
   fetchAdDetails,
   fetchAds,
   fetchUserAds,
   flagAd,
-  signCloudinaryRequest,
   toggleFavoriteAd,
-} from "@services/ad";
+} from "@services/ad.js";
 import { Request, Response } from "express";
+
+export const createNewAd = async (req: Request, res: Response) => {
+  if (req.isAnonymous) return res.status(403).json();
+  const newAd = await createAd(req.user.userId, req.body);
+  res.json(newAd);
+};
 
 export const listAds = async (req: Request, res: Response) => {
   const ads = await fetchAds(req);
@@ -45,10 +51,4 @@ export const handleFlagAd = async (req: Request, res: Response) => {
   if (req.isAnonymous) return res.status(403).json();
   await flagAd(req.user.userId, req.params.id);
   res.status(200).json();
-};
-
-export const signCloudinaryUploadRequest = (req: Request, res: Response) => {
-  const data = signCloudinaryRequest(req.body);
-
-  res.json(data);
 };

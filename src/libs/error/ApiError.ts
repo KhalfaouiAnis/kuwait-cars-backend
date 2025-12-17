@@ -5,7 +5,7 @@ import {
   NOT_FOUND_ERROR,
   SERVER_ERROR,
   UNAUTHORIZED,
-} from "./error-code";
+} from "./error-code.js";
 
 export type ApiErrorContent = {
   message: string;

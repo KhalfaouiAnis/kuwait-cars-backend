@@ -1,4 +1,4 @@
-import { loadTranslationForLanguage } from "@services/translation";
+import { loadTranslationForLanguage } from "@services/translation.js";
 import { Request, Response } from "express";
 
 export const serveTranslation = async (req: Request, res: Response) => {

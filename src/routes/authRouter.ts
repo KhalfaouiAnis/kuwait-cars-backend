@@ -9,10 +9,10 @@ import {
   refreshToken,
   registerUser,
   resetPassword,
+  updatePassword,
   verifyOTPCode,
-} from "@controllers/auth";
-import { authenticateJWT } from "@middlewares/authMiddleware";
-import { handleUpload, uploadImage } from "@middlewares/uploadMiddleware";
+} from "@controllers/auth.js";
+import { authenticateJWT } from "@middlewares/authMiddleware.js";
 import { Router } from "express";
 
 const router = Router();
@@ -22,12 +22,13 @@ router.post("/anonymous", anonymousSession);
 
 router.post("/forgot-password", forgotPassword);
 router.post("/reset-password", resetPassword);
+router.post("/update-password", updatePassword);
 
 router.post("/google", googleSignIn);
 router.post("/apple", appleSignIn);
 router.post("/facebook", facebookSignIn);
 
-router.post("/register", handleUpload(uploadImage), registerUser);
+router.post("/register", registerUser);
 
 router.post("/request-otp", generateAndSendOTPByEmail);
 router.post("/verify-otp", verifyOTPCode);

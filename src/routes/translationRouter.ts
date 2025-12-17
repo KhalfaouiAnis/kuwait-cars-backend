@@ -1,4 +1,4 @@
-import { serveTranslation } from '@controllers/translations';
+import { serveTranslation } from '@controllers/translations.js';
 import { Router } from 'express';
 
 const router = Router();

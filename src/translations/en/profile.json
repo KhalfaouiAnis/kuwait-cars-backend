@@ -26,6 +26,7 @@
   "city": "City",
   "zipCode": "Zip code",
   "yourProvince": "Your province",
+  "yourArea": "Your area",
   "updateInfo": "Update information",
   "updatePass": "Update password",
   "newPassword": "New password",

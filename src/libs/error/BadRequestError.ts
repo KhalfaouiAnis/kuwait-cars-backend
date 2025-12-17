@@ -1,5 +1,4 @@
-import { ApiError, getErrorCode } from "./ApiError";
-import { GENERIC_ERROR } from "./error-code";
+import { ApiError, getErrorCode } from "./ApiError.js";
 
 export default class BadRequestError extends ApiError {
   private static readonly _statusCode = 400;

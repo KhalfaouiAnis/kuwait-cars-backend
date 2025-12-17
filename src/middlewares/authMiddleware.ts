@@ -1,5 +1,5 @@
-import Logger from "@libs/logger";
-import { verifyToken } from "@utils/jwt";
+import Logger from "@libs/logger.js";
+import { verifyToken } from "@utils/jwt.js";
 import { NextFunction, Request, Response } from "express";
 
 export const authenticateJWT = (
@@ -13,8 +13,11 @@ export const authenticateJWT = (
 
   try {
     const decoded = verifyToken(token, true);
-    req.user = { role: decoded.role, userId: "" };
-    req.isAnonymous = decoded.role === 'ANONYMOUS';
+    req.isAnonymous = decoded.role === "ANONYMOUS";
+    req.user = {
+      role: decoded.role,
+      userId: decoded.role === "ANONYMOUS" ? "" : decoded.userId,
+    };
     next();
   } catch (error) {
     Logger.error(error);

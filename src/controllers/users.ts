@@ -3,7 +3,7 @@ import {
   fetchUserDetails,
   fetchUsers,
   updateProfile,
-} from "@services/user";
+} from "@services/user.js";
 import { Request, Response } from "express";
 
 export const updateUserProfile = async (req: Request, res: Response) => {

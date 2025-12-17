@@ -1,5 +1,5 @@
-import { ApiError } from "./ApiError";
-import { GENERIC_ERROR } from "./error-code";
+import { ApiError } from "./ApiError.js";
+import { GENERIC_ERROR } from "./error-code.js";
 
 export default class ServerError extends ApiError {
   private static readonly _statusCode = 500;

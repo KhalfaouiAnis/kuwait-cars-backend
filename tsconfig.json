@@ -6,51 +6,25 @@
       "./src/types",
       "./node_modules/@types"
     ],
-    "module": "nodenext",
-    "target": "esnext",
     "baseUrl": "./src",
     "paths": {
       "@controllers/*": ["controllers/*"],
       "@services/*": ["services/*"],
+      "@config/*": ["config/*"],
       "@libs/*": ["libs/*"],
       "@middlewares/*": ["middlewares/*"],
       "@routes/*": ["routes/*"],
       "@utils/*": ["utils/*"],
     },
-
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "target": "ES2023",
     "strict": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    // "lib": ["esnext"],
-    // "types": ["node"],
-    // and npm install -D @types/node
-
-    // Other Outputs
-    // "sourceMap": true,
-    // "declaration": true,
-    // "declarationMap": true,
-
-    // Stricter Typechecking Options
-    // "noUncheckedIndexedAccess": true,
-    // "exactOptionalPropertyTypes": true,
-
-    // Style Options
-    // "noImplicitReturns": true,
-    // "noImplicitOverride": true,
-    // "noUnusedLocals": true,
-    // "noUnusedParameters": true,
-    // "noFallthroughCasesInSwitch": true,
-    // "noPropertyAccessFromIndexSignature": true,
-
-    // Recommended Options
-    // "jsx": "react-jsx",
-    // "verbatimModuleSyntax": true,
-
-    // "noUncheckedSideEffectImports": true,
-    // "moduleDetection": "force",
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]
