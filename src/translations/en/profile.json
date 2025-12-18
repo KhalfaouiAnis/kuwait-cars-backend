@@ -34,5 +34,13 @@
   "confirmNewPassword": "Confirm new password",
   "openGallery": "Open gallery",
   "OpenCameraTakePhoto": "Open Camera & Take Photo",
-  "generalConditions": {}
+  "generalConditions": {},
+  "provinces": {
+    "Al Asimah": "Al Asimah",
+    "Hawalli": "Hawalli",
+    "Al Ahmadi": "Al Ahmadi",
+    "Farwaniyah": "Farwaniyah",
+    "Al Jahra": "Al Jahra",
+    "Mubarek Al-kabeer": "Mubarek Al-kabeer"
+  }
 }

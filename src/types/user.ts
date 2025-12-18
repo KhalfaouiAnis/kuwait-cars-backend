@@ -13,7 +13,7 @@ export const UpdatePasswordSchema = z.object({
 
 export const SignupSchema = z.object({
   fullname: z.string().min(3),
-  email: z.email(),
+  email: z.email().optional(),
   phone: z.string().min(6).max(15),
   password: z.string().min(6),
   role: z.optional(z.enum(UserRole)),

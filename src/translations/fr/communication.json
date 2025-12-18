@@ -1,21 +1,20 @@
 {
   "call": {
-    "decline": "Decline",
-    "accept": "Accept",
-    "speaker": "Speaker",
-    "end": "End",
-    "mute": "Mute",
-    "connecting": "Connecting..."
+    "decline": "Refuser",
+    "accept": "Accepter",
+    "speaker": "Interlocuteur",
+    "end": "Fin",
+    "mute": "Muet",
+    "connecting": "Connexion en cours..."
   },
   "chat": {
     "chat": "Chat",
-    "typeMsgHere": "Type message here...",
-    "recentChats": "Recent chats",
-    "min": "min",
-    "deleteMessage": "Delete message?",
-    "confirmDeleteConversation?": "Do you really want to delete this conversation?",
-    "cancel": "Cancel",
-    "delete": "Delete",
-    "MsgDeletedSucc": "That message deleted succesfully."
+    "typeMsgHere": "Tapez votre message ici...",
+    "recentChats": "Conversations récentes",
+    "deleteMessage": "Supprimer le message ?",
+    "confirmDeleteConversation?": "Voulez-vous vraiment supprimer cette conversation ?",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "MsgDeletedSucc": "Ce message a été supprimé avec succès."
   }
 }

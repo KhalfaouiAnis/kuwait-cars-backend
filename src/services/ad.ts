@@ -220,6 +220,36 @@ export const deleteAd = async (id: string, user_id: string) => {
   });
 };
 
+export const softDeleteAd = async(id: string, user_id: string) => {
+  const ad = await prisma.ad.findUnique({
+    where: { id,  },
+    select: {
+      user_id: true,
+      created_at: true,
+      media: {
+        select: {
+          original_url: true,
+          transformed_url: true,
+          media_type: true,
+          public_id: true,
+        },
+      },
+    },
+  });
+  if (!ad || ad.user_id !== user_id)
+    throw new BadRequestError({
+      message: "Can only deleted own ads.",
+      error_code: BAD_REQUEST_ERROR,
+    });
+
+  await prisma.ad.update({
+    where: {id},
+    data: {
+      deleted_at: new Date(),
+    }
+  })
+}
+
 export const toggleFavoriteAd = async (user_id: string, id: string) => {
   return prisma.$transaction(async (tx) => {
     const existing = await tx.ad.findFirst({

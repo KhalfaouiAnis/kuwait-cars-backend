@@ -50,6 +50,10 @@ const envSchema = z.object({
 
   SENDGRID_API_KEY: z.string(),
   SENDGRID_FROM_EMAIL: z.email(),
+
+  // DO
+  CRON_SECRET: z.string().optional(),
+  PROD_APP_URL: z.string().optional().default(""),
 });
 
 const { error, data: envVars } = envSchema.safeParse(process.env);
@@ -114,5 +118,10 @@ export const config = {
     cloudName: envVars.CLOUDINARY_CLOUD_NAME,
     apiKey: envVars.CLOUDINARY_API_KEY,
     apiSecret: envVars.CLOUDINARY_API_SECRET,
+  },
+
+  do: {
+    cronSecret: envVars.CRON_SECRET,
+    appUrl: envVars.PROD_APP_URL,
   },
 };

@@ -41,6 +41,8 @@
   "nothingHere": "Nothing here at the moment",
   "requireSignIn": "Please sign in to continue.",
   "chooseLang": "Choose language",
+  "yourProvince": "Your province",
+  "yourArea": "Your reagion",
   "provinces": {
     "Al Asimah": "Al Asimah",
     "Hawalli": "Hawalli",

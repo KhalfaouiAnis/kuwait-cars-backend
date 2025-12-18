@@ -1,0 +1,4 @@
+to deploy run:
+
+cd functions-project
+doctl serverless deploy . --remote-build

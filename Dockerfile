@@ -1,30 +1,48 @@
-FROM node:22-alpine
+# Stage 1: Dependency Installation
+FROM node:22-alpine AS deps
 
 WORKDIR /app
 
-RUN apk add --no-cache python3 make g++
+RUN apk add --no-cache libc6-compat openssl zlib
 
 COPY package*.json ./
-
+COPY prisma ./prisma/
+# Install ALL dependencies (including devDeps for TS compilation)
 RUN npm ci
 
-# Copy source code
+# Stage 2: Build Application
+FROM node:22-alpine AS builder
+
+WORKDIR /app
+
+COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Build the application
+# Generate Prisma Client and compile TypeScript
+RUN npx prisma generate
 RUN npm run build
 
-# Remove dev dependencies after build
-RUN npm prune --production
+# Remove development dependencies and junk files
+RUN npm prune --omit=dev
+RUN wget -qO- https://gobinaries.com/tj/node-prune | sh && node-prune
 
-RUN mkdir -p logs
+# Stage 3: Production Environment
+FROM node:22-alpine AS runner
+WORKDIR /app
 
-RUN addgroup -g 1001 -S xcars
-RUN adduser -S xcars -u 1001
+RUN apk add --no-cache openssl
 
-RUN chown -R xcars:xcars /app
-USER xcars
+ENV NODE_ENV=production
+
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nodejs
+USER nodejs
+
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/prisma ./prisma
 
 EXPOSE 5000
 
-CMD ["npm", "start"]
+CMD ["node", "dist/index.js"]

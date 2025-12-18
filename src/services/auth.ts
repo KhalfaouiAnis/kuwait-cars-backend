@@ -65,6 +65,7 @@ export const createAccount = async (data: SignupInterface) => {
     throw new BadRequestError({
       context: error.issues,
       message: "Bad request",
+      logging: true,
     });
   }
 

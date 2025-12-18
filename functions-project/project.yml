@@ -1,0 +1,8 @@
+packages:
+- name: cron
+  functions:
+  - name: ads-soft-delete
+    runtime: 'nodejs:22'
+    environment:
+      APP_CRON_URL: "${APP_CRON_URL}"
+      CRON_SECRET: "${CRON_SECRET}"

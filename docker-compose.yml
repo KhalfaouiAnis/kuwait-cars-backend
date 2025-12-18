@@ -1,16 +1,4 @@
 services:
-  # db:
-  #   build: Dockerfile.PG
-  #   command:
-  #     [
-  #       "postgres",
-  #       "-c",
-  #       "shared_preload_libraries=pg_cron",
-  #       "-c",
-  #       "cron.database_name=x_cars",
-  #     ]
-  #   environment:
-  #     POSTGRES_DB: x_cars
   postgres:
     image: postgres
     container_name: Kuwait-cars-database
