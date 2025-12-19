@@ -1,13 +1,9 @@
 import { prisma } from "database/index.js";
 import {
   LoginInterface,
-  LoginSchema,
   RequestResetPasswordInterface,
-  RequestResetPasswordSchema,
   ResetPasswordInterface,
-  ResetPasswordSchema,
   SignupInterface,
-  SignupSchema,
   UpdatePasswordInterface,
 } from "types/user.js";
 import { config } from "@config/environment.js";
@@ -15,87 +11,69 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 import { generateToken, UserPayload } from "@utils/jwt.js";
-import BadRequestError from "@libs/error/BadRequestError.js";
 import { generateOTPCode } from "@utils/otp.js";
 
 import { OAuth2Client } from "google-auth-library";
 import { sendOtpEmail } from "./mailer.js";
-import { BAD_CREDENTIALS, BAD_REQUEST_ERROR } from "@libs/error/error-code.js";
 import { User, UserRole } from "generated/prisma/client.js";
+import { UnauthorizedError } from "@libs/error/UnauthorizedError.js";
+import { NotFoundError } from "@libs/error/NotFoundError.js";
+import { ValidationError } from "@libs/error/ValidationError.js";
 
 export const authenticateUser = async (data: LoginInterface) => {
-  const { phone, password } = LoginSchema.parse(data);
+  const { phone, password } = data;
 
-  const user = await prisma.user.findUnique({
-    where: { phone },
-    omit: { updated_at: true },
-  });
-
-  if (!user?.password) {
-    throw new BadRequestError({
-      error_code: BAD_REQUEST_ERROR,
-      message:
-        "This account was created using Google, Apple or Facebook social logins, please use the right social provider to login.",
+  try {
+    const user = await prisma.user.findUnique({
+      where: { phone },
+      omit: { updated_at: true },
     });
-  }
 
-  if (!user || !(await bcrypt.compare(password, user.password))) {
-    throw new BadRequestError({
-      error_code: BAD_CREDENTIALS,
-      message: "Invalid credentials",
-    });
-  }
+    if (!user?.password) {
+      throw new UnauthorizedError(
+        "This account was created using Google, Apple or Facebook social logins, please use the right social provider to login."
+      );
+    }
 
-  return {
-    user: {
-      ...user,
-      password: undefined,
-    },
-    accessToken: generateToken({ role: user.role, userId: user.id }, true),
-    refreshToken: generateToken({ role: user.role, userId: user.id }, false),
-  };
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+      throw new UnauthorizedError("Invalid credentials");
+    }
+
+    return {
+      user: {
+        ...user,
+        password: undefined,
+      },
+      accessToken: generateToken({ role: user.role, userId: user.id }, true),
+      refreshToken: generateToken({ role: user.role, userId: user.id }, false),
+    };
+  } catch (error) {
+    throw new UnauthorizedError("Invalid credentials");
+  }
 };
 
 export const hashPassword = (password: string) => bcrypt.hash(password, 10);
 
 export const createAccount = async (data: SignupInterface) => {
-  const { success, data: parsedData, error } = SignupSchema.safeParse(data);
+  const hashedPassword = await hashPassword(data.password);
 
-  if (!success) {
-    throw new BadRequestError({
-      context: error.issues,
-      message: "Bad request",
-      logging: true,
-    });
-  }
-
-  const hashedPassword = await hashPassword(parsedData.password);
-
-  const user = await prisma.user.create({
+  return await prisma.user.create({
     data: {
       ...data,
       password: hashedPassword,
-      role: parsedData.role ? parsedData.role : UserRole.USER,
+      role: data.role ? data.role : UserRole.USER,
     },
     omit: {
       password: true,
       updated_at: true,
     },
   });
-
-  if (!user) {
-    throw new BadRequestError({
-      message: "Error occured while registering the user.",
-    });
-  }
-
-  return user;
 };
 
 export const handleForgotPasswordRequest = async (
   data: RequestResetPasswordInterface
 ) => {
-  const { email, phone } = RequestResetPasswordSchema.parse(data);
+  const { email, phone } = data;
 
   if (phone) {
     await generateAndSendPhoneOTP(phone, 10);
@@ -103,31 +81,32 @@ export const handleForgotPasswordRequest = async (
     await generateAndSendEmailOTP(email, 10);
   }
 
-  return { message: "OTP sent" };
+  return { ok: true };
 };
 
 export async function handleResetPassword(
   data: ResetPasswordInterface
-): Promise<{ message: string }> {
-  const { identifier, otp, newPassword } = ResetPasswordSchema.parse(data);
+): Promise<{ ok: boolean }> {
+  const { identifier, otp, newPassword } = data;
   let user;
   const isEmail = identifier.includes("@");
 
   if (isEmail) {
-    user = await prisma.user.findFirst({ where: { email: identifier } });
+    user = await prisma.user.findFirstOrThrow({ where: { email: identifier } });
   } else {
-    user = await prisma.user.findUnique({ where: { phone: identifier } });
+    user = await prisma.user.findUniqueOrThrow({
+      where: { phone: identifier },
+    });
   }
 
-  if (!user) throw new Error("User not found");
-
-  const dbOtp = await prisma.otp.findFirst({
-    where: { user_id: user.id, used: false, expires_at: { gt: new Date() } },
+  const dbOtp = await prisma.otp.findFirstOrThrow({
+    where: {
+      user_id: user.id,
+      used: false,
+      expires_at: { gt: new Date() },
+      code: otp,
+    },
   });
-
-  if (!dbOtp || otp !== dbOtp.code) {
-    throw new Error("Invalid or expired OTP");
-  }
 
   const hashedPassword = await bcrypt.hash(newPassword, 10);
 
@@ -138,19 +117,19 @@ export async function handleResetPassword(
 
   await prisma.otp.update({ where: { id: dbOtp.id }, data: { used: true } });
 
-  return { message: "Password reset successful" };
+  return { ok: true };
 }
 
 export async function handleUpdatePassword(
   userId: string,
   data: UpdatePasswordInterface
 ) {
-  const parsedData = SignupSchema.parse(data);
-  const hashedPassword = await hashPassword(parsedData.password);
+  const hashedPassword = await hashPassword(data.password);
 
   return prisma.user.update({
     where: { id: userId },
     data: { password: hashedPassword },
+    omit: { password: true, created_at: true, updated_at: true },
   });
 }
 
@@ -158,8 +137,7 @@ export const generateAndSendPhoneOTP = async (
   phone: string,
   length?: number
 ) => {
-  const user = await prisma.user.findUnique({ where: { phone } });
-  if (!user) throw new BadRequestError({ message: "User not found" });
+  const user = await prisma.user.findUniqueOrThrow({ where: { phone } });
 
   const otp = generateOTPCode(length || 1);
   const expires_at = new Date(Date.now() + 10 * 60 * 1000);
@@ -177,8 +155,7 @@ export const generateAndSendEmailOTP = async (
   email: string,
   length?: number
 ) => {
-  const user = await prisma.user.findFirst({ where: { email } });
-  if (!user) throw new BadRequestError({ message: "User not found" });
+  const user = await prisma.user.findFirstOrThrow({ where: { email } });
 
   const otp = generateOTPCode(length || 1);
   const expires_at = new Date(Date.now() + 10 * 60 * 1000);
@@ -197,20 +174,21 @@ export const verifyOTP = async (identifier: string, otp: string) => {
   const isEmail = identifier.includes("@");
 
   if (isEmail) {
-    user = await prisma.user.findFirst({ where: { email: identifier } });
+    user = await prisma.user.findFirstOrThrow({ where: { email: identifier } });
   } else {
-    user = await prisma.user.findUnique({ where: { phone: identifier } });
+    user = await prisma.user.findUniqueOrThrow({
+      where: { phone: identifier },
+    });
   }
 
-  if (!user) throw new BadRequestError({ message: "User not found" });
-
-  const dbOtp = await prisma.otp.findFirst({
-    where: { user_id: user.id, used: false, expires_at: { gt: new Date() } },
+  const dbOtp = await prisma.otp.findFirstOrThrow({
+    where: {
+      user_id: user.id,
+      used: false,
+      expires_at: { gt: new Date() },
+      code: otp,
+    },
   });
-
-  if (!dbOtp || otp !== dbOtp.code) {
-    throw new BadRequestError({ message: "Invalid/expired OTP" });
-  }
 
   await prisma.otp.update({ where: { id: dbOtp.id }, data: { used: true } });
 
@@ -222,25 +200,14 @@ export const verifyOTP = async (identifier: string, otp: string) => {
 };
 
 export const refreshTokenHelper = async (refreshToken: string) => {
-  try {
-    const decoded = jwt.verify(
-      refreshToken,
-      config.jwt.refreshSecret
-    ) as UserPayload;
+  const decoded = jwt.verify(
+    refreshToken,
+    config.jwt.refreshSecret
+  ) as UserPayload;
 
-    if (!decoded.userId) throw new Error("Invalid payload");
+  if (!decoded.userId) throw new UnauthorizedError("Invalid payload");
 
-    const user = await prisma.user.findUnique({
-      where: { id: decoded.userId },
-    });
-
-    if (!user) return null;
-
-    return generateToken({ role: decoded.role, userId: decoded.userId }, true);
-  } catch (error) {
-    console.error("Refresh failed:", error);
-    return null;
-  }
+  return generateToken({ role: decoded.role, userId: decoded.userId }, true);
 };
 
 export const generateAnonymousSessionToken = () => {
@@ -257,7 +224,7 @@ export const handleGoogleSignin = async (
 ): Promise<
   { accessToken: string; refreshToken: string; user: User } | undefined
 > => {
-  if (!idToken) throw new BadRequestError({ message: "ID token required" });
+  if (!idToken) throw new NotFoundError("ID token required");
 
   const googleClient = new OAuth2Client(config.oauth.googleClientId);
 
@@ -268,11 +235,15 @@ export const handleGoogleSignin = async (
     });
 
     const payload = ticket.getPayload();
-    if (!payload) throw new BadRequestError({ message: "Invalid token" });
+    if (!payload)
+      throw new ValidationError([{ message: "Invalid token", path: "token" }]);
 
     const { email, name: fullname, picture: avatar, sub: googleId } = payload;
 
-    if (!email) throw new BadRequestError({ message: "Email is missing" });
+    if (!email)
+      throw new ValidationError([
+        { message: "Email is missing", path: "email" },
+      ]);
 
     let user = await prisma.user.findFirst({
       where: {
@@ -316,8 +287,7 @@ export const handleGoogleSignin = async (
 export const handleFacebookSignin = async (
   accessToken: string
 ): Promise<{ accessToken: string; refreshToken: string } | undefined> => {
-  if (!accessToken)
-    throw new BadRequestError({ message: "Access token required" });
+  if (!accessToken) throw new NotFoundError("access token required");
 
   try {
     const params = {
@@ -333,7 +303,9 @@ export const handleFacebookSignin = async (
 
     const payload = await fbRes.json();
     if (!payload.email)
-      throw new BadRequestError({ message: "Email not provided by Facebook" });
+      throw new ValidationError([
+        { path: "email", message: "Email not provided by Facebook" },
+      ]);
 
     const { id: fbId, email, name, picture } = payload;
     const fullname = `${name}`.trim();

@@ -29,7 +29,7 @@ export const PlanSchema = z.object({
   type: z.string(),
   title: z.string(),
   price: z.coerce.number(),
-  durationInDays: z.coerce.number(),
+  expires_in: z.coerce.number(),
   features: z.array(z.string()),
 });
 

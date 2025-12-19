@@ -1,5 +1,3 @@
-import BadRequestError from "@libs/error/BadRequestError.js";
-import { BAD_REQUEST_ERROR, NOT_FOUND_ERROR } from "@libs/error/error-code.js";
 import { buildAdFilters } from "@libs/filters/query-filter.js";
 import cloudinary from "config/cloudinary.js";
 import { ADS_PAGE_SIZE } from "constatnts.js";
@@ -7,27 +5,15 @@ import { prisma } from "database/index.js";
 import { Request } from "express";
 
 import { CursorPaginationQuery } from "types/index.js";
-import { AdFiltersSchema, AdInterface, AdModelSchema } from "types/ad.js";
+import { AdInterface } from "types/ad.js";
 
 export const createAd = async (id: string, data: AdInterface) => {
-  const user = await prisma.user.findUnique({ where: { id } });
+  const user = await prisma.user.findUniqueOrThrow({
+    where: { id },
+    select: { id: true },
+  });
 
-  if (!user) {
-    throw new BadRequestError({
-      message: "User unfound",
-    });
-  }
-
-  const validated = AdModelSchema.safeParse(data);
-
-  if (!validated.success) {
-    throw new BadRequestError({
-      context: validated.error.issues,
-      message: validated.error.message,
-    });
-  }
-
-  const { media, ...adData } = validated.data;
+  const { media, ...adData } = data;
 
   const mediaArray = media.map(
     ({ media_type, original_url, transformed_url, public_id }) => ({
@@ -58,16 +44,10 @@ export const createAd = async (id: string, data: AdInterface) => {
         },
       },
       media: {
-        omit: { created_at: true },
+        omit: { created_at: true, ad_id: true, original_url: true },
       },
     },
   });
-
-  if (!ad) {
-    throw new BadRequestError({
-      message: "Unable to create the add, something went wrong.",
-    });
-  }
 
   return ad;
 };
@@ -79,16 +59,8 @@ export const fetchAds = async (req: Request) => {
     direction = "forward",
   } = req.query as CursorPaginationQuery;
 
-  const { success, data: filters, error } = AdFiltersSchema.safeParse(req.body);
-
-  if (!success)
-    throw new BadRequestError({
-      context: error.issues,
-      error_code: BAD_REQUEST_ERROR,
-    });
-
   const { where, orderBy, take } = buildAdFilters({
-    filters,
+    filters: req.body,
     cursor,
     direction,
     limit,
@@ -166,19 +138,13 @@ export const fetchAdDetails = async (
   user_id: string,
   isAnonymous: boolean
 ) => {
-  const ad = await prisma.ad.findUnique({
+  const ad = await prisma.ad.findUniqueOrThrow({
     where: { id },
     include: {
       favorited_by: { where: { id: user_id }, select: { id: true } },
       flagged_by: { where: { id: user_id }, select: { id: true } },
     },
   });
-
-  if (!ad)
-    throw new BadRequestError({
-      error_code: NOT_FOUND_ERROR,
-      message: "Ad not found",
-    });
 
   return {
     ...ad,
@@ -192,8 +158,8 @@ export const fetchAdDetails = async (
 };
 
 export const deleteAd = async (id: string, user_id: string) => {
-  const ad = await prisma.ad.findUnique({
-    where: { id },
+  const ad = await prisma.ad.findUniqueOrThrow({
+    where: { id, user_id },
     select: {
       user_id: true,
       media: {
@@ -206,11 +172,6 @@ export const deleteAd = async (id: string, user_id: string) => {
       },
     },
   });
-  if (!ad || ad.user_id !== user_id)
-    throw new BadRequestError({
-      message: "Can only deleted own ads.",
-      error_code: BAD_REQUEST_ERROR,
-    });
 
   await prisma.$transaction(async (tx) => {
     await tx.media.deleteMany({ where: { ad_id: id } });
@@ -220,9 +181,9 @@ export const deleteAd = async (id: string, user_id: string) => {
   });
 };
 
-export const softDeleteAd = async(id: string, user_id: string) => {
+export const softDeleteAd = async (id: string, user_id: string) => {
   const ad = await prisma.ad.findUnique({
-    where: { id,  },
+    where: { id, user_id },
     select: {
       user_id: true,
       created_at: true,
@@ -236,19 +197,14 @@ export const softDeleteAd = async(id: string, user_id: string) => {
       },
     },
   });
-  if (!ad || ad.user_id !== user_id)
-    throw new BadRequestError({
-      message: "Can only deleted own ads.",
-      error_code: BAD_REQUEST_ERROR,
-    });
 
   await prisma.ad.update({
-    where: {id},
+    where: { id },
     data: {
       deleted_at: new Date(),
-    }
-  })
-}
+    },
+  });
+};
 
 export const toggleFavoriteAd = async (user_id: string, id: string) => {
   return prisma.$transaction(async (tx) => {
@@ -272,22 +228,14 @@ export const toggleFavoriteAd = async (user_id: string, id: string) => {
 };
 
 export const flagAd = async (user_id: string, id: string) => {
-  return prisma.$transaction(async (tx) => {
-    const existing = await tx.ad.findFirst({
-      where: { id, flagged_by: { some: { id: user_id } } },
-      select: { id: true },
-    });
-
-    if (existing) {
-      throw new BadRequestError({
-        error_code: BAD_REQUEST_ERROR,
-        message: "Already flagged this Ad.",
-      });
-    }
-
-    return tx.ad.update({
-      where: { id },
-      data: { flagged_by: { connect: [{ id: user_id }] } },
-    });
+  return prisma.ad.update({
+    where: { id },
+    data: { flagged_by: { connect: [{ id: user_id }] } },
+    select: {
+      id: true,
+      flagged_by: {
+        select: { fullname: true, id: true },
+      },
+    },
   });
 };

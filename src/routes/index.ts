@@ -6,6 +6,7 @@ import userRouter from "@routes/userRouter.js";
 import adRouter from "@routes/adRouter.js";
 import cronRouter from "@routes/cronRouter.js";
 import cloudinaryRouter from "@routes/cloudinaryRouter.js";
+import { NotFoundError } from "@libs/error/NotFoundError.js";
 
 const router = Router();
 
@@ -16,5 +17,9 @@ router.use("/ads", adRouter);
 router.use("/cron", cronRouter);
 router.use("/cloudinary", cloudinaryRouter);
 router.use("/users", userRouter);
+
+router.use((req, res, next) => {
+  next(new NotFoundError(`Can't find ${req.originalUrl} on this server!`));
+});
 
 export default router;

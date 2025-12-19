@@ -1,4 +1,5 @@
 import { config } from "@config/environment.js";
+import { UnauthorizedError } from "@libs/error/UnauthorizedError.js";
 import Logger from "@libs/logger.js";
 import { prisma } from "database/index.js";
 import { Router } from "express";
@@ -7,7 +8,7 @@ const router = Router();
 
 router.post("/soft-delete-ads", async (req, res) => {
   if (req.headers.authorization !== `Bearer ${config.do.cronSecret}`) {
-    return res.status(401).send("Unauthorized");
+    throw new UnauthorizedError();
   }
 
   try {

@@ -1,5 +1,4 @@
-import BadRequestError from "./error/BadRequestError.js";
-import { PARSING_ERROR } from "./error/error-code.js";
+import { ValidationError } from "./error/ValidationError.js";
 
 export const toJson = (data: string) => {
   if (data) {
@@ -9,7 +8,7 @@ export const toJson = (data: string) => {
       return JSON.parse(cleanString);
     } catch (parseError) {
       console.error("JSON parse error:", parseError);
-      throw new BadRequestError({ error_code: PARSING_ERROR });
+      throw new ValidationError([]);
     }
   }
 };

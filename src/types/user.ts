@@ -23,9 +23,9 @@ export const SignupSchema = z.object({
 });
 
 export const UpdateProfileSchema = z.object({
-  fullname: z.string().min(3),
-  email: z.email(),
-  phone: z.string().min(6).max(15),
+  fullname: z.string("Name is required").min(3),
+  phone: z.string("Phone number is required").min(6).max(15),
+  email: z.email().optional(),
   province: ProvinceSchema.optional(),
   area: AreaSchema.optional(),
   location: LocationSchema.optional(),

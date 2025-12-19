@@ -1,21 +1,20 @@
 {
   "call": {
-    "decline": "Decline",
-    "accept": "Accept",
-    "speaker": "Speaker",
-    "end": "End",
-    "mute": "Mute",
-    "connecting": "Connecting..."
+    "decline": "पतन",
+    "accept": "स्वीकार करें",
+    "speaker": "वक्ता",
+    "end": "अंत",
+    "mute": "म्यूट",
+    "connecting": "जुड़ रहा है..."
   },
   "chat": {
-    "chat": "Chat",
-    "typeMsgHere": "Type message here...",
-    "recentChats": "Recent chats",
-    "min": "min",
-    "deleteMessage": "Delete message?",
-    "confirmDeleteConversation?": "Do you really want to delete this conversation?",
-    "cancel": "Cancel",
-    "delete": "Delete",
-    "MsgDeletedSucc": "That message deleted succesfully."
+    "chat": "बातचीत",
+    "typeMsgHere": "संदेश यहाँ टाइप करें...",
+    "recentChats": "हाल की बातचीत",
+    "deleteMessage": "संदेश हटाएँ?",
+    "confirmDeleteConversation?": "क्या आप वास्तव में यह बातचीत हटाना चाहते हैं?",
+    "cancel": "रद्द करें",
+    "delete": "मिटायें",
+    "MsgDeletedSucc": "वह संदेश सफलतापूर्वक हटा दिया गया।"
   }
 }

@@ -1,3 +1,4 @@
+import { ForbiddenError } from "@libs/error/ForbiddenError";
 import {
   createAd,
   deleteAd,
@@ -10,7 +11,7 @@ import {
 import { Request, Response } from "express";
 
 export const createNewAd = async (req: Request, res: Response) => {
-  if (req.isAnonymous) return res.status(403).json();
+  if (req.isAnonymous) throw new ForbiddenError();
   const newAd = await createAd(req.user.userId, req.body);
   res.json(newAd);
 };
@@ -36,19 +37,19 @@ export const adDetails = async (req: Request, res: Response) => {
 };
 
 export const removeAd = async (req: Request, res: Response) => {
-  if (req.isAnonymous) return res.status(403).json();
+  if (req.isAnonymous) throw new ForbiddenError();
   await deleteAd(req.params.id, req.user.userId);
   res.status(204).json();
 };
 
 export const toggleFavorite = async (req: Request, res: Response) => {
-  if (req.isAnonymous) return res.status(403).json();
-  await toggleFavoriteAd(req.user!.userId, req.params.id);
+  if (req.isAnonymous) throw new ForbiddenError();
+  await toggleFavoriteAd(req.user.userId, req.params.id);
   res.status(200).json();
 };
 
 export const handleFlagAd = async (req: Request, res: Response) => {
-  if (req.isAnonymous) return res.status(403).json();
+  if (req.isAnonymous) throw new ForbiddenError();
   await flagAd(req.user.userId, req.params.id);
   res.status(200).json();
 };

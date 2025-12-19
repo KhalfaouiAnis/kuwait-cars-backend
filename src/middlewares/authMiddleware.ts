@@ -1,3 +1,4 @@
+import { UnauthorizedError } from "@libs/error/UnauthorizedError.js";
 import Logger from "@libs/logger.js";
 import { verifyToken } from "@utils/jwt.js";
 import { NextFunction, Request, Response } from "express";
@@ -8,8 +9,7 @@ export const authenticateJWT = (
   next: NextFunction
 ) => {
   const token = req.header("Authorization")?.replace("Bearer ", "");
-  if (!token)
-    return res.status(401).json({ error: "Authentication is required" });
+  if (!token) throw new UnauthorizedError();
 
   try {
     const decoded = verifyToken(token, true);
@@ -21,6 +21,6 @@ export const authenticateJWT = (
     next();
   } catch (error) {
     Logger.error(error);
-    res.status(401).json({ message: "Invalid token" });
+    throw new UnauthorizedError();
   }
 };

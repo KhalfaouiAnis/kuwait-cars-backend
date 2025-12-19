@@ -13,7 +13,6 @@ import {
   verifyOTP,
   handleAppleSignin,
 } from "@services/auth.js";
-import BadRequestError from "@libs/error/BadRequestError.js";
 
 export const loginUser = async (req: Request, res: Response) => {
   const { phone, password } = req.body;
@@ -25,7 +24,7 @@ export const loginUser = async (req: Request, res: Response) => {
 };
 
 export const registerUser = async (req: Request, res: Response) => {
-  const user = await createAccount({ ...req.body });
+  const user = await createAccount(req.body);
   res.status(201).json(user);
 };
 
@@ -54,37 +53,21 @@ export const generateAndSendOTPByEmail = async (
   req: Request,
   res: Response
 ) => {
-  try {
-    await generateAndSendEmailOTP(req.body.email, 10);
-    res.send({ ok: true });
-  } catch {
-    throw new BadRequestError();
-  }
+  await generateAndSendEmailOTP(req.body.email, 10);
+  res.send({ ok: true });
 };
 
 export const verifyOTPCode = async (req: Request, res: Response) => {
-  try {
-    const { accessToken, refreshToken, user } = await verifyOTP(
-      req.body.email,
-      req.body.otp
-    );
-    res.send({ accessToken, refreshToken, user });
-  } catch {
-    throw new BadRequestError();
-  }
+  const { accessToken, refreshToken, user } = await verifyOTP(
+    req.body.email,
+    req.body.otp
+  );
+  res.send({ accessToken, refreshToken, user });
 };
 
 export const refreshToken = async (req: Request, res: Response) => {
-  const { refreshToken } = req.body;
-  if (!refreshToken)
-    return res.status(400).json({ error: "Refresh token required" });
-
-  const result = await refreshTokenHelper(refreshToken);
-  if (!result) {
-    return res.status(401).json({ error: "Invalid or expired refresh token" });
-  }
-
-  res.json({ accessToken: result });
+  const accessToken = await refreshTokenHelper(req.body.refreshToken);
+  res.json({ accessToken });
 };
 
 export const anonymousSession = (_: Request, res: Response) => {
@@ -103,8 +86,6 @@ export const googleSignIn = async (req: Request, res: Response) => {
       user: response.user,
     });
   }
-
-  res.status(400).json({ error: "Error verifying google id token" });
 };
 
 export const appleSignIn = async (req: Request, res: Response) => {
@@ -116,8 +97,6 @@ export const appleSignIn = async (req: Request, res: Response) => {
       refreshToken: response.refreshToken,
     });
   }
-
-  res.status(400).json({ error: "Error verifying apple identity token" });
 };
 
 export const facebookSignIn = async (req: Request, res: Response) => {
@@ -129,6 +108,4 @@ export const facebookSignIn = async (req: Request, res: Response) => {
       refreshToken: response.refreshToken,
     });
   }
-
-  res.status(400).json({ error: "Error verifying facebook access token" });
 };
