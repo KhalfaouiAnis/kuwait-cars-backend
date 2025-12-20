@@ -1,6 +1,7 @@
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider        = "prisma-client"
+  output          = "../src/generated/prisma"
+  previewFeatures = ["relationJoins"]
 }
 
 datasource db {
@@ -70,7 +71,7 @@ model Ad {
   brand       String?
   model       String?
   ad_category String?
-  price       Int?
+  price       Decimal?  @db.Decimal(10, 2)
 
   province Json?
   area     Json?
@@ -78,8 +79,8 @@ model Ad {
 
   year           Int?
   exterior_color String?
-  mileage        Int?
-  mileage_unit   String? @db.VarChar(2)
+  mileage        Decimal? @db.Decimal(10, 2)
+  mileage_unit   String?  @db.VarChar(2)
 
   fuel_type      String?
   cylinders      String?
@@ -113,7 +114,7 @@ model Ad {
 enum UserRole {
   ADMIN
   USER
-  ANONYMOUS
+  GUEST
 }
 
 enum AdStatus {

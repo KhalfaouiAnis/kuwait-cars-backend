@@ -1,23 +1,23 @@
 import { Router } from "express";
-import { authenticateJWT } from "@middlewares/authMiddleware.js";
 import {
+  fetchAdsBatch,
   handleFlagAd,
   listAds,
-  listUserAds,
   removeAd,
   toggleFavorite,
 } from "@controllers/ads.js";
 import { createNewAd } from "@controllers/ads.js";
 import { validate } from "@middlewares/validationMiddleware.js";
-import { AdFiltersSchema, AdModelSchema } from "types/ad.js";
+import { AdModelSchema, AdSearchSchema } from "types/ad.js";
+import { restrictGuest } from "@middlewares/authMiddleware";
 
 const router = Router();
 
-router.post("/create", authenticateJWT, validate(AdModelSchema), createNewAd);
-router.post("/", authenticateJWT, validate(AdFiltersSchema), listAds);
-router.delete("/:id", authenticateJWT, removeAd);
-router.post("/:id/toggle-favorite", authenticateJWT, toggleFavorite);
-router.post("/:id/flag", authenticateJWT, handleFlagAd);
-router.get("/myads", authenticateJWT, listUserAds);
+router.post("/create",restrictGuest, validate(AdModelSchema), createNewAd);
+router.post("/", validate(AdSearchSchema), listAds);
+router.post("/batch-list", fetchAdsBatch);
+router.delete("/:id", restrictGuest, removeAd);
+router.post("/:id/toggle-favorite", restrictGuest, toggleFavorite);
+router.post("/:id/flag", restrictGuest, handleFlagAd);
 
 export default router;

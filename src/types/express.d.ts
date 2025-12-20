@@ -4,7 +4,7 @@ declare global {
   namespace Express {
     interface Request {
       user: UserPayload;
-      isAnonymous: boolean;
+      isGuest: boolean;
       query: {
         page?: string;
         pageSize?: string;

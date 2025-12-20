@@ -10,9 +10,14 @@ export const prisma = new PrismaClient({
   adapter,
   log:
     config.env === "development"
-      ? ["query", "info", "warn", "error"]
+      ? [
+          { emit: "event", level: "query" },
+          { emit: "stdout", level: "error" },
+        ]
       : ["error"],
-}).$extends({
+});
+
+prisma.$extends({
   query: {
     ad: {
       async findMany({ args, query }) {
@@ -21,4 +26,11 @@ export const prisma = new PrismaClient({
       },
     },
   },
+});
+
+prisma.$on("query" as any, (e: any) => {
+  console.log("--- Database Query ---");
+  console.log(`SQL: ${e.query}`);
+  console.log(`Params: ${e.params}`); // <--- This shows the [100, 200] values
+  console.log(`Duration: ${e.duration}ms`);
 });

@@ -33,13 +33,12 @@ export const PlanSchema = z.object({
   features: z.array(z.string()),
 });
 
-export interface PagingParams {
-  page?: string;
-  pageSize?: string;
-}
-
-export interface CursorPaginationQuery {
-  limit?: string;
-  cursor?: string;
-  direction?: "forward" | "backward";
+export interface PaginatedResponse<T> {
+  status: "success";
+  data: T[];
+  meta: {
+    nextCursor: string | undefined | null;
+    hasNextPage: boolean;
+    totalCount: number;
+  };
 }

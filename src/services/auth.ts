@@ -210,13 +210,13 @@ export const refreshTokenHelper = async (refreshToken: string) => {
   return generateToken({ role: decoded.role, userId: decoded.userId }, true);
 };
 
-export const generateAnonymousSessionToken = () => {
-  const payload = { role: UserRole.ANONYMOUS, id: "" };
+export const generateGuestSessionToken = () => {
+  const payload = { role: UserRole.GUEST, id: "" };
   const token = jwt.sign(payload, config.jwt.secret, {
     expiresIn: "30m",
   });
 
-  return { token, role: UserRole.ANONYMOUS };
+  return { token, role: UserRole.GUEST };
 };
 
 export const handleGoogleSignin = async (

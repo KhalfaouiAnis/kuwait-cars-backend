@@ -1,11 +1,14 @@
-import { buildAdFilters } from "@libs/filters/query-filter.js";
 import cloudinary from "config/cloudinary.js";
-import { ADS_PAGE_SIZE } from "constatnts.js";
 import { prisma } from "database/index.js";
-import { Request } from "express";
 
-import { CursorPaginationQuery } from "types/index.js";
-import { AdInterface } from "types/ad.js";
+import { PaginatedResponse } from "types/index.js";
+import { AdInterface, AdSearchInterface } from "types/ad.js";
+import { buildPrismaQuery } from "@utils/prisma-query-builder";
+import { Ad } from "generated/prisma/client.js";
+import {
+  buildAdInteractions,
+  formatAdInteractions,
+} from "@utils/prisma-relation-builder";
 
 export const createAd = async (id: string, data: AdInterface) => {
   const user = await prisma.user.findUniqueOrThrow({
@@ -52,78 +55,27 @@ export const createAd = async (id: string, data: AdInterface) => {
   return ad;
 };
 
-export const fetchAds = async (req: Request) => {
-  const {
-    cursor,
-    limit = ADS_PAGE_SIZE,
-    direction = "forward",
-  } = req.query as CursorPaginationQuery;
+export const fetchAds = async (
+  input: AdSearchInterface,
+  userId: string | undefined
+): Promise<Omit<PaginatedResponse<Ad>, "status">> => {
+  const queryArgs = buildPrismaQuery(input);
+  const include = buildAdInteractions(userId);
 
-  const { where, orderBy, take } = buildAdFilters({
-    filters: req.body,
-    cursor,
-    direction,
-    limit,
-  });
-
-  const [ads, total] = await prisma.$transaction([
-    prisma.ad.findMany({
-      ...{ where, orderBy, take },
-      include: {
-        media: {
-          select: {
-            original_url: true,
-            transformed_url: true,
-            media_type: true,
-            public_id: true,
-          },
-        },
-        ...(req.isAnonymous
-          ? {}
-          : {
-              favorited_by: {
-                where: { id: req.user.userId },
-                select: { id: true },
-              },
-              flagged_by: {
-                where: { id: req.user.userId },
-                select: { id: true },
-              },
-            }),
-      },
-    }),
-    prisma.ad.count({ where }),
+  const [rawAds, totalCount] = await prisma.$transaction([
+    prisma.ad.findMany({ ...queryArgs, include }),
+    prisma.ad.count({ where: queryArgs.where }),
   ]);
 
-  const favoritedAndFlaggedAds = ads.map((ad) => ({
-    ...ad,
-    ...(!req.isAnonymous
-      ? {
-          isFavorited: ad.favorited_by.length > 0,
-          isFlagged: ad.flagged_by.length > 0,
-        }
-      : {}),
-  }));
+  const limit = input.pagination?.limit || 10;
+  const hasNextPage = rawAds.length > limit;
+  const nextCursor = hasNextPage ? rawAds.pop()?.id : null;
 
-  const hasMore = ads.length > parseInt(limit);
-  const nextCursor = hasMore
-    ? encodeURIComponent(ads[ads.length - 1].id)
-    : null;
-
-  const paginatedAds = hasMore
-    ? (req.isAnonymous ? ads : favoritedAndFlaggedAds).slice(0, parseInt(limit))
-    : req.isAnonymous
-      ? ads
-      : favoritedAndFlaggedAds;
+  const formattedData = formatAdInteractions(rawAds);
 
   return {
-    data: paginatedAds,
-    pagination: {
-      hasMore,
-      nextCursor,
-      total,
-      limit: parseInt(limit),
-    },
+    data: formattedData,
+    meta: { nextCursor, hasNextPage, totalCount },
   };
 };
 
@@ -136,7 +88,7 @@ export const fetchUserAds = async (user_id: string) => {
 export const fetchAdDetails = async (
   id: string,
   user_id: string,
-  isAnonymous: boolean
+  isGuest: boolean
 ) => {
   const ad = await prisma.ad.findUniqueOrThrow({
     where: { id },
@@ -148,7 +100,7 @@ export const fetchAdDetails = async (
 
   return {
     ...ad,
-    ...(isAnonymous
+    ...(isGuest
       ? {}
       : {
           is_favorited: ad.favorited_by.length > 0,
@@ -238,4 +190,32 @@ export const flagAd = async (user_id: string, id: string) => {
       },
     },
   });
+};
+
+export const getAdsByIds = async (ids: string[], userId: string) => {
+  const ads = await prisma.ad.findMany({
+    where: {
+      id: { in: ids },
+    },
+    select: {
+      id: true,
+      title: true,
+      description: true,
+      favorited_by: {
+        where: { id: userId },
+        select: {
+          id: true,
+        },
+      },
+      media: {
+        where: { media_type: { equals: "THUMBNAIL" } },
+        select: { transformed_url: true },
+      },
+    },
+  });
+
+  return ads.map((ad) => ({
+    ...ad,
+    is_favorited: ad.favorited_by.length > 0,
+  }));
 };

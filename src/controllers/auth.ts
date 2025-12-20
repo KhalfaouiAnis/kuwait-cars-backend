@@ -3,7 +3,7 @@ import {
   authenticateUser,
   createAccount,
   generateAndSendEmailOTP,
-  generateAnonymousSessionToken,
+  generateGuestSessionToken,
   handleForgotPasswordRequest,
   handleResetPassword,
   handleUpdatePassword,
@@ -70,8 +70,8 @@ export const refreshToken = async (req: Request, res: Response) => {
   res.json({ accessToken });
 };
 
-export const anonymousSession = (_: Request, res: Response) => {
-  const { role, token } = generateAnonymousSessionToken();
+export const guestSession = (_: Request, res: Response) => {
+  const { role, token } = generateGuestSessionToken();
 
   res.json({ token, role });
 };

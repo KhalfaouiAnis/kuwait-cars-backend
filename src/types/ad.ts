@@ -45,6 +45,7 @@ export const AdModelSchema = z.object({
 });
 
 export const AdFiltersSchema = z.object({
+  user_id: z.string().optional,
   title: z.string().optional(),
   year: z.coerce.number().optional(),
   price: z.array(z.number()).optional(),
@@ -55,5 +56,39 @@ export const AdFiltersSchema = z.object({
   transmission: z.string().optional(),
 });
 
+export const AdSearchSchema = z.object({
+  pagination: z
+    .object({
+      limit: z.number().min(1).max(50).default(10),
+      cursor: z.string().optional(),
+    })
+    .default({ limit: 10 }),
+  sorting: z
+    .object({
+      field: z.enum(["price", "created_at"]),
+      direction: z.enum(["asc", "desc"]),
+    })
+    .optional()
+    .default({ field: "created_at", direction: "desc" }),
+  filters: z
+    .object({
+      user_id: z.string().optional(),
+      ad_type: z.string().optional(),
+      is_mine: z.boolean().optional(),
+      title: z.string().optional(),
+      year: z.array(z.coerce.number()).optional(),
+      price: z.array(z.coerce.number()).min(2).max(2).optional(),
+      brand: z.array(z.string()).optional(),
+      model: z.array(z.string()).optional(),
+      exterior_color: z.array(z.string()).optional(),
+      mileage: z.array(z.coerce.number()).min(2).max(2).optional(),
+      transmission: z.string().optional(),
+    })
+    .optional()
+    .default({}),
+  direction: z.enum(["forward", "backward"]).default("forward").optional(),
+});
+
+export type AdSearchInterface = z.infer<typeof AdSearchSchema>;
 export type AdInterface = z.infer<typeof AdModelSchema>;
 export type AdFiltersInterface = z.infer<typeof AdFiltersSchema>;

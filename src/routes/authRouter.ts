@@ -1,5 +1,5 @@
 import {
-  anonymousSession,
+  guestSession,
   appleSignIn,
   facebookSignIn,
   forgotPassword,
@@ -26,7 +26,7 @@ import {
 const router = Router();
 
 router.post("/login", validate(LoginSchema), loginUser);
-router.post("/anonymous", anonymousSession);
+router.post("/guest", guestSession);
 
 router.post(
   "/forgot-password",
