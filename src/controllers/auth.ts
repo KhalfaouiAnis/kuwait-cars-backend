@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import {
   authenticateUser,
   createAccount,
-  generateAndSendEmailOTP,
+  generateAndSendOTPCode,
   generateGuestSessionToken,
   handleForgotPasswordRequest,
   handleResetPassword,
@@ -49,11 +49,11 @@ export const updatePassword = async (req: Request, res: Response) => {
   res.status(200).json({ ok: true });
 };
 
-export const generateAndSendOTPByEmail = async (
+export const generateAndSendOTP = async (
   req: Request,
   res: Response
 ) => {
-  await generateAndSendEmailOTP(req.body.email, 10);
+  await generateAndSendOTPCode(req.body.identifier, 5);
   res.send({ ok: true });
 };
 

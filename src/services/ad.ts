@@ -6,7 +6,7 @@ import { AdInterface, AdSearchInterface } from "types/ad.js";
 import { buildPrismaQuery } from "@utils/prisma-query-builder";
 import { Ad } from "generated/prisma/client.js";
 import {
-  buildAdInteractions,
+  buildSelectClose,
   formatAdInteractions,
 } from "@utils/prisma-relation-builder";
 
@@ -27,6 +27,8 @@ export const createAd = async (id: string, data: AdInterface) => {
     })
   );
 
+  const select = buildSelectClose();
+
   const ad = await prisma.ad.create({
     data: {
       ...adData,
@@ -37,19 +39,7 @@ export const createAd = async (id: string, data: AdInterface) => {
         },
       },
     },
-    include: {
-      user: {
-        omit: {
-          password: true,
-          created_at: true,
-          updated_at: true,
-          role: true,
-        },
-      },
-      media: {
-        omit: { created_at: true, ad_id: true, original_url: true },
-      },
-    },
+    select,
   });
 
   return ad;
@@ -60,10 +50,10 @@ export const fetchAds = async (
   userId: string | undefined
 ): Promise<Omit<PaginatedResponse<Ad>, "status">> => {
   const queryArgs = buildPrismaQuery(input);
-  const include = buildAdInteractions(userId);
+  const select = buildSelectClose(userId);
 
   const [rawAds, totalCount] = await prisma.$transaction([
-    prisma.ad.findMany({ ...queryArgs, include }),
+    prisma.ad.findMany({ ...queryArgs, select }),
     prisma.ad.count({ where: queryArgs.where }),
   ]);
 
@@ -80,33 +70,23 @@ export const fetchAds = async (
 };
 
 export const fetchUserAds = async (user_id: string) => {
+  const select = buildSelectClose(user_id);
+
   return prisma.ad.findMany({
     where: { user_id },
+    select,
   });
 };
 
-export const fetchAdDetails = async (
-  id: string,
-  user_id: string,
-  isGuest: boolean
-) => {
-  const ad = await prisma.ad.findUniqueOrThrow({
+export const fetchAdDetails = async (id: string, user_id: string) => {
+  const select = buildSelectClose(user_id, true);
+
+  const rawAd = prisma.ad.findUniqueOrThrow({
     where: { id },
-    include: {
-      favorited_by: { where: { id: user_id }, select: { id: true } },
-      flagged_by: { where: { id: user_id }, select: { id: true } },
-    },
+    select,
   });
 
-  return {
-    ...ad,
-    ...(isGuest
-      ? {}
-      : {
-          is_favorited: ad.favorited_by.length > 0,
-          isFlagged: ad.flagged_by.length > 0,
-        }),
-  };
+  return formatAdInteractions(rawAd);
 };
 
 export const deleteAd = async (id: string, user_id: string) => {

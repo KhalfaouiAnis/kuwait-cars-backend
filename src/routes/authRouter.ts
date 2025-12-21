@@ -3,7 +3,7 @@ import {
   appleSignIn,
   facebookSignIn,
   forgotPassword,
-  generateAndSendOTPByEmail,
+  generateAndSendOTP,
   googleSignIn,
   loginUser,
   refreshToken,
@@ -42,7 +42,7 @@ router.post("/facebook", facebookSignIn);
 
 router.post("/register", validate(SignupSchema), registerUser);
 
-router.post("/request-otp", generateAndSendOTPByEmail);
+router.post("/request-otp", generateAndSendOTP);
 router.post("/verify-otp", verifyOTPCode);
 
 router.post("/refresh_token", authenticateJWT, refreshToken);

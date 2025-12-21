@@ -24,7 +24,9 @@ const envSchema = z.object({
   FACEBOOK_APP_SECRET: z.string(),
   APPLE_CLIENT_ID: z.string(),
   APPLE_TEAM_ID: z.string().optional(),
+
   WHATSAPP_TOKEN: z.string(),
+  WHATSAPP_VERIFY_TOKEN: z.string().optional(),
   WHATSAPP_PHONE_ID: z.string(),
   WHATSAPP_VERSION: z.string(),
 
@@ -105,6 +107,7 @@ export const config = {
 
   whatsapp: {
     token: envVars.WHATSAPP_TOKEN,
+    verifyToken: envVars.WHATSAPP_VERIFY_TOKEN,
     phoneId: envVars.WHATSAPP_PHONE_ID,
     version: envVars.WHATSAPP_VERSION,
   },

@@ -20,11 +20,6 @@ export const createNewAd = async (req: Request, res: Response) => {
   res.json(newAd);
 };
 
-// export const listAds = async (req: Request, res: Response) => {
-//   const ads = await fetchAds(req);
-//   res.json(ads);
-// };
-
 export const listAds = async (
   req: Request<any, any, AdSearchInterface>,
   res: Response<PaginatedResponse<Ad>>
@@ -65,7 +60,7 @@ export const fetchAdsBatch = async (
 };
 
 export const adDetails = async (req: Request, res: Response) => {
-  const ads = await fetchAdDetails(req.params.id, req.user.userId, req.isGuest);
+  const ads = await fetchAdDetails(req.params.id, req.user.userId);
   res.json(ads);
 };
 

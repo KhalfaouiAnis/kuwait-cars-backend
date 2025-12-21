@@ -44,25 +44,13 @@ export const AdModelSchema = z.object({
   xcar_chat: z.coerce.boolean().optional(),
 });
 
-export const AdFiltersSchema = z.object({
-  user_id: z.string().optional,
-  title: z.string().optional(),
-  year: z.coerce.number().optional(),
-  price: z.array(z.number()).optional(),
-  brand: z.string().optional(),
-  model: z.string().optional(),
-  exterior_color: z.string().optional(),
-  mileage: z.string().optional(),
-  transmission: z.string().optional(),
-});
-
 export const AdSearchSchema = z.object({
   pagination: z
     .object({
       limit: z.number().min(1).max(50).default(10),
-      cursor: z.string().optional(),
+      cursor: z.nullable(z.string()).optional().default(null),
     })
-    .default({ limit: 10 }),
+    .default({ limit: 10, cursor: null }),
   sorting: z
     .object({
       field: z.enum(["price", "created_at"]),
@@ -91,4 +79,3 @@ export const AdSearchSchema = z.object({
 
 export type AdSearchInterface = z.infer<typeof AdSearchSchema>;
 export type AdInterface = z.infer<typeof AdModelSchema>;
-export type AdFiltersInterface = z.infer<typeof AdFiltersSchema>;

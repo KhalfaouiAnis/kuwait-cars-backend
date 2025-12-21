@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {
+  adDetails,
   fetchAdsBatch,
   handleFlagAd,
   listAds,
@@ -13,9 +14,10 @@ import { restrictGuest } from "@middlewares/authMiddleware";
 
 const router = Router();
 
-router.post("/create",restrictGuest, validate(AdModelSchema), createNewAd);
+router.post("/create", restrictGuest, validate(AdModelSchema), createNewAd);
 router.post("/", validate(AdSearchSchema), listAds);
 router.post("/batch-list", fetchAdsBatch);
+router.get("/:id", restrictGuest, adDetails);
 router.delete("/:id", restrictGuest, removeAd);
 router.post("/:id/toggle-favorite", restrictGuest, toggleFavorite);
 router.post("/:id/flag", restrictGuest, handleFlagAd);

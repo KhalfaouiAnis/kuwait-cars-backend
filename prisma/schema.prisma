@@ -38,10 +38,14 @@ model Otp {
   id         String   @id @default(cuid())
   code       String
   expires_at DateTime
+  created_at DateTime @default(now())
   used       Boolean  @default(false)
 
   user_id String
   user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  wamid           String?
+  delivery_status String?
 
   @@map("otps")
 }
@@ -92,10 +96,10 @@ model Ad {
   second_additional_number String?
   hide_license_plate       Boolean?
 
-  contact_whatsapp Boolean?
-  receive_calls    Boolean?
-  xcar_calls       Boolean?
-  xcar_chat        Boolean?
+  contact_whatsapp Boolean? @default(false)
+  receive_calls    Boolean? @default(false)
+  xcar_calls       Boolean? @default(false)
+  xcar_chat        Boolean? @default(false)
 
   user_id      String
   user         User   @relation(fields: [user_id], references: [id])
