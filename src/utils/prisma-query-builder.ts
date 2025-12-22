@@ -14,8 +14,6 @@ export const buildPrismaQuery = (input: AdSearchInterface) => {
   const cursorId =
     rawCursor === null || rawCursor === undefined ? undefined : rawCursor;
 
-  console.log(filters);
-
   const where: any = {};
   if (filters) {
     Object.entries(filters).forEach(([key, value]) => {
@@ -64,13 +62,7 @@ export const buildPrismaQuery = (input: AdSearchInterface) => {
   //   { id: "asc" },
   // ];
 
-  const orderBy: any[] = [
-    {
-      [sorting?.field || "created_at"]:
-        (direction === "forward" ? "asc" : sorting?.direction) || "desc",
-    },
-    { id: direction === "forward" ? "asc" : ("desc" as const) },
-  ];
+  const orderBy: any[] = [{ id: direction === "forward" ? "asc" : "desc" }];
 
   if (sorting?.field) {
     orderBy.unshift({
@@ -84,29 +76,3 @@ export const buildPrismaQuery = (input: AdSearchInterface) => {
 
   return { where, orderBy, take, skip, cursor };
 };
-
-// if (filters.brand) {
-//   where.brand = {};
-//   where.brand = { contains: filters.brand, mode: "insensitive" };
-// }
-
-// if (filters.model) {
-//   where.model = {};
-//   where.model = { contains: filters.model, mode: "insensitive" };
-// }
-
-// if (filters.transmission) {
-//   where.transmission = {};
-//   where.transmission = {
-//     contains: filters.transmission,
-//     mode: "insensitive",
-//   };
-// }
-
-// if (filters.exterior_color) {
-//   where.exterior_color = {};
-//   where.exterior_color = {
-//     contains: filters.exterior_color,
-//     mode: "insensitive",
-//   };
-// }

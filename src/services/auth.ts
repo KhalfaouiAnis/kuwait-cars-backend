@@ -32,13 +32,13 @@ export const authenticateUser = async (data: LoginInterface) => {
     });
 
     if (!user?.password) {
-      throw new UnauthorizedError(
+      throw new BadRequestError(
         "This account was created using Google, Apple or Facebook social logins, please use the right social provider to login."
       );
     }
 
     if (!user || !(await bcrypt.compare(password, user.password))) {
-      throw new UnauthorizedError("Invalid credentials");
+      throw new BadRequestError("Invalid credentials");
     }
 
     return {
@@ -50,7 +50,7 @@ export const authenticateUser = async (data: LoginInterface) => {
       refreshToken: generateToken({ role: user.role, userId: user.id }, false),
     };
   } catch (error) {
-    throw new UnauthorizedError("Invalid credentials");
+    throw new BadRequestError("Invalid credentials");
   }
 };
 
