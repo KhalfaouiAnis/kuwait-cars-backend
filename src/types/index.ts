@@ -22,7 +22,7 @@ export const MediaModelSchema = z.object({
   public_id: z.string(),
   media_type: z.enum(MediaType),
   original_url: z.string(),
-  transformed_url: z.string(),
+  transformed_url: z.string().optional(),
 });
 
 export const PlanSchema = z.object({
@@ -42,3 +42,5 @@ export interface PaginatedResponse<T> {
     totalCount: number;
   };
 }
+
+export type LocationInterface = z.infer<typeof LocationSchema>;

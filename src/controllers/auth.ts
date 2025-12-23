@@ -7,12 +7,12 @@ import {
   handleForgotPasswordRequest,
   handleResetPassword,
   handleUpdatePassword,
-  refreshTokenHelper,
   handleFacebookSignin,
   handleGoogleSignin,
   verifyOTP,
   handleAppleSignin,
 } from "@services/auth.js";
+import { refreshTokenHelper } from "@utils/jwt.js";
 
 export const loginUser = async (req: Request, res: Response) => {
   const { phone, password } = req.body;
@@ -49,10 +49,7 @@ export const updatePassword = async (req: Request, res: Response) => {
   res.status(200).json({ ok: true });
 };
 
-export const generateAndSendOTP = async (
-  req: Request,
-  res: Response
-) => {
+export const generateAndSendOTP = async (req: Request, res: Response) => {
   await generateAndSendOTPCode(req.body.identifier, 5);
   res.send({ ok: true });
 };
@@ -95,6 +92,7 @@ export const appleSignIn = async (req: Request, res: Response) => {
     return res.json({
       accessToken: response.accessToken,
       refreshToken: response.refreshToken,
+      user: response.user,
     });
   }
 };
@@ -106,6 +104,7 @@ export const facebookSignIn = async (req: Request, res: Response) => {
     return res.json({
       accessToken: response.accessToken,
       refreshToken: response.refreshToken,
+      user: response.user,
     });
   }
 };

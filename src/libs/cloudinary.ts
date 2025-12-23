@@ -18,6 +18,8 @@ export const signCloudinaryRequest = (data: CloudinarySignRequestInterface) => {
     }
   } else {
     baseParams.upload_preset = "x_cars_avatars";
+    baseParams.overwrite = true;
+    baseParams.invalidate = true;
   }
 
   const signature = cloudinary.utils.api_sign_request(

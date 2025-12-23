@@ -1,5 +1,10 @@
 import { UserRole } from "generated/prisma/client.js";
-import { AreaSchema, LocationSchema, ProvinceSchema } from "types/index.js";
+import {
+  AreaSchema,
+  LocationSchema,
+  MediaModelSchema,
+  ProvinceSchema,
+} from "types/index.js";
 import z from "zod";
 
 export const LoginSchema = z.object({
@@ -17,19 +22,19 @@ export const SignupSchema = z.object({
   phone: z.string().min(6).max(15),
   password: z.string().min(6),
   role: z.optional(z.enum(UserRole)),
-  province: ProvinceSchema.optional(),
-  area: AreaSchema.optional(),
-  avatar: z.string().optional(),
+  province: ProvinceSchema,
+  area: AreaSchema.nullish(),
+  avatar: MediaModelSchema.nullish(),
 });
 
 export const UpdateProfileSchema = z.object({
   fullname: z.string("Name is required").min(3),
   phone: z.string("Phone number is required").min(6).max(15),
   email: z.email().optional(),
-  province: ProvinceSchema.optional(),
-  area: AreaSchema.optional(),
-  location: LocationSchema.optional(),
-  avatar: z.string().optional(),
+  province: ProvinceSchema,
+  area: AreaSchema.nullish(),
+  location: LocationSchema.nullish(),
+  avatar: MediaModelSchema.nullish(),
 });
 
 export const RequestResetPasswordSchema = z.object({

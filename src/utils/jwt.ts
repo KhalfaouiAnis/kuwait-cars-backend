@@ -2,6 +2,7 @@ import Logger from "@libs/logger.js";
 import jwt, { SignOptions } from "jsonwebtoken";
 import { UserRole } from "generated/prisma/client.js";
 import { config } from "@config/environment.js";
+import { UnauthorizedError } from "@libs/error/UnauthorizedError.js";
 
 export interface UserPayload {
   userId: string;
@@ -30,4 +31,15 @@ export const verifyToken = (token: string, access: boolean): UserPayload => {
     Logger.error(error);
     throw new Error("Invalid token");
   }
+};
+
+export const refreshTokenHelper = async (refreshToken: string) => {
+  const decoded = jwt.verify(
+    refreshToken,
+    config.jwt.refreshSecret
+  ) as UserPayload;
+
+  if (!decoded.userId) throw new UnauthorizedError("Invalid payload");
+
+  return generateToken({ role: decoded.role, userId: decoded.userId }, true);
 };

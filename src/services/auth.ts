@@ -15,7 +15,7 @@ import { generateOTPCode } from "@utils/otp.js";
 
 import { OAuth2Client } from "google-auth-library";
 import { sendOtpEmail } from "./mailer.js";
-import { User, UserRole } from "generated/prisma/client.js";
+import { Prisma, User, UserRole } from "generated/prisma/client.js";
 import { UnauthorizedError } from "@libs/error/UnauthorizedError.js";
 import { NotFoundError } from "@libs/error/NotFoundError.js";
 import { ValidationError } from "@libs/error/ValidationError.js";
@@ -29,6 +29,7 @@ export const authenticateUser = async (data: LoginInterface) => {
     const user = await prisma.user.findUnique({
       where: { phone },
       omit: { updated_at: true },
+      include: { avatar: { select: { original_url: true, public_id: true } } },
     });
 
     if (!user?.password) {
@@ -57,13 +58,17 @@ export const authenticateUser = async (data: LoginInterface) => {
 export const hashPassword = (password: string) => bcrypt.hash(password, 10);
 
 export const createAccount = async (data: SignupInterface) => {
-  const hashedPassword = await hashPassword(data.password);
+  const { avatar, area, password, role, ...restData } = data;
 
-  return await prisma.user.create({
+  const hashedPassword = await hashPassword(password);
+
+  return prisma.user.create({
     data: {
-      ...data,
+      ...restData,
+      avatar: avatar ? { create: avatar } : undefined,
+      area: area ? area : Prisma.DbNull,
       password: hashedPassword,
-      role: data.role ? data.role : UserRole.USER,
+      role: role ? role : UserRole.USER,
     },
     omit: {
       password: true,
@@ -212,17 +217,6 @@ export const verifyOTP = async (identifier: string, otp: string) => {
   };
 };
 
-export const refreshTokenHelper = async (refreshToken: string) => {
-  const decoded = jwt.verify(
-    refreshToken,
-    config.jwt.refreshSecret
-  ) as UserPayload;
-
-  if (!decoded.userId) throw new UnauthorizedError("Invalid payload");
-
-  return generateToken({ role: decoded.role, userId: decoded.userId }, true);
-};
-
 export const generateGuestSessionToken = () => {
   const payload = { role: UserRole.GUEST, id: "" };
   const token = jwt.sign(payload, config.jwt.secret, {
@@ -251,7 +245,7 @@ export const handleGoogleSignin = async (
     if (!payload)
       throw new ValidationError([{ message: "Invalid token", path: "token" }]);
 
-    const { email, name: fullname, picture: avatar, sub: googleId } = payload;
+    const { email, name: fullname, sub: googleId } = payload;
 
     if (!email)
       throw new ValidationError([
@@ -273,8 +267,12 @@ export const handleGoogleSignin = async (
           google_id: googleId,
           fullname: fullname || emailPrefix.replace(/[^a-zA-Z0-9_]/g, "_"),
           phone: "",
-          avatar,
           role: "USER",
+          province: {
+            province: "Al Asimah",
+            latitude: 29.34142578906314,
+            longitude: 47.97161303044713,
+          },
         },
       });
     } else {
@@ -299,7 +297,9 @@ export const handleGoogleSignin = async (
 
 export const handleFacebookSignin = async (
   accessToken: string
-): Promise<{ accessToken: string; refreshToken: string } | undefined> => {
+): Promise<
+  { accessToken: string; refreshToken: string; user: User } | undefined
+> => {
   if (!accessToken) throw new NotFoundError("access token required");
 
   try {
@@ -334,12 +334,18 @@ export const handleFacebookSignin = async (
         avatar,
         role: "USER",
         phone: "",
+        province: {
+          province: "Al Asimah",
+          latitude: 29.34142578906314,
+          longitude: 47.97161303044713,
+        },
       },
     });
 
     return {
       accessToken: generateToken({ userId: user.id, role: user.role }, true),
       refreshToken: generateToken({ userId: user.id, role: user.role }),
+      user,
     };
   } catch (error) {
     console.error("Facebook auth failed:", error);
@@ -390,6 +396,11 @@ export const handleAppleSignin = async (idToken: string) => {
           apple_id: appleId,
           fullname: emailPrefix.replace(/[^a-zA-Z0-9_]/g, "_"),
           phone: "",
+          province: {
+            province: "Al Asimah",
+            latitude: 29.34142578906314,
+            longitude: 47.97161303044713,
+          },
         },
       });
     } else {

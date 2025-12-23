@@ -14,11 +14,11 @@ model User {
   phone      String   @unique @db.VarChar(15)
   role       UserRole @default(USER)
   email      String?  @unique
-  province   Json?
+  province   Json
   area       Json?
   location   Json?
   password   String?
-  avatar     String?
+  avatar     Media?
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
@@ -58,8 +58,11 @@ model Media {
   media_type      MediaType @default(THUMBNAIL)
   created_at      DateTime  @default(now())
 
-  ad_id String
-  ad    Ad     @relation(fields: [ad_id], references: [id])
+  ad_id String?
+  ad    Ad?     @relation(fields: [ad_id], references: [id])
+
+  user_id String? @unique()
+  user    User?   @relation(fields: [user_id], references: [id])
 
   @@map("media")
 }
