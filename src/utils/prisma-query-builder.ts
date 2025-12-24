@@ -44,6 +44,8 @@ export const buildPrismaQuery = (input: AdSearchInterface) => {
         };
       } else if (key === "year" && filters.year) {
         where.year = { in: filters.year };
+      } else if (key === "status" && filters.status) {
+        where[key] = value;
       } else if (typeof value === "string") {
         where[key] = { contains: value, mode: "insensitive" };
       } else {

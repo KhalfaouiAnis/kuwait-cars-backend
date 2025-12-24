@@ -1,3 +1,4 @@
+import { AdStatus } from "generated/prisma/enums.js";
 import {
   AreaSchema,
   LocationSchema,
@@ -63,6 +64,7 @@ export const AdSearchSchema = z.object({
       user_id: z.string().optional(),
       ad_type: z.string().optional(),
       is_mine: z.boolean().optional(),
+      status: z.enum(AdStatus).optional(),
       title: z.string().optional(),
       year: z.array(z.coerce.number()).optional(),
       price: z.array(z.coerce.number()).min(2).max(2).optional(),

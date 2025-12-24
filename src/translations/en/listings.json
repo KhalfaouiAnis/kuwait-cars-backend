@@ -35,8 +35,8 @@
     "renault": "Renault"
   },
   "unit": {
-    "km": "KM",
-    "ml": "ML"
+    "KM": "KM",
+    "ML": "ML"
   },
   "changeView": "Change view",
   "priceRange": "Price range",
@@ -62,5 +62,9 @@
   "tireRepairBatteries": "Tire repair, batteries",
   "checkOilFilter": "Check, oil, filter",
   "keysAndRemote": "Keys and remote",
-  "insurance": "Insurance"
+  "insurance": "Insurance",
+
+  "year": "Year",
+  "Auto": "Auto",
+  "Manual": "Manual"
 }

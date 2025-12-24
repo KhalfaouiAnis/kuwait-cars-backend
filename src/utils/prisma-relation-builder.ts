@@ -59,6 +59,7 @@ export const buildSelectClose = (
     fuel_type: true,
     transmission: true,
     plan: true,
+    status: true,
     created_at: true,
     media: {
       omit: {
@@ -90,8 +91,18 @@ export const buildSelectClose = (
         province: true,
         location: true,
         area: true,
+        created_at: true,
+        avatar: {
+          select: { original_url: true },
+        },
       },
     };
+    select.brand = true;
+    select.model = true;
+    select.contact_whatsapp = true;
+    select.xcar_calls = true;
+    select.xcar_chat = true;
+    select.receive_calls = true;
   }
 
   return select;

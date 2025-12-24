@@ -186,12 +186,29 @@ export const getAdsByIds = async (ids: string[], userId: string) => {
         select: {
           id: true,
         },
+        take: 1,
       },
       media: {
         where: { media_type: { equals: "THUMBNAIL" } },
         select: { transformed_url: true },
       },
     },
+  });
+
+  return ads.map((ad) => ({
+    ...ad,
+    is_favorited: ad.favorited_by.length > 0,
+  }));
+};
+
+export const getUserFavoritedAds = async (userId: string) => {
+  const select = buildSelectClose(userId);
+
+  const ads = await prisma.ad.findMany({
+    where: {
+      favorited_by: { some: { id: userId } },
+    },
+    select,
   });
 
   return ads.map((ad) => ({

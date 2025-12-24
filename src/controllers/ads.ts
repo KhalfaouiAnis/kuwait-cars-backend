@@ -1,4 +1,3 @@
-import { ForbiddenError } from "@libs/error/ForbiddenError.js";
 import {
   createAd,
   deleteAd,
@@ -7,6 +6,7 @@ import {
   fetchUserAds,
   flagAd,
   getAdsByIds,
+  getUserFavoritedAds,
   toggleFavoriteAd,
 } from "@services/ad.js";
 import { Request, Response } from "express";
@@ -15,7 +15,6 @@ import { PaginatedResponse } from "types";
 import { AdSearchInterface } from "types/ad.js";
 
 export const createNewAd = async (req: Request, res: Response) => {
-  if (req.isGuest) throw new ForbiddenError();
   const newAd = await createAd(req.user.userId, req.body);
   res.json(newAd);
 };
@@ -43,8 +42,12 @@ export const listAds = async (
 };
 
 export const listUserAds = async (req: Request, res: Response) => {
-  if (req.isGuest) return res.json([]);
   const ads = await fetchUserAds(req.user.userId);
+  res.json(ads);
+};
+
+export const listUserFavoritedAds = async (req: Request, res: Response) => {
+  const ads = await getUserFavoritedAds(req.user.userId);
   res.json(ads);
 };
 
@@ -65,19 +68,16 @@ export const adDetails = async (req: Request, res: Response) => {
 };
 
 export const removeAd = async (req: Request, res: Response) => {
-  if (req.isGuest) throw new ForbiddenError();
   await deleteAd(req.params.id, req.user.userId);
   res.status(204).json();
 };
 
 export const toggleFavorite = async (req: Request, res: Response) => {
-  if (req.isGuest) throw new ForbiddenError();
   await toggleFavoriteAd(req.user.userId, req.params.id);
   res.status(200).json();
 };
 
 export const handleFlagAd = async (req: Request, res: Response) => {
-  if (req.isGuest) throw new ForbiddenError();
   await flagAd(req.user.userId, req.params.id);
   res.status(200).json();
 };
