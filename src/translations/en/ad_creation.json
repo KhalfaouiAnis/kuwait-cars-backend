@@ -28,8 +28,8 @@
   "Year": "Year",
   "exteriorColor": "Exterior color",
   "Mileage": "Mileage (0 - 1000000)",
-  "km": "KM",
-  "ml": "ML",
+  "KM": "KM",
+  "ML": "ML",
   "optionalInformation": "Optional Information",
   "fuelType": "Fuel Type",
   "Petrol": "Petrol",
@@ -45,7 +45,7 @@
   "no": "No",
   "roof": "Roof",
   "Sunroof": "Sunroof",
-  "Panoramic ": "Panoramic",
+  "Panoramic": "Panoramic",
   "ConvertibleRoof": "Convertible Roof",
   "Next": "Next",
   "Submit": "Submit",
@@ -107,5 +107,14 @@
     "UnsavedChangesConfirmLeave": "You have unsaved changes. Do you want to leave?",
     "Cancel": "Cancel",
     "Leave": "Leave"
+  },
+  "soundEffects": {
+    "silent": "Silent",
+    "Effect1": "Effect 1",
+    "Effect2": "Effect 2",
+    "Effect3": "Effect 3",
+    "Effect4": "Effect 4",
+    "Effect5": "Effect 5",
+    "playingSound": "Playing sound:"
   }
 }

@@ -8,9 +8,9 @@ export const serveTranslation = async (req: Request, res: Response) => {
   );
   if (!translations) {
     console.warn(
-      `Falling back to English for ${(req.params.lng, req.params.ns)}`
+      `Falling back to Arabic for ${(req.params.lng, req.params.ns)}`
     );
-    translations = await loadTranslationForLanguage("en", "common");
+    translations = await loadTranslationForLanguage("ar", "common");
   }
 
   if (!translations) {

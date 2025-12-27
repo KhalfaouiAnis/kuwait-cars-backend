@@ -28,8 +28,8 @@
   "Year": "السنة",
   "exteriorColor": "لون الهيكل الخارجي",
   "Mileage": "عدد الكيلومترات (0 - 1000000)",
-  "km": "كم",
-  "ml": "مل",
+  "KM": "كم",
+  "ML": "ميل",
   "optionalInformation": "معلومات اختيارية",
   "fuelType": "نوع الوقود",
   "Petrol": "بنزين",
@@ -45,7 +45,7 @@
   "no": "لا",
   "roof": "سقف",
   "Sunroof": "فتحة سقف",
-  "Panoramic ": "بانورامي ",
+  "Panoramic": "بانورامي ",
   "ConvertibleRoof": "سقف قابل للتحويل",
   "Next": "التالي",
   "Submit": "إرسال",
@@ -107,5 +107,20 @@
     "UnsavedChangesConfirmLeave": "لديك تغييرات لم يتم حفظها. هل تريد المغادرة؟",
     "Cancel": "إلغاء",
     "Leave": "مغادرة"
+  },
+  "subscription-plan": {
+    "Golden": "Golden",
+    "Diamond": "Diamond",
+    "Ruby": "Ruby",
+    "Only Ad images will be shared.": "Only Ad images will be shared.",
+    "Share on Instagram - TikTok - Facebook.": "Share on Instagram - TikTok - Facebook",
+    "Video only available on upper plans.": "Video only available on upper plans.",
+    "Share images + video": "Share images + video",
+    "Automated share for 10 days": "Automated share for 10 days",
+    "Diamond badge": "Diamond badge",
+    "Ad fixed for 24h": "Ad fixed for 24h",
+    "Weekly upload": "Weekly upload",
+    "Additional support on social media": "Additional support on social media",
+    "Ruby badge": "Ruby badge"
   }
 }

@@ -15,6 +15,7 @@
     "confirmDeleteConversation?": "Do you really want to delete this conversation?",
     "cancel": "Cancel",
     "delete": "Delete",
-    "MsgDeletedSucc": "That message deleted succesfully."
+    "MsgDeletedSucc": "That message deleted succesfully.",
+    "search": "Search..."
   }
 }

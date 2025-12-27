@@ -172,5 +172,28 @@
     "Al-Adan": "Al-Adan",
     "Al-Masayel": "Al-Masayel",
     "Sabah Al-Salam A": "Sabah Al-Salam A"
+  },
+  "colors": {
+    "None": "None",
+    "White": "White",
+    "Black": "Black",
+    "Silver": "Silver",
+    "Gray": "Gray",
+    "Red": "Red",
+    "Blue": "Blue",
+    "Green": "Green",
+    "Brown": "Brown",
+    "Beige": "Beige",
+    "Yellow": "Yellow",
+    "Orange": "Orange",
+    "Gold": "Gold",
+    "Purple": "Purple",
+    "Light Blue / Cyan": "Light Blue / Cyan",
+    "Navy Blue": "Navy Blue",
+    "Burgundy": "Burgundy",
+    "Olive": "Olive",
+    "Copper": "Copper",
+    "Bronze": "Bronze",
+    "Other": "Other"
   }
 }
