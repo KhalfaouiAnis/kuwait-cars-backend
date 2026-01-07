@@ -29,7 +29,7 @@ export const verifyToken = (token: string, access: boolean): UserPayload => {
     return jwt.verify(token, config.jwt.refreshSecret) as UserPayload;
   } catch (error) {
     Logger.error(error);
-    throw new Error("Invalid token");
+    throw new UnauthorizedError("Invalid token");
   }
 };
 

@@ -1,3 +1,4 @@
+import { Router } from "express";
 import {
   guestSession,
   appleSignIn,
@@ -14,7 +15,6 @@ import {
 } from "@controllers/auth.js";
 import { authenticateJWT } from "@middlewares/authMiddleware.js";
 import { validate } from "@middlewares/validationMiddleware.js";
-import { Router } from "express";
 import {
   LoginSchema,
   RequestResetPasswordSchema,

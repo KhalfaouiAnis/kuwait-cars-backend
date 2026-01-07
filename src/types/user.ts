@@ -1,11 +1,11 @@
 import { UserRole } from "generated/prisma/client.js";
+import z from "zod";
 import {
   AreaSchema,
   LocationSchema,
   MediaModelSchema,
   ProvinceSchema,
 } from "types/index.js";
-import z from "zod";
 
 export const LoginSchema = z.object({
   phone: z.string().min(6),

@@ -3,12 +3,12 @@ import { prisma } from "database/index.js";
 
 import { PaginatedResponse } from "types/index.js";
 import { AdInterface, AdSearchInterface } from "types/ad.js";
-import { buildPrismaQuery } from "@utils/prisma-query-builder";
+import { buildPrismaQuery } from "@utils/prisma-query-builder.js";
 import { Ad } from "generated/prisma/client.js";
 import {
   buildSelectClose,
   formatAdInteractions,
-} from "@utils/prisma-relation-builder";
+} from "@utils/prisma-relation-builder.js";
 
 export const createAd = async (id: string, data: AdInterface) => {
   const user = await prisma.user.findUniqueOrThrow({

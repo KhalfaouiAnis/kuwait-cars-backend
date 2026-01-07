@@ -1,9 +1,9 @@
+import { NextFunction, Request, Response } from "express";
+import { Prisma } from "generated/prisma/client.js";
 import { config } from "@config/environment.js";
 import { AppError } from "@libs/error/AppError.js";
 import { ValidationError } from "@libs/error/ValidationError.js";
 import Logger from "@libs/logger.js";
-import { NextFunction, Request, Response } from "express";
-import { Prisma } from "generated/prisma/client.js";
 
 export default function errorHandler(
   err: any,

@@ -21,10 +21,7 @@
     "logistics": "Winch + External Charging",
     "rims_and_tires": "Rims and tires",
     "repair_garages": "Repair garages",
-    "other": "Other"
-  },
-  "advancedSearch": {
-    "chooseYourCar": "Choose your car"
+    "Other": "Other"
   },
   "welcome": "Welcome to Kuwait Car",
   "subWelcome": "Your trusted Vehicle Sale",
@@ -195,5 +192,19 @@
     "Copper": "Copper",
     "Bronze": "Bronze",
     "Other": "Other"
+  },
+  "advancedSearch": {
+    "chooseYourCar": "Choose your car",
+    "brand": "Brand",
+    "model": "Model",
+    "year": "Year",
+    "color": "Color",
+    "price": "Price",
+    "budget": "Budget",
+    "location": "Location",
+    "brand_model": "Brand & Model",
+    "model_year": "Model year",
+    "kms_driven": "Kms driven",
+    "offersFound": "{{OffersCount}} offers"
   }
 }

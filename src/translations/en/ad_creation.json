@@ -13,7 +13,7 @@
     "logistics": "Winch + External Charging",
     "rims_and_tires": "Rims and tires",
     "repair_garages": "Repair garages",
-    "other": "Other"
+    "Other": "Other"
   },
   "steps": {
     "postAd": "Post an Ad",

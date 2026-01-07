@@ -9,6 +9,7 @@ import cors from "cors";
 import { config } from "@config/environment.js";
 import morganMiddleware from "@middlewares/morganMiddleware.js";
 import errorHandler from "@middlewares/errorHandlerMiddleware.js";
+import indexRouter from "@routes/indexRouter.js";
 import appRoutes from "@routes/index.js";
 
 const expressApp = express();
@@ -20,6 +21,7 @@ expressApp.use(helmet());
 expressApp.use(cors());
 expressApp.use(morganMiddleware);
 
+expressApp.use("/", indexRouter);
 expressApp.use("/api/v1", appRoutes);
 
 expressApp.use(errorHandler);

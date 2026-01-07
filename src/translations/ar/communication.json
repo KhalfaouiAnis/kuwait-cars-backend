@@ -5,11 +5,11 @@
     "speaker": "المتحدث",
     "end": "إنهاء",
     "mute": "كتم الصوت",
-    "connecting": "... الاتصال جارٍ"
+    "connecting": "جارٍ الاتصال..."
   },
   "chat": {
     "chat": "الدردشة",
-    "typeMsgHere": " ...اكتب الرسالة هنا",
+    "typeMsgHere": "اكتب الرسالة هنا...",
     "recentChats": "الدردشات الأخيرة",
     "deleteMessage": "حذف الرسالة ؟",
     "confirmDeleteConversation?": "هل تريد حقا حذف هذه المحادثة ؟",

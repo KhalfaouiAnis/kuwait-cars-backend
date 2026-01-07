@@ -21,10 +21,7 @@
     "logistics": "رافعة + شحن خارجي",
     "rims_and_tires": "جنوط وإطارات",
     "repair_garages": "ورش إصلاح",
-    "other": "أخرى"
-  },
-  "advancedSearch": {
-    "chooseYourCar": "اختر سيارتك"
+    "Other": "أخرى"
   },
   "welcome": "مرحباً بكم في سيارات الكويت",
   "subWelcome": "بيع السيارات الموثوق به",
@@ -170,5 +167,41 @@
     "Al-Adan": "العدان",
     "Al-Masayel": "المسايل",
     "Sabah Al-Salam A": "صباح السالم أ"
+  },  "colors": {
+    "None": "None",
+    "White": "White",
+    "Black": "Black",
+    "Silver": "Silver",
+    "Gray": "Gray",
+    "Red": "Red",
+    "Blue": "Blue",
+    "Green": "Green",
+    "Brown": "Brown",
+    "Beige": "Beige",
+    "Yellow": "Yellow",
+    "Orange": "Orange",
+    "Gold": "Gold",
+    "Purple": "Purple",
+    "Light Blue / Cyan": "Light Blue / Cyan",
+    "Navy Blue": "Navy Blue",
+    "Burgundy": "Burgundy",
+    "Olive": "Olive",
+    "Copper": "Copper",
+    "Bronze": "Bronze",
+    "Other": "Other"
+  },
+  "advancedSearch": {
+    "chooseYourCar": "اختر سيارتك",
+    "brand": "Brand",
+    "model": "Model",
+    "year": "Year",
+    "color": "Color",
+    "price": "Price",
+    "budget": "Budget",
+    "location": "Location",
+    "brand_model": "Brand & Model",
+    "model_year": "Model year",
+    "kms_driven": "Kms driven",
+    "offersFound": "{{OffersCount}} offers"
   }
 }

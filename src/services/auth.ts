@@ -10,13 +10,12 @@ import { config } from "@config/environment.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
-import { generateToken, UserPayload } from "@utils/jwt.js";
+import { generateToken } from "@utils/jwt.js";
 import { generateOTPCode } from "@utils/otp.js";
 
 import { OAuth2Client } from "google-auth-library";
 import { sendOtpEmail } from "./mailer.js";
 import { Prisma, User, UserRole } from "generated/prisma/client.js";
-import { UnauthorizedError } from "@libs/error/UnauthorizedError.js";
 import { NotFoundError } from "@libs/error/NotFoundError.js";
 import { ValidationError } from "@libs/error/ValidationError.js";
 import { BadRequestError } from "@libs/error/BadRequestError.js";
@@ -189,9 +188,8 @@ export const generateAndSendOTPCode = async (
 
 export const verifyOTP = async (identifier: string, otp: string) => {
   let user;
-  const isEmail = identifier.includes("@");
 
-  if (isEmail) {
+  if (identifier.includes("@")) {
     user = await prisma.user.findFirstOrThrow({ where: { email: identifier } });
   } else {
     user = await prisma.user.findUniqueOrThrow({

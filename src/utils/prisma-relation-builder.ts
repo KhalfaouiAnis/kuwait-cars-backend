@@ -108,9 +108,6 @@ export const buildSelectClose = (
   return select;
 };
 
-/**
- * Formats the raw Prisma result into a clean Frontend-ready object
- */
 export const formatAdInteractions = (data: any[] | any) => {
   if (Array.isArray(data)) {
     return data.map((ad) => ({
