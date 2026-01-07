@@ -19,7 +19,7 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 # Generate Prisma Client and compile TypeScript
-RUN npx prisma generate
+RUN DATABASE_URL="postgresql://placeholder:5432" npx prisma generate
 RUN npm run build
 
 # Remove development dependencies and junk files

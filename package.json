@@ -17,8 +17,8 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@prisma/adapter-pg": "^7.1.0",
-    "@prisma/client": "^7.1.0",
+    "@prisma/adapter-pg": "^v7.2.0",
+    "@prisma/client": "^v7.2.0",
     "@sendgrid/mail": "^8.1.6",
     "@types/morgan": "^1.9.10",
     "apple-signin-auth": "^2.0.0",
@@ -32,7 +32,7 @@
     "jsonwebtoken": "^9.0.2",
     "module-alias": "^2.2.3",
     "morgan": "^1.10.1",
-    "prisma": "^7.1.0",
+    "prisma": "^v7.2.0",
     "winston": "^3.18.3",
     "zod": "^4.1.12"
   },
