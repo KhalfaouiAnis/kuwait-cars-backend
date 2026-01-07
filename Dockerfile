@@ -15,11 +15,14 @@ FROM node:22-alpine AS builder
 
 WORKDIR /app
 
+ARG DATABASE_URL
+ENV DATABASE_URL=$DATABASE_URL
+
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 # Generate Prisma Client and compile TypeScript
-RUN DATABASE_URL="postgresql://placeholder:5432" npx prisma generate
+RUN npx prisma generate
 RUN npm run build
 
 # Remove development dependencies and junk files
