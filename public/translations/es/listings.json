@@ -13,7 +13,7 @@
     "kms_driven": "Kilómetros recorridos"
   },
   "sort": {
-   "sortBy": "Ordenar por",
+    "sortBy": "Ordenar por",
     "bestMatch": "Mejor coincidencia",
     "lowestPrice": "Precio más bajo",
     "highestPrice": "Precio más alto",
@@ -35,8 +35,8 @@
     "renault": "Renault"
   },
   "unit": {
-    "km": "KM",
-    "ml": "ML"
+    "KM": "KM",
+    "ML": "ML"
   },
   "changeView": "Cambiar vista",
   "priceRange": "Rango de precios",
@@ -62,5 +62,8 @@
   "tireRepairBatteries": "Reparación de neumáticos, baterías",
   "checkOilFilter": "Revisión, aceite, filtro",
   "keysAndRemote": "Llaves y mando a distancia",
-  "insurance": "Seguro"
+  "insurance": "Seguro",
+  "Year": "Año",
+  "Auto": "Automático",
+  "Manuall": "Manual"
 }

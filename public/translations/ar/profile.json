@@ -23,8 +23,7 @@
   "name": "الاسم",
   "phoneNumber": "رقم الهاتف",
   "yourEmail": "بريدك الإلكتروني",
-  "city": "المدينة",
-  "zipCode": "الرمز البريدي",
+  "Location": "الموقع",
   "yourProvince": "مقاطعتك",
   "yourArea": "منطقتك",
   "updateInfo": "تحديث المعلومات",
@@ -34,5 +33,13 @@
   "confirmNewPassword": "تأكيد كلمة المرور الجديدة",
   "openGallery": "فتح المعرض",
   "OpenCameraTakePhoto": "فتح الكاميرا والتقاط صورة",
-  "generalConditions": {}
+  "generalConditions": {},
+  "provinces": {
+    "Al Asimah": "العاصمة",
+    "Hawalli": "حوالي",
+    "Al Ahmadi": "الأحمدي",
+    "Farwaniyah": "الفروانية",
+    "Al Jahra": "الجهرة",
+    "Mubarek Al-kabeer": "مبارك الكبير"
+  }
 }

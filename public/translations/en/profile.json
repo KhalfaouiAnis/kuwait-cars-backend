@@ -21,6 +21,7 @@
   "contactCustomerService": "Contact customer service",
   "logout": "Logout",
   "name": "Name",
+  "Location": "Location",
   "phoneNumber": "Phone number",
   "yourEmail": "Your email",
   "yourProvince": "Your province",

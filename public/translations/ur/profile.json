@@ -23,8 +23,7 @@
   "name": "نام",
   "phoneNumber": "فون نمبر",
   "yourEmail": "آپ کی ای میل",
-  "city": "شہر",
-  "zipCode": "زپ کوڈ",
+  "Location": "مقام",
   "yourProvince": "آپ کا صوبہ",
   "yourArea": "آپ کا علاقہ",
   "updateInfo": "اپ ڈیٹ معلومات",
@@ -34,5 +33,13 @@
   "confirmNewPassword": "نئے پاس ورڈ کی تصدیق کریں",
   "openGallery": "گیلری کھولیں",
   "OpenCameraTakePhoto": "کیمرہ کھولیں اور تصویر لیں",
-  "generalConditions": {}
+  "generalConditions": {},
+  "provinces": {
+    "Al Asimah": "الاسیمہ",
+    "Hawalli": "حواللی",
+    "Al Ahmadi": "الاحمدی",
+    "Farwaniyah": "فروانیہ",
+    "Al Jahra": "الجهره",
+    "Mubarek Al-kabeer": "مبارک الکبیر"
+  }
 }

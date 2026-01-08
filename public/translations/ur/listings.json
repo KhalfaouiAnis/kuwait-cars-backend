@@ -35,8 +35,8 @@
     "renault": "Renault"
   },
   "unit": {
-    "km": "کلومیٹر",
-    "ml": "ملی لیٹر"
+    "KM": "کلومیٹر",
+    "ML": "ملی لیٹر"
   },
   "changeView": "منظر تبدیل کریں",
   "priceRange": "قیمت کی حد",
@@ -62,5 +62,8 @@
   "tireRepairBatteries": "ٹائر کی مرمت، بیٹریاں",
   "checkOilFilter": "چیک، تیل، فلٹر",
   "keysAndRemote": "چابیاں اور ریموٹ",
-  "insurance": "انشورنس"
+  "insurance": "انشورنس",
+  "Auto": "آٹو",
+  "Manuall": "مینوئل",
+  "Year": "سال"
 }

@@ -23,8 +23,7 @@
   "name": "Name",
   "phoneNumber": "फ़ोन नंबर",
   "yourEmail": "आपका ईमेल",
-  "city": "शहर",
-  "zipCode": "ज़िप कोड",
+  "Location": "स्थान",
   "yourProvince": "आपका प्रांत",
   "yourArea": "आपका क्षेत्र",
   "updateInfo": "जानकारी अपडेट करें",
@@ -34,5 +33,13 @@
   "confirmNewPassword": "नया पासवर्ड पुष्टि करें",
   "openGallery": "गैलरी खोलें",
   "OpenCameraTakePhoto": "कैमरा खोलें और फोटो लें",
-  "generalConditions": {}
+  "generalConditions": {},
+  "provinces": {
+    "Al Asimah": "अल असिमाह",
+    "Hawalli": "हवाल्ली",
+    "Farwaniyah": "फ़रवानिया",
+    "ALAhmadi": "एएल अहमदी",
+    "ALJahra": "अल जहरा",
+    "MubarekAlKabeer": "मुबारक अल-कबीर"
+  }
 }

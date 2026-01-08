@@ -35,8 +35,8 @@
     "renault": "रेनो"
   },
   "unit": {
-    "km": "किलोमीटर",
-    "ml": "मिलिमीटर"
+    "KM": "किलोमीटर",
+    "ML": "मिलिमीटर"
   },
   "changeView": "दृश्य बदलें",
   "priceRange": "मूल्य सीमा",
@@ -62,5 +62,8 @@
   "tireRepairBatteries": "टायर मरम्मत, बैटरियाँ",
   "checkOilFilter": "चेक, तेल, फ़िल्टर",
   "keysAndRemote": "चाबियाँ और रिमोट",
-  "insurance": "बीमा"
+  "insurance": "बीमा",
+  "Manuall": "हस्तपुस्तिका",
+  "underWarranty": "वारंटी के अंतर्गत",
+  "Year": "वर्ष"
 }

@@ -1,5 +1,5 @@
 {
- "myFavories": "Mis favoritos",
+  "myFavories": "Mis favoritos",
   "recentlyViewed": "Vistos recientemente",
   "myAds": "Mis anuncios",
   "completed": "Completados",
@@ -23,8 +23,7 @@
   "name": "Nombre",
   "phoneNumber": "Número de teléfono",
   "yourEmail": "Tu correo electrónico",
-  "city": "Ciudad",
-  "zipCode": "Código postal",
+  "Location": "Ubicación",
   "yourProvince": "Tu provincia",
   "yourArea": "Tu área",
   "updateInfo": "Actualizar información",
@@ -34,5 +33,13 @@
   "confirmNewPassword": "Confirmar nueva contraseña",
   "openGallery": "Abrir galería",
   "OpenCameraTakePhoto": "Abrir cámara y hacer foto",
-  "generalConditions": {}
+  "generalConditions": {},
+  "provinces": {
+    "Al Asimah": "Al Asimah",
+    "Hawalli": "Hawalli",
+    "Al Ahmadi": "Al Ahmadi",
+    "Farwaniyah": "Farwaniyah",
+    "Al Jahra": "Al Jahra",
+    "Mubarek Al-kabeer": "Mubarek Al-kabeer"
+  }
 }

@@ -35,8 +35,8 @@
     "renault": "رينو"
   },
   "unit": {
-    "km": "كم",
-    "ml": "مل"
+    "KM": "كم",
+    "ML": "مل"
   },
   "changeView": "تغيير العرض",
   "priceRange": "نطاق السعر",
@@ -62,5 +62,8 @@
   "tireRepairBatteries": "إصلاح الإطارات والبطاريات",
   "checkOilFilter": "فحص الزيت والفلتر",
   "keysAndRemote": "المفاتيح وجهاز التحكم عن بعد",
-  "insurance": "التأمين"
+  "insurance": "التأمين",
+  "Year": "السنة",
+  "Auto": "أوتوماتيكي",
+  "Manual": "يدوي"
 }
