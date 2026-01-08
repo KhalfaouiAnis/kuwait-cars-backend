@@ -7,9 +7,9 @@ const TRANSLATIONS_DIR = path.resolve(process.cwd(), "public", "translations");
 export async function loadTranslationForLanguage(lang: string, ns: string) {
   const cacheKey = `translations_${lang}_${ns}`;
 
-  // Check cache (5min expiry)
+  // Check cache (30min expiry)
   const cached = translationCache.get(cacheKey);
-  if (cached && Date.now() - cached.timestamp < 5 * 60 * 1000) {
+  if (cached && Date.now() - cached.timestamp < 30 * 60 * 1000) {
     return cached.data;
   }
 
