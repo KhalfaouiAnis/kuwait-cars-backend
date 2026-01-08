@@ -2,7 +2,7 @@ import fs from "fs/promises";
 import path from "path";
 
 const translationCache = new Map();
-const TRANSLATIONS_DIR = path.join(process.cwd(), "./src/translations");
+const TRANSLATIONS_DIR = path.resolve(process.cwd(), "public", "translations");
 
 export async function loadTranslationForLanguage(lang: string, ns: string) {
   const cacheKey = `translations_${lang}_${ns}`;
