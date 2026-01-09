@@ -9,10 +9,19 @@ export interface UserPayload {
   role: UserRole;
 }
 
+export const generateGuestToken = () => {
+  const payload = { role: UserRole.GUEST, id: "" };
+  const token = jwt.sign(payload, config.jwt.secret, {
+    expiresIn: config.jwt.guestExpiresIn as SignOptions["expiresIn"],
+  });
+
+  return { token, role: UserRole.GUEST };
+};
+
 export const generateToken = (userPayload: UserPayload, access?: boolean) => {
   if (access) {
     return jwt.sign(userPayload, config.jwt.secret, {
-      expiresIn: config.jwt.expiresIn as SignOptions["expiresIn"],
+      expiresIn: 60 as SignOptions["expiresIn"],
     });
   }
 

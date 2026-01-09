@@ -9,8 +9,14 @@ export const fetchUsers = async () => {
 export const fetchUserDetails = async (userId: string) => {
   return prisma.user.findUniqueOrThrow({
     where: { id: userId },
-    omit: { password: true, created_at: true, updated_at: true },
-    include: { ads: { omit: { user_id: true } } },
+    omit: {
+      password: true,
+      created_at: true,
+      updated_at: true,
+      apple_id: true,
+      google_id: true,
+      facebook_id: true,
+    },
   });
 };
 

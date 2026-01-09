@@ -8,9 +8,8 @@ import {
 } from "types/user.js";
 import { config } from "@config/environment.js";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
 
-import { generateToken } from "@utils/jwt.js";
+import { generateGuestToken, generateToken } from "@utils/jwt.js";
 import { generateOTPCode } from "@utils/otp.js";
 
 import { OAuth2Client } from "google-auth-library";
@@ -216,12 +215,7 @@ export const verifyOTP = async (identifier: string, otp: string) => {
 };
 
 export const generateGuestSessionToken = () => {
-  const payload = { role: UserRole.GUEST, id: "" };
-  const token = jwt.sign(payload, config.jwt.secret, {
-    expiresIn: "30m",
-  });
-
-  return { token, role: UserRole.GUEST };
+  return generateGuestToken();
 };
 
 export const handleGoogleSignin = async (

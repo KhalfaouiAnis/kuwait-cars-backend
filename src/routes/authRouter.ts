@@ -13,7 +13,6 @@ import {
   updatePassword,
   verifyOTPCode,
 } from "@controllers/auth.js";
-import { authenticateJWT } from "@middlewares/authMiddleware.js";
 import { validate } from "@middlewares/validationMiddleware.js";
 import {
   LoginSchema,
@@ -45,6 +44,6 @@ router.post("/register", validate(SignupSchema), registerUser);
 router.post("/request-otp", generateAndSendOTP);
 router.post("/verify-otp", verifyOTPCode);
 
-router.post("/refresh_token", authenticateJWT, refreshToken);
+router.post("/refresh", refreshToken);
 
 export default router;

@@ -33,6 +33,7 @@ const envSchema = z.object({
   // JWT
   JWT_SECRET: z.string(),
   JWT_EXPIRATION: z.string().default("7d"),
+  JWT_GUEST_EXPIRATION: z.string().default("5m"),
   JWT_REFRESH_SECRET: z.string(),
   JWT_REFRESH_EXPIRATION: z.string().default("30d"),
 
@@ -81,6 +82,7 @@ export const config = {
   jwt: {
     secret: envVars.JWT_SECRET,
     expiresIn: envVars.JWT_EXPIRATION,
+    guestExpiresIn: envVars.JWT_GUEST_EXPIRATION,
     refreshSecret: envVars.JWT_REFRESH_SECRET,
     refreshExpiresIn: envVars.JWT_REFRESH_EXPIRATION,
   },

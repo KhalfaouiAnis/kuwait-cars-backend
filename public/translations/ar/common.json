@@ -32,7 +32,8 @@
   "submit": "إرسال",
   "reset": "إعادة تعيين",
   "cancel": "إلغاء",
-  "Next": "التالي",
+  "delete": "حذف",
+  "next": "التالي",
   "search": "بحث",
   "or": "أو",
   "confirm": "تأكيد",
@@ -46,6 +47,8 @@
   "transmission": "ناقل الحركة",
   "description": "الوصف",
   "location": "الموقع",
+  "yes": "نعم",
+  "no": "لا",
   "area": "المنطقة",
   "yourProvince": "مقاطعتك",
   "changeView": "تغيير العرض",
@@ -286,7 +289,6 @@
     "recentChats": "الدردشات الأخيرة",
     "deleteMessage": "حذف الرسالة ؟",
     "confirmDeleteConversation?": "هل تريد حقا حذف هذه المحادثة ؟",
-    "delete": "حذف",
     "MsgDeletedSucc": ".تم حذف هذه الرسالة بنجاح"
   },
   "createAd": {
@@ -311,8 +313,6 @@
     "Hybrid": "هجين",
     "Cylinders": "أسطوانات",
     "underWarranty": "تحت الضمان",
-    "yes": "نعم",
-    "no": "لا",
     "roof": "سقف",
     "Sunroof": "فتحة سقف",
     "Panoramic": "بانورامي ",
@@ -323,7 +323,10 @@
       "toOur": "إلى",
       "whichGovernUseAndAreAvailableFor": "التي تحكم الاستخدام ومتاحة على",
       "OnOurWebsite": "موقعنا الإلكتروني",
-      "readTermsAndConditions": "قراءة الشروط والأحكام"
+      "readTermsAndConditions": "قراءة الشروط والأحكام",
+      "agreement": "agreement",
+      "terms": "terms",
+      "review": "review"
     },
     "addVideoSoundEffect": "إضافة تأثير صوتي للفيديو",
     "MainMenu": "القائمة الرئيسية",
@@ -343,7 +346,6 @@
     "Title": "العنوان",
     "WriteYourPrice": "اكتب السعر",
     "Price": "السعر",
-    "Or": "أو",
     "WhereIsYourListing": "أين توجد قائمتك؟",
     "AddVideos": "أضف مقاطع فيديو",
     "VideoClip": "{{minDuration}}-{{maxDuration}} يمكن لمقطع فيديو مدته ثانية أن يساعد المشترين على رؤية الحالة الحقيقية لسيارتك",
@@ -357,6 +359,11 @@
     "addPhotos": "إضافة صور",
     "capturePhoto": "التقاط صور للجزء الأمامي والخلفي والجوانب — يحب المشترون رؤية المنظر الكامل",
     "goodPicturesSellFaster": "الصور الجيدة تبيع أسرع",
+    "LeaveDialog": {
+      "Confirmation": "تأكيد",
+      "UnsavedChangesConfirmLeave": "لديك تغييرات لم يتم حفظها. هل تريد المغادرة؟",
+      "Leave": "مغادرة"
+    },
     "soundEffects": {
       "silent": "صامت",
       "Effect1": "التأثير 1",
@@ -365,11 +372,6 @@
       "Effect4": "التأثير 4",
       "Effect5": "التأثير 5",
       "playingSound": "تشغيل الصوت:"
-    },
-    "LeaveDialog": {
-      "Confirmation": "تأكيد",
-      "UnsavedChangesConfirmLeave": "لديك تغييرات لم يتم حفظها. هل تريد المغادرة؟",
-      "Leave": "مغادرة"
     },
     "plan": {
       "Golden": "ذهبي",
