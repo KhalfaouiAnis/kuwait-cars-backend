@@ -29,11 +29,11 @@
   "signUp": "التسجيل",
   "asAGuest": "كضيف",
   "skip": "تخطي",
-  "submit": "إرسال",
   "reset": "إعادة تعيين",
   "cancel": "إلغاء",
   "delete": "حذف",
   "next": "التالي",
+  "submit": "إرسال",
   "search": "بحث",
   "or": "أو",
   "confirm": "تأكيد",
@@ -41,36 +41,18 @@
   "nothingHere": "لا يوجد شيء هنا في الوقت الحالي",
   "requireSignIn": "يرجى تسجيل الدخول للمتابعة",
   "chooseLang": "اختر اللغة",
+  "description": "الوصف",
   "year": "السنة",
   "Auto": "أوتوماتيكي",
   "Manual": "يدوي",
-  "transmission": "ناقل الحركة",
-  "description": "الوصف",
   "location": "الموقع",
-  "yes": "نعم",
-  "no": "لا",
-  "area": "المنطقة",
+  "transmission": "ناقل الحركة",
   "yourProvince": "مقاطعتك",
+  "area": "المنطقة",
   "changeView": "تغيير العرض",
-  "sort": {
-    "sortBy": "الترتيب حسب",
-    "bestMatch": "أفضل تطابق",
-    "lowestPrice": "أقل سعر",
-    "highestPrice": "أعلى سعر",
-    "newest": "الأحدث",
-    "oldest": "الأقدم"
-  },
-  "regions": {
-    "all": "الكل",
-    "asian": "آسيوي",
-    "american": "أمريكي",
-    "european": "أوروبي",
-    "chinese": "صيني"
-  },
-  "unit": {
-    "KM": "كم",
-    "ML": "مل"
-  },
+  "yes": "Yes",
+  "no": "No",
+  "textLeft": "متبقي: {{count}}",
   "provinces": {
     "Al Asimah": "العاصمة",
     "Hawalli": "حوالي",
@@ -224,6 +206,25 @@
     "Bronze": "برونزي",
     "Other": "أخرى"
   },
+  "sort": {
+    "sortBy": "الترتيب حسب",
+    "bestMatch": "أفضل تطابق",
+    "lowestPrice": "أقل سعر",
+    "highestPrice": "أعلى سعر",
+    "newest": "الأحدث",
+    "oldest": "الأقدم"
+  },
+  "regions": {
+    "all": "الكل",
+    "asian": "آسيوي",
+    "american": "أمريكي",
+    "european": "أوروبي",
+    "chinese": "صيني"
+  },
+  "unit": {
+    "KM": "كم",
+    "ML": "مل"
+  },
   "advancedSearch": {
     "chooseYourCar": "اختر سيارتك",
     "priceRange": "نطاق السعر",
@@ -241,7 +242,12 @@
     "brand_model": "العلامة التجارية والطراز",
     "model_year": "سنة الطراز",
     "kms_driven": "عدد الكيلومترات المقطوعة",
-    "offersFound": "{{OffersCount}} عرضًا"
+    "offersFound": "{{OffersCount}} عرضًا",
+    "noResultsFound": "لم يتم العثور على نتائج",
+    "adjustFilters": "حاول تعديل الفلاتر أو مصطلح البحث للعثور على ما تبحث عنه.",
+    "noFavoritedAds": "ليس لديك أي إعلانات مفضلة.",
+    "noAdsYet": "ليس لديك أي إعلانات حتى الآن.",
+    "clearFilters": "مسح جميع الفلاتر"
   },
   "profile": {
     "myFavories": "المفضلة لدي",
@@ -286,10 +292,7 @@
     "connecting": "جارٍ الاتصال...",
     "chat": "الدردشة",
     "typeMsgHere": "اكتب الرسالة هنا...",
-    "recentChats": "الدردشات الأخيرة",
-    "deleteMessage": "حذف الرسالة ؟",
-    "confirmDeleteConversation?": "هل تريد حقا حذف هذه المحادثة ؟",
-    "MsgDeletedSucc": ".تم حذف هذه الرسالة بنجاح"
+    "recentChats": "الدردشات الأخيرة"
   },
   "createAd": {
     "steps": {
@@ -308,7 +311,7 @@
     "optionalInformation": "معلومات اختيارية",
     "fuelType": "نوع الوقود",
     "Petrol": "بنزين",
-    "diesel": "ديزل",
+    "Diesel": "ديزل",
     "Electric": "كهربائي",
     "Hybrid": "هجين",
     "Cylinders": "أسطوانات",
@@ -324,9 +327,9 @@
       "whichGovernUseAndAreAvailableFor": "التي تحكم الاستخدام ومتاحة على",
       "OnOurWebsite": "موقعنا الإلكتروني",
       "readTermsAndConditions": "قراءة الشروط والأحكام",
-      "agreement": "agreement",
-      "terms": "terms",
-      "review": "review"
+      "agreement": "اتفاق",
+      "terms": "الشروط",
+      "review": "مراجعة"
     },
     "addVideoSoundEffect": "إضافة تأثير صوتي للفيديو",
     "MainMenu": "القائمة الرئيسية",
@@ -409,5 +412,15 @@
     "checkOilFilter": "فحص الزيت والفلتر",
     "keysAndRemote": "المفاتيح وجهاز التحكم عن بعد",
     "insurance": "التأمين"
+  },
+  "confirmation": {
+    "deleteAd": "حذف الإعلان؟",
+    "confirmDeleteAd": "هل تريد حقا حذف هذا الإعلان؟",
+    "deleteMessage": "حذف الرسالة ؟",
+    "confirmDeleteConversation": "هل تريد حقا حذف هذه المحادثة ؟",
+    "MsgDeletedSucc": ".تم حذف هذه الرسالة بنجاح"
+  },
+  "validation": {
+    "required": "هذا الحقل مطلوب."
   }
 }

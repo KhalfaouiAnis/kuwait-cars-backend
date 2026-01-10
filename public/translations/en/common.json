@@ -52,6 +52,7 @@
   "changeView": "Change view",
   "yes": "Yes",
   "no": "No",
+  "textLeft": "Left: {{count}}",
   "provinces": {
     "Al Asimah": "Al Asimah",
     "Hawalli": "Hawalli",
@@ -241,7 +242,12 @@
     "brand_model": "Brand & Model",
     "model_year": "Model year",
     "kms_driven": "Kms driven",
-    "offersFound": "{{OffersCount}} offers"
+    "offersFound": "{{OffersCount}} offers",
+    "noResultsFound": "No results found",
+    "adjustFilters": "Try adjusting your filters or search term to find what you're looking for.",
+    "noFavoritedAds": "You don't have any favorited ads.",
+    "noAdsYet": "You don't have any ads yet.",
+    "clearFilters": "Clear all filters"
   },
   "profile": {
     "myFavories": "My favorites",
@@ -268,8 +274,6 @@
     "name": "Name",
     "phoneNumber": "Phone number",
     "yourEmail": "Your email",
-    "yourProvince": "Your province",
-    "yourArea": "Your area",
     "updateInfo": "Update information",
     "updatePass": "Update password",
     "newPassword": "New password",
@@ -288,10 +292,7 @@
     "connecting": "Connecting...",
     "chat": "Chat",
     "typeMsgHere": "Type message here...",
-    "recentChats": "Recent chats",
-    "deleteMessage": "Delete message?",
-    "confirmDeleteConversation?": "Do you really want to delete this conversation?",
-    "MsgDeletedSucc": "That message deleted succesfully."
+    "recentChats": "Recent chats"
   },
   "createAd": {
     "steps": {
@@ -300,7 +301,6 @@
       "addMedia": "Add Media",
       "ChoosePlans": "Choose Plans"
     },
-    "Reset": "Reset",
     "whatAreYouSelling": "WHAT ARE YOU SELLING?",
     "selectYourCategory": "Select  Your Category",
     "requiredInformation": "Required Information",
@@ -345,13 +345,10 @@
     "Hidevehiclelicenseplate": "Hide vehicle license plate:",
     "AddAdditionalNumber": "Add Additional Number",
     "WriteYourAdvertisementDescription": "Write Your Advertisement Description",
-    "Description": "Description",
     "WriteYourAdvertisementTitle": "Write Your Advertisement Title",
     "Title": "Title",
     "WriteYourPrice": "Write Your Price",
     "Price": "Price",
-    "Area": "Area",
-    "YourProvince": "Your Province",
     "WhereIsYourListing": "WHERE IS YOUR LISTING?",
     "AddVideos": "Add Videos",
     "VideoClip": "A {{minDuration}}-{{maxDuration}} seconds clip can help buyers see your car’s true condition",
@@ -415,5 +412,15 @@
     "checkOilFilter": "Check, oil, filter",
     "keysAndRemote": "Keys and remote",
     "insurance": "Insurance"
+  },
+  "confirmation": {
+    "deleteAd": "Delete ad ?",
+    "confirmDeleteAd": "Are you sure you want to delete this Ad ?",
+    "deleteMessage": "Delete message?",
+    "confirmDeleteConversation": "Do you really want to delete this conversation?",
+    "MsgDeletedSucc": "That message deleted succesfully."
+  },
+  "validation": {
+    "required": "This field is required."
   }
 }
