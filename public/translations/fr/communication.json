@@ -13,8 +13,8 @@
     "recentChats": "Conversations récentes",
     "deleteMessage": "Supprimer le message ?",
     "confirmDeleteConversation?": "Voulez-vous vraiment supprimer cette conversation ?",
+    "MsgDeletedSucc": "Ce message a été supprimé avec succès.",
     "cancel": "Annuler",
-    "delete": "Supprimer",
-    "MsgDeletedSucc": "Ce message a été supprimé avec succès."
+    "delete": "Supprimer"
   }
 }

@@ -21,7 +21,7 @@ export const generateGuestToken = () => {
 export const generateToken = (userPayload: UserPayload, access?: boolean) => {
   if (access) {
     return jwt.sign(userPayload, config.jwt.secret, {
-      expiresIn: 60 as SignOptions["expiresIn"],
+      expiresIn: config.jwt.expiresIn as SignOptions["expiresIn"],
     });
   }
 

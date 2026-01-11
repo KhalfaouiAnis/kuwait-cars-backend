@@ -50,8 +50,8 @@
   "yourProvince": "مقاطعتك",
   "area": "المنطقة",
   "changeView": "تغيير العرض",
-  "yes": "Yes",
-  "no": "No",
+  "yes": "نعم",
+  "no": "لا",
   "textLeft": "متبقي: {{count}}",
   "provinces": {
     "Al Asimah": "العاصمة",
