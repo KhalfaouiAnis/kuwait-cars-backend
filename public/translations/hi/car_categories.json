@@ -1,4 +1,27 @@
 {
+  "colors": {
+    "None": "कोई नहीं",
+    "White": "सफेद",
+    "Black": "काला",
+    "Silver": "चांदी",
+    "Gray": "धूसर",
+    "Red": "लाल",
+    "Blue": "नीला",
+    "Green": "हरा",
+    "Brown": "भूरा",
+    "Beige": "बेज़",
+    "Yellow": "पीला",
+    "Orange": "संतरी",
+    "Gold": "सोना",
+    "Purple": "बैंगनी",
+    "Light Blue / Cyan": "हल्का नीला / सियान",
+    "Navy Blue": "नेवी नीला",
+    "Burgundy": "बर्गंडी",
+    "Olive": "जैतून",
+    "Copper": "तांबा",
+    "Bronze": "कांस्य",
+    "Other": "अन्य"
+  },
   "used_cars": "पुरानी कारें",
   "new_cars": "नई कारें",
   "motorcycles": "मोटरसाइकिलें",
@@ -12,7 +35,7 @@
   "logistics": "विंच + बाहरी चार्जिंग",
   "rims_and_tires": "रिम्स और टायर",
   "repair_garages": "मरम्मत गैराज",
-  "Other": "अन्य",
+  "All": "सभी",
   "Chinese": "चीनी",
   "Asian": "एशियाई",
   "European": "यूरोपीय",
@@ -533,5 +556,6 @@
   "Tire repair, batteries": "टायर मरम्मत, बैटरी",
   "Check, oil, filter": "जांच, तेल, फ़िल्टर",
   "Keys and remote": "चाबियाँ और रिमोट",
-  "Insurance": "बीमा"
+  "Insurance": "बीमा",
+  "Other": "अन्य"
 }

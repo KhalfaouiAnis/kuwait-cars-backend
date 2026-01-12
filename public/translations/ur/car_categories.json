@@ -1,4 +1,27 @@
 {
+  "colors": {
+    "None": "کوئی نہیں",
+    "White": "سفید",
+    "Black": "کالا",
+    "Silver": "چاندی",
+    "Gray": "سرمئی",
+    "Red": "سرخ",
+    "Blue": "نیلا",
+    "Green": "سبز",
+    "Brown": "بھورا",
+    "Beige": "بیج",
+    "Yellow": "پیلا",
+    "Orange": "نارنجی",
+    "Gold": "سونا",
+    "Purple": "جامنی",
+    "Light Blue / Cyan": "ہلکا نیلا / سائین",
+    "Navy Blue": "گہرا نیلا",
+    "Burgundy": "برگنڈی",
+    "Olive": "زیتونی",
+    "Copper": "تانبا",
+    "Bronze": "کانسی",
+    "Other": "دیگر"
+  },
   "used_cars": "استعمال شدہ گاڑیاں",
   "new_cars": "نئی گاڑیاں",
   "motorcycles": "موٹر سائیکلیں",
@@ -12,7 +35,7 @@
   "logistics": "ونچ + بیرونی چارجنگ",
   "rims_and_tires": "رِمز اور ٹائر",
   "repair_garages": "مرمت کی دکانیں",
-  "Other": "دیگر",
+  "All": "تمام",
   "Chinese": "چینی",
   "Asian": "ایشین",
   "European": "یورپی",
@@ -533,5 +556,6 @@
   "Tire repair, batteries": "ٹائر کی مرمت، بیٹریز",
   "Check, oil, filter": "چیک، آئل، فلٹر",
   "Keys and remote": "چابیاں اور ریموٹ",
-  "Insurance": "انشورنس"
+  "Insurance": "انشورنس",
+  "Other": "دیگر"
 }
