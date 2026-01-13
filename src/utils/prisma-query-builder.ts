@@ -14,7 +14,7 @@ export const buildPrismaQuery = (input: AdSearchInterface) => {
   const cursorId =
     rawCursor === null || rawCursor === undefined ? undefined : rawCursor;
 
-  const where: any = {};
+  const where: any = { };
   if (filters) {
     Object.entries(filters).forEach(([key, value]) => {
       if (value === undefined || value === null) return;

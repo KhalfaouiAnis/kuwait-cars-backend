@@ -6,7 +6,7 @@ const adapter = new PrismaPg({
   connectionString: config.database.schema,
 });
 
-export const prisma = new PrismaClient({
+const instance = new PrismaClient({
   adapter,
   log:
     config.env === "development"
@@ -17,9 +17,15 @@ export const prisma = new PrismaClient({
       : ["error"],
 });
 
-prisma.$extends({
+export const prisma = instance.$extends({
   query: {
     ad: {
+      // async $allOperations({ operation, args, query }) {
+      //   if ("where" in args) {
+      //     args.where = { ...args.where, deleted_at: null };
+      //   }
+      //   return query(args);
+      // },
       async findMany({ args, query }) {
         args.where = { ...args.where, deleted_at: null };
         return query(args);
@@ -28,9 +34,9 @@ prisma.$extends({
   },
 });
 
-prisma.$on("query" as any, (e: any) => {
+instance.$on("query" as any, (e: any) => {
   console.log("--- Database Query ---");
   console.log(`SQL: ${e.query}`);
-  console.log(`Params: ${e.params}`); // <--- This shows the [100, 200] values
+  console.log(`Params: ${e.params}`);
   console.log(`Duration: ${e.duration}ms`);
 });

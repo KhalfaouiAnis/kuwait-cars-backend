@@ -7,6 +7,7 @@ import {
   flagAd,
   getAdsByIds,
   getUserFavoritedAds,
+  softDeleteAd,
   toggleFavoriteAd,
 } from "@services/ad.js";
 import { Request, Response } from "express";
@@ -69,6 +70,11 @@ export const adDetails = async (req: Request, res: Response) => {
 
 export const removeAd = async (req: Request, res: Response) => {
   await deleteAd(req.params.id, req.user.userId);
+  res.status(204).json();
+};
+
+export const softRemoveAd = async (req: Request, res: Response) => {
+  await softDeleteAd(req.params.id, req.user.userId);
   res.status(204).json();
 };
 

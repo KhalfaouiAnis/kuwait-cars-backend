@@ -7,6 +7,7 @@ import {
   listUserAds,
   listUserFavoritedAds,
   removeAd,
+  softRemoveAd,
   toggleFavorite,
 } from "@controllers/ads.js";
 import { createNewAd } from "@controllers/ads.js";
@@ -24,6 +25,7 @@ router.post("/", validate(AdSearchSchema), listAds);
 router.post("/batch-list", fetchAdsBatch);
 router.get("/:id", restrictGuest, adDetails);
 router.delete("/:id", restrictGuest, removeAd);
+router.patch("/:id/delete", restrictGuest, softRemoveAd);
 router.post("/:id/toggle-favorite", restrictGuest, toggleFavorite);
 router.post("/:id/flag", restrictGuest, handleFlagAd);
 

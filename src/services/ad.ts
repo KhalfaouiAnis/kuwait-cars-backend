@@ -73,7 +73,7 @@ export const fetchUserAds = async (user_id: string) => {
   const select = buildSelectClose(user_id);
 
   return prisma.ad.findMany({
-    where: { user_id },
+    where: { user_id,  },
     select,
   });
 };
@@ -114,26 +114,11 @@ export const deleteAd = async (id: string, user_id: string) => {
 };
 
 export const softDeleteAd = async (id: string, user_id: string) => {
-  const ad = await prisma.ad.findUnique({
+  return prisma.ad.update({
     where: { id, user_id },
-    select: {
-      user_id: true,
-      created_at: true,
-      media: {
-        select: {
-          original_url: true,
-          transformed_url: true,
-          media_type: true,
-          public_id: true,
-        },
-      },
-    },
-  });
-
-  await prisma.ad.update({
-    where: { id },
     data: {
       deleted_at: new Date(),
+      status: "COMPLETED",
     },
   });
 };

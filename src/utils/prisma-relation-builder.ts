@@ -103,6 +103,8 @@ export const buildSelectClose = (
     select.xcar_calls = true;
     select.xcar_chat = true;
     select.receive_calls = true;
+    select.additional_number = true;
+    select.second_additional_number = true;
   }
 
   return select;
