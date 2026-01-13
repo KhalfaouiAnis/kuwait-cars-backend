@@ -7,17 +7,23 @@ import {
   flagAd,
   getAdsByIds,
   getUserFavoritedAds,
+  repostAd,
   softDeleteAd,
   toggleFavoriteAd,
 } from "@services/ad.js";
 import { Request, Response } from "express";
-import { Ad } from "generated/prisma/client.js";
+import { Ad, AdStatus } from "generated/prisma/client.js";
 import { PaginatedResponse } from "types";
 import { AdSearchInterface } from "types/ad.js";
 
 export const createNewAd = async (req: Request, res: Response) => {
   const newAd = await createAd(req.user.userId, req.body);
   res.json(newAd);
+};
+
+export const repostCompletedAd = async (req: Request, res: Response) => {
+  const repostedAd = await repostAd(req.params.id);
+  res.json(repostedAd);
 };
 
 export const listAds = async (
@@ -43,7 +49,10 @@ export const listAds = async (
 };
 
 export const listUserAds = async (req: Request, res: Response) => {
-  const ads = await fetchUserAds(req.user.userId);
+  const ads = await fetchUserAds(
+    req.user.userId,
+    req.params.status as AdStatus
+  );
   res.json(ads);
 };
 

@@ -7,6 +7,7 @@ import {
   listUserAds,
   listUserFavoritedAds,
   removeAd,
+  repostCompletedAd,
   softRemoveAd,
   toggleFavorite,
 } from "@controllers/ads.js";
@@ -18,8 +19,9 @@ import { restrictGuest } from "@middlewares/authMiddleware.js";
 const router = Router();
 
 router.post("/create", restrictGuest, validate(AdModelSchema), createNewAd);
+router.patch("/:id/repost", restrictGuest, repostCompletedAd);
 router.post("/", validate(AdSearchSchema), listAds);
-router.get("/me", restrictGuest, listUserAds);
+router.get("/me/:status", restrictGuest, listUserAds);
 router.get("/me/favorite", restrictGuest, listUserFavoritedAds);
 router.post("/", validate(AdSearchSchema), listAds);
 router.post("/batch-list", fetchAdsBatch);

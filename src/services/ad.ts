@@ -4,7 +4,7 @@ import { prisma } from "database/index.js";
 import { PaginatedResponse } from "types/index.js";
 import { AdInterface, AdSearchInterface } from "types/ad.js";
 import { buildPrismaQuery } from "@utils/prisma-query-builder.js";
-import { Ad } from "generated/prisma/client.js";
+import { Ad, AdStatus } from "generated/prisma/client.js";
 import {
   buildSelectClose,
   formatAdInteractions,
@@ -45,6 +45,13 @@ export const createAd = async (id: string, data: AdInterface) => {
   return ad;
 };
 
+export const repostAd = async (id: string) => {
+  return prisma.ad.update({
+    where: { id, status: "COMPLETED", deleted_at: null },
+    data: { status: "ACTIVE" },
+  });
+};
+
 export const fetchAds = async (
   input: AdSearchInterface,
   userId: string | undefined
@@ -69,11 +76,11 @@ export const fetchAds = async (
   };
 };
 
-export const fetchUserAds = async (user_id: string) => {
+export const fetchUserAds = async (user_id: string, status: AdStatus) => {
   const select = buildSelectClose(user_id);
 
   return prisma.ad.findMany({
-    where: { user_id,  },
+    where: { user_id, status },
     select,
   });
 };
