@@ -106,6 +106,7 @@ model Ad {
 
   user_id      String
   user         User   @relation(fields: [user_id], references: [id])
+  views        BigInt @default(0)
   favorited_by User[] @relation("UserFavoritedAds")
   flagged_by   User[] @relation("UserFlaggededAds")
 
@@ -116,6 +117,16 @@ model Ad {
   deleted_at DateTime?
 
   @@map("ads")
+}
+
+model View {
+  id         String   @id @default(cuid())
+  ad_id      String
+  user_id    String?
+  created_at DateTime @default(now())
+
+  @@unique([ad_id, user_id])
+  @@map("views")
 }
 
 enum UserRole {

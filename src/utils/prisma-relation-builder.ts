@@ -45,7 +45,7 @@ export const buildAdInteractions = (userId?: string): Prisma.AdInclude => {
 
 export const buildSelectClose = (
   userId?: string,
-  fullDetails?: boolean
+  fullDetails?: boolean,
 ): Prisma.AdSelect => {
   const select: Prisma.AdSelect = {
     id: true,
@@ -61,6 +61,7 @@ export const buildSelectClose = (
     plan: true,
     status: true,
     created_at: true,
+    views: true,
     media: {
       omit: {
         ad_id: true,
@@ -74,6 +75,15 @@ export const buildSelectClose = (
       where: { id: userId },
       select: { id: true },
       take: 1,
+    },
+    user: {
+      select: {
+        id: true,
+        fullname: true,
+        avatar: {
+          select: { original_url: true },
+        },
+      },
     },
   };
 

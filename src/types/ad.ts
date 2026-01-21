@@ -12,13 +12,12 @@ export const AdModelSchema = z.object({
   ad_type: z.string(),
   title: z.string().min(3, "The title field is required"),
   description: z.string().min(3, "The description field is required"),
-  plan: PlanSchema,
-  province: ProvinceSchema,
-
   media: z.array(MediaModelSchema),
+  plan: PlanSchema,
 
   ad_category: z.string().optional(),
   area: AreaSchema.optional(),
+  province: ProvinceSchema.optional(),
   location: LocationSchema.optional(),
   price: z.coerce.number().optional(),
 

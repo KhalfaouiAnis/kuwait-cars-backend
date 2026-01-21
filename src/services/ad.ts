@@ -24,7 +24,7 @@ export const createAd = async (id: string, data: AdInterface) => {
       media_type,
       original_url,
       transformed_url,
-    })
+    }),
   );
 
   const select = buildSelectClose();
@@ -54,7 +54,7 @@ export const repostAd = async (id: string) => {
 
 export const fetchAds = async (
   input: AdSearchInterface,
-  userId: string | undefined
+  userId: string | undefined,
 ): Promise<Omit<PaginatedResponse<Ad>, "status">> => {
   const queryArgs = buildPrismaQuery(input);
   const select = buildSelectClose(userId);
@@ -162,6 +162,26 @@ export const flagAd = async (user_id: string, id: string) => {
       },
     },
   });
+};
+
+export const recordView = async (ad_id: string, user_id?: string) => {
+  try {
+    return prisma.$transaction(async ($tsx) => {
+      await $tsx.view.create({
+        data: { ad_id, user_id },
+      });
+      await $tsx.ad.update({
+        where: { id: ad_id },
+        data: {
+          views: {
+            increment: 1,
+          },
+        },
+      });
+    });
+  } catch (error) {
+    // User already viewed.
+  }
 };
 
 export const getAdsByIds = async (ids: string[], userId: string) => {

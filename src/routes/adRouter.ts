@@ -3,6 +3,7 @@ import {
   adDetails,
   fetchAdsBatch,
   handleFlagAd,
+  incrementAdView,
   listAds,
   listUserAds,
   listUserFavoritedAds,
@@ -19,16 +20,16 @@ import { restrictGuest } from "@middlewares/authMiddleware.js";
 const router = Router();
 
 router.post("/create", restrictGuest, validate(AdModelSchema), createNewAd);
-router.patch("/:id/repost", restrictGuest, repostCompletedAd);
-router.post("/", validate(AdSearchSchema), listAds);
-router.get("/me/:status", restrictGuest, listUserAds);
-router.get("/me/favorite", restrictGuest, listUserFavoritedAds);
 router.post("/", validate(AdSearchSchema), listAds);
 router.post("/batch-list", fetchAdsBatch);
+router.get("/me/:status", restrictGuest, listUserAds);
+router.get("/me/favorite", restrictGuest, listUserFavoritedAds);
 router.get("/:id", restrictGuest, adDetails);
 router.delete("/:id", restrictGuest, removeAd);
 router.patch("/:id/delete", restrictGuest, softRemoveAd);
-router.post("/:id/toggle-favorite", restrictGuest, toggleFavorite);
+router.patch("/:id/repost", restrictGuest, repostCompletedAd);
 router.post("/:id/flag", restrictGuest, handleFlagAd);
+router.post("/:id/view", restrictGuest, incrementAdView);
+router.post("/:id/toggle-favorite", restrictGuest, toggleFavorite);
 
 export default router;

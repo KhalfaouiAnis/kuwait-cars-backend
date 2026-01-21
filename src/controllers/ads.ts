@@ -7,6 +7,7 @@ import {
   flagAd,
   getAdsByIds,
   getUserFavoritedAds,
+  recordView,
   repostAd,
   softDeleteAd,
   toggleFavoriteAd,
@@ -28,7 +29,7 @@ export const repostCompletedAd = async (req: Request, res: Response) => {
 
 export const listAds = async (
   req: Request<any, any, AdSearchInterface>,
-  res: Response<PaginatedResponse<Ad>>
+  res: Response<PaginatedResponse<Ad>>,
 ) => {
   const userId = req.user?.role !== "GUEST" ? req.user?.userId : undefined;
 
@@ -40,7 +41,7 @@ export const listAds = async (
         user_id: req.body.filters?.is_mine ? req.user.userId : undefined,
       },
     },
-    userId
+    userId,
   );
   res.status(200).json({
     status: "success",
@@ -51,7 +52,7 @@ export const listAds = async (
 export const listUserAds = async (req: Request, res: Response) => {
   const ads = await fetchUserAds(
     req.user.userId,
-    req.params.status as AdStatus
+    req.params.status as AdStatus,
   );
   res.json(ads);
 };
@@ -63,7 +64,7 @@ export const listUserFavoritedAds = async (req: Request, res: Response) => {
 
 export const fetchAdsBatch = async (
   req: Request<any, any, { ids: string[] }>,
-  res: Response
+  res: Response,
 ) => {
   const { ids } = req.body;
   if (!ids || ids.length === 0) return res.json([]);
@@ -95,4 +96,8 @@ export const toggleFavorite = async (req: Request, res: Response) => {
 export const handleFlagAd = async (req: Request, res: Response) => {
   await flagAd(req.user.userId, req.params.id);
   res.status(200).json();
+};
+
+export const incrementAdView = async (req: Request, res: Response) => {
+  await recordView(req.params.id);
 };
