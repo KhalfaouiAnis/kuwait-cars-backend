@@ -105,8 +105,8 @@ model Ad {
   xcar_chat        Boolean? @default(false)
 
   user_id      String
-  user         User   @relation(fields: [user_id], references: [id])
   views        BigInt @default(0)
+  user         User   @relation(fields: [user_id], references: [id])
   favorited_by User[] @relation("UserFavoritedAds")
   flagged_by   User[] @relation("UserFlaggededAds")
 

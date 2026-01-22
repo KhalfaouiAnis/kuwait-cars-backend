@@ -124,8 +124,8 @@ export const formatAdInteractions = (data: any[] | any) => {
   if (Array.isArray(data)) {
     return data.map((ad) => ({
       ...ad,
-      is_favorited: !!ad.favorited_by?.length,
-      is_flagged: !!ad.flagged_by?.length,
+      is_favorited: ad.favorited_by?.length > 0,
+      is_flagged: ad.flagged_by?.length > 0,
       favorited_by: undefined,
       flagged_by: undefined,
     }));
@@ -133,8 +133,8 @@ export const formatAdInteractions = (data: any[] | any) => {
 
   return {
     ...data,
-    is_favorited: !!data.favorited_by?.length,
-    is_flagged: !!data.flagged_by?.length,
+    is_favorited: data.favorited_by?.length > 0,
+    is_flagged: data.flagged_by?.length > 0,
     favorited_by: undefined,
     flagged_by: undefined,
   };

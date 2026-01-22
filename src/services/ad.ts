@@ -82,6 +82,7 @@ export const fetchUserAds = async (user_id: string, status: AdStatus) => {
   return prisma.ad.findMany({
     where: { user_id, status },
     select,
+    orderBy: { created_at: "desc" },
   });
 };
 
@@ -140,13 +141,13 @@ export const toggleFavoriteAd = async (user_id: string, id: string) => {
     if (existing) {
       return tx.ad.update({
         where: { id },
-        data: { favorited_by: { disconnect: [{ id: user_id }] } },
+        data: { favorited_by: { disconnect: { id: user_id } } },
       });
     }
 
     return tx.ad.update({
       where: { id },
-      data: { favorited_by: { connect: [{ id: user_id }] } },
+      data: { favorited_by: { connect: { id: user_id } } },
     });
   });
 };
@@ -154,7 +155,7 @@ export const toggleFavoriteAd = async (user_id: string, id: string) => {
 export const flagAd = async (user_id: string, id: string) => {
   return prisma.ad.update({
     where: { id },
-    data: { flagged_by: { connect: [{ id: user_id }] } },
+    data: { flagged_by: { connect: { id: user_id } } },
     select: {
       id: true,
       flagged_by: {
