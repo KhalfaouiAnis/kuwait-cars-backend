@@ -421,6 +421,36 @@
     "MsgDeletedSucc": "That message deleted succesfully."
   },
   "validation": {
-    "required": "This field is required."
+    "fullname": "Please enter a valid name",
+    "phone": "Please enter a valid phone number",
+    "email": "Please enter a valid email",
+    "province": "Please enter a valid province",
+    "area": "Please enter a valid area",
+    "location": "Please enter a valid location",
+    "password": "Please enter a valid password!",
+    "avatar": "Please enter a valid profile picture",
+    "title": "Please enter a valid title",
+    "ad_type": "Please enter a valid ad type",
+    "description": "Please enter a valid description",
+    "plan": "Please enter a valid plan",
+    "status": "Please enter a valid ad status",
+    "brand": "Please enter a valid brand",
+    "model": "Please enter a valid model",
+    "ad_category": "Please enter a valid ad category",
+    "price": "Please enter a valid price",
+    "year": "Please enter a valid ad year",
+    "exterior_color": "Please enter a valid color",
+    "mileage": "Please enter a valid mileage",
+    "mileage_unit": "Please enter a valid mileage unit",
+    "fuel_type": "Please enter a valid fuel type",
+    "cylinders": "Please enter a valid cylinders number",
+    "transmission": "Please enter a valid transmission type",
+    "under_warranty": "Please enter a valid under warranty state",
+    "roof": "Please enter a valid roof value",
+    "additional_number": "Please enter a valid phone number",
+    "second_additional_number": "Please enter a valid phone number",
+    "hide_license_plate": "Please enter a valid hide license plate value",
+    "contact_whatsapp": "Please enter a valid field",
+    "public_id": "Please enter a valid file"
   }
 }

@@ -9,18 +9,20 @@ datasource db {
 }
 
 model User {
-  id         String   @id @default(cuid())
-  fullname   String
-  phone      String   @unique @db.VarChar(15)
-  role       UserRole @default(USER)
-  email      String?  @unique
-  province   Json
-  area       Json?
-  location   Json?
-  password   String?
-  avatar     Media?
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  id            String   @id @default(cuid())
+  fullname      String
+  phone         String   @unique @db.VarChar(15)
+  role          UserRole @default(USER)
+  email         String?  @unique
+  province      Json
+  area          Json?
+  location      Json?
+  password      String?
+  avatar        Media?
+  expo_push_token String?
+  unread_count   Int      @default(0)
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
 
   google_id   String?
   apple_id    String?
@@ -28,8 +30,9 @@ model User {
 
   otp           Otp[]
   ads           Ad[]
-  favorited_ads Ad[]  @relation("UserFavoritedAds")
-  flagged_ads   Ad[]  @relation("UserFlaggededAds")
+  favorited_ads Ad[]           @relation("UserFavoritedAds")
+  flagged_ads   Ad[]           @relation("UserFlaggededAds")
+  notifications Notification[]
 
   @@map("users")
 }
@@ -129,6 +132,22 @@ model View {
   @@map("views")
 }
 
+model Notification {
+  id            String       @id @default(uuid())
+  user_id       String
+  title         String
+  body          String
+  data          Json?
+  is_read       Boolean      @default(false)
+  status        NotifiStatus @default(QUEUED) // QUEUED, SENT, DELIVERED, FAILED, READ
+  ticket_id      String?      @unique // Expo's ticket ID
+  receipt_id     String?      @unique // Expo's receipt ID
+  delivery_error String? // Log specific failure reasons (e.g., DeviceNotRegistered)
+
+  created_at DateTime @default(now())
+  user       User     @relation(fields: [user_id], references: [id])
+}
+
 enum UserRole {
   ADMIN
   USER
@@ -144,4 +163,12 @@ enum MediaType {
   THUMBNAIL
   IMAGE
   VIDEO
+}
+
+enum NotifiStatus {
+  QUEUED
+  SENT
+  DELIVERED
+  FAILED
+  READ
 }
