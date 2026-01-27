@@ -2,3 +2,11 @@ export const MAX_VIDEO_SIZE = 1024 * 1024 * 100;
 export const MAX_IMAGE_SIZE = 1024 * 1024 * 5;
 export const ACCEPTED_IMAGE_TYPES = ["image/jpg", "image/png", "image/jpeg"];
 export const ADS_PAGE_SIZE = "12";
+
+export const ERROR_CODES = {
+  BAD_CREDENTIALS: "BAD_CREDENTIALS",
+  SOCIAL_ERROR: "SOCIAL_ERROR",
+  REREQUEST_OTP: "REREQUEST_OTP",
+  ID_TOKEN_REQUIRED: "ID_TOKEN_REQUIRED",
+  INVALID_TOKEN: "INVALID_TOKEN",
+};

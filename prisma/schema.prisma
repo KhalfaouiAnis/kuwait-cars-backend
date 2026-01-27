@@ -9,20 +9,20 @@ datasource db {
 }
 
 model User {
-  id            String   @id @default(cuid())
-  fullname      String
-  phone         String   @unique @db.VarChar(15)
-  role          UserRole @default(USER)
-  email         String?  @unique
-  province      Json
-  area          Json?
-  location      Json?
-  password      String?
-  avatar        Media?
+  id              String   @id @default(cuid())
+  fullname        String
+  phone           String   @unique @db.VarChar(15)
+  role            UserRole @default(USER)
+  email           String?  @unique
+  province        Json
+  area            Json?
+  location        Json?
+  password        String?
+  avatar          Media?
   expo_push_token String?
-  unread_count   Int      @default(0)
-  created_at    DateTime @default(now())
-  updated_at    DateTime @updatedAt
+  unread_count    Int      @default(0)
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
 
   google_id   String?
   apple_id    String?
@@ -71,10 +71,12 @@ model Media {
 }
 
 model Ad {
-  id          String @id @default(cuid())
+  id          String   @id @default(cuid())
   title       String
   ad_type     String
-  description String @db.Text
+  description String   @db.Text
+  is_paid     Boolean? @default(false)
+  is_free     Boolean? @default(false)
   plan        Json
 
   status      AdStatus? @default(ACTIVE)
@@ -133,13 +135,13 @@ model View {
 }
 
 model Notification {
-  id            String       @id @default(uuid())
-  user_id       String
-  title         String
-  body          String
-  data          Json?
-  is_read       Boolean      @default(false)
-  status        NotifiStatus @default(QUEUED) // QUEUED, SENT, DELIVERED, FAILED, READ
+  id             String       @id @default(uuid())
+  user_id        String
+  title          String
+  body           String
+  data           Json?
+  is_read        Boolean      @default(false)
+  status         NotifiStatus @default(QUEUED) // QUEUED, SENT, DELIVERED, FAILED, READ
   ticket_id      String?      @unique // Expo's ticket ID
   receipt_id     String?      @unique // Expo's receipt ID
   delivery_error String? // Log specific failure reasons (e.g., DeviceNotRegistered)

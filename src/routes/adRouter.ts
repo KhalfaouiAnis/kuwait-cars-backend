@@ -14,17 +14,35 @@ import {
 } from "@controllers/ads.js";
 import { createNewAd } from "@controllers/ads.js";
 import { validate } from "@middlewares/validationMiddleware.js";
-import { AdModelSchema, AdSearchSchema } from "types/ad.js";
-import { restrictGuest } from "@middlewares/authMiddleware.js";
+import {
+  AdModelSchema,
+  AdSearchSchema,
+  PaymentObjectSchema,
+} from "types/ad.js";
+import { authenticateJWT, restrictGuest } from "@middlewares/authMiddleware.js";
+import {
+  paymentFailure,
+  paymentRequest,
+  paymentSuccess,
+} from "@controllers/payments.js";
 
 const router = Router();
 
 router.post("/create", restrictGuest, validate(AdModelSchema), createNewAd);
+router.post(
+  "/initiate-payment",
+  restrictGuest,
+  authenticateJWT,
+  validate(PaymentObjectSchema),
+  paymentRequest,
+);
+router.get("/payment/success", paymentSuccess);
+router.get("/payment/failure", paymentFailure);
 router.post("/", validate(AdSearchSchema), listAds);
 router.post("/batch-list", fetchAdsBatch);
 router.get("/favorite", restrictGuest, listUserFavoritedAds);
 router.get("/me/:status", restrictGuest, listUserAds);
-router.get("/:id", restrictGuest, adDetails);
+router.get("/:id", adDetails);
 router.delete("/:id", restrictGuest, removeAd);
 router.patch("/:id/delete", restrictGuest, softRemoveAd);
 router.patch("/:id/repost", restrictGuest, repostCompletedAd);

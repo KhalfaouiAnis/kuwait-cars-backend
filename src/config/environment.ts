@@ -57,6 +57,10 @@ const envSchema = z.object({
   // DO
   CRON_SECRET: z.string().optional(),
   PROD_APP_URL: z.string().optional().default(""),
+
+  // PAYMENT
+  X_ECOM_MID: z.string(),
+  X_ECOM_API_TOKEN: z.string(),
 });
 
 const { error, data: envVars } = envSchema.safeParse(process.env);
@@ -128,5 +132,10 @@ export const config = {
   do: {
     cronSecret: envVars.CRON_SECRET,
     appUrl: envVars.PROD_APP_URL,
+  },
+
+  payments: {
+    apiToken: envVars.X_ECOM_API_TOKEN,
+    mid: envVars.X_ECOM_MID,
   },
 };

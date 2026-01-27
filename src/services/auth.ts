@@ -19,6 +19,7 @@ import { NotFoundError } from "@libs/error/NotFoundError.js";
 import { ValidationError } from "@libs/error/ValidationError.js";
 import { BadRequestError } from "@libs/error/BadRequestError.js";
 import { sendWhatsAppOtp } from "./whatsapp.service.js";
+import { ERROR_CODES } from "constatnts.js";
 
 export const authenticateUser = async (data: LoginInterface) => {
   const { phone, password } = data;
@@ -31,13 +32,11 @@ export const authenticateUser = async (data: LoginInterface) => {
     });
 
     if (!user?.password) {
-      throw new BadRequestError(
-        "This account was created using Google, Apple or Facebook social logins, please use the right social provider to login."
-      );
+      throw new BadRequestError(ERROR_CODES.SOCIAL_ERROR);
     }
 
     if (!user || !(await bcrypt.compare(password, user.password))) {
-      throw new BadRequestError("Invalid credentials");
+      throw new BadRequestError(ERROR_CODES.BAD_CREDENTIALS);
     }
 
     return {
@@ -49,7 +48,7 @@ export const authenticateUser = async (data: LoginInterface) => {
       refreshToken: generateToken({ role: user.role, userId: user.id }, false),
     };
   } catch (error) {
-    throw new BadRequestError("Invalid credentials");
+    throw new BadRequestError(ERROR_CODES.BAD_CREDENTIALS);
   }
 };
 
@@ -76,7 +75,7 @@ export const createAccount = async (data: SignupInterface) => {
 };
 
 export const handleForgotPasswordRequest = async (
-  data: RequestResetPasswordInterface
+  data: RequestResetPasswordInterface,
 ) => {
   const { email, phone } = data;
 
@@ -90,7 +89,7 @@ export const handleForgotPasswordRequest = async (
 };
 
 export async function handleResetPassword(
-  data: ResetPasswordInterface
+  data: ResetPasswordInterface,
 ): Promise<{ ok: boolean }> {
   const { identifier, otp, newPassword } = data;
   let user;
@@ -127,7 +126,7 @@ export async function handleResetPassword(
 
 export async function handleUpdatePassword(
   userId: string,
-  data: UpdatePasswordInterface
+  data: UpdatePasswordInterface,
 ) {
   const hashedPassword = await hashPassword(data.password);
 
@@ -140,7 +139,7 @@ export async function handleUpdatePassword(
 
 export const generateAndSendOTPCode = async (
   identifier: string,
-  length?: number
+  length?: number,
 ) => {
   let user;
   const isEmail = identifier.includes("@");
@@ -161,9 +160,7 @@ export const generateAndSendOTPCode = async (
   });
 
   if (lastRequest) {
-    throw new BadRequestError(
-      "Please wait 60 seconds before requesting a new code."
-    );
+    throw new BadRequestError(ERROR_CODES.REREQUEST_OTP);
   }
 
   const otp = generateOTPCode(length || 1);
@@ -171,7 +168,7 @@ export const generateAndSendOTPCode = async (
 
   await prisma.otp.deleteMany({ where: { user_id: user.id } });
 
-  const wamid = await sendWhatsAppOtp(identifier, otp);
+  await sendWhatsAppOtp(identifier, otp);
 
   await prisma.otp.create({
     data: { user_id: user.id, code: otp, expires_at, used: false },
@@ -219,11 +216,11 @@ export const generateGuestSessionToken = () => {
 };
 
 export const handleGoogleSignin = async (
-  idToken: string
+  idToken: string,
 ): Promise<
   { accessToken: string; refreshToken: string; user: User } | undefined
 > => {
-  if (!idToken) throw new NotFoundError("ID token required");
+  if (!idToken) throw new NotFoundError(ERROR_CODES.ID_TOKEN_REQUIRED);
 
   const googleClient = new OAuth2Client(config.oauth.googleClientId);
 
@@ -235,7 +232,7 @@ export const handleGoogleSignin = async (
 
     const payload = ticket.getPayload();
     if (!payload)
-      throw new ValidationError([{ message: "Invalid token", path: "token" }]);
+      throw new ValidationError([{ message: ERROR_CODES.INVALID_TOKEN, path: "token" }]);
 
     const { email, name: fullname, sub: googleId } = payload;
 
@@ -288,11 +285,11 @@ export const handleGoogleSignin = async (
 };
 
 export const handleFacebookSignin = async (
-  accessToken: string
+  accessToken: string,
 ): Promise<
   { accessToken: string; refreshToken: string; user: User } | undefined
 > => {
-  if (!accessToken) throw new NotFoundError("access token required");
+  if (!accessToken) throw new NotFoundError(ERROR_CODES.ID_TOKEN_REQUIRED);
 
   try {
     const params = {
@@ -359,11 +356,11 @@ export const handleAppleSignin = async (idToken: string) => {
 
     const appleIdTokenClaims = await AppleSignin.default.verifyIdToken(
       idToken,
-      verifyOptions
+      verifyOptions,
     );
 
     if (!appleIdTokenClaims || !appleIdTokenClaims.sub) {
-      throw new Error("Invalid Apple token payload");
+      throw new BadRequestError(ERROR_CODES.ID_TOKEN_REQUIRED);
     }
 
     const email =

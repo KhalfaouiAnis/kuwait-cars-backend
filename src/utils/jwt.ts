@@ -3,6 +3,7 @@ import jwt, { SignOptions } from "jsonwebtoken";
 import { UserRole } from "generated/prisma/client.js";
 import { config } from "@config/environment.js";
 import { UnauthorizedError } from "@libs/error/UnauthorizedError.js";
+import { ERROR_CODES } from "constatnts.js";
 
 export interface UserPayload {
   userId: string;
@@ -38,17 +39,17 @@ export const verifyToken = (token: string, access: boolean): UserPayload => {
     return jwt.verify(token, config.jwt.refreshSecret) as UserPayload;
   } catch (error) {
     Logger.error(error);
-    throw new UnauthorizedError("Invalid token");
+    throw new UnauthorizedError(ERROR_CODES.INVALID_TOKEN);
   }
 };
 
 export const refreshTokenHelper = async (refreshToken: string) => {
   const decoded = jwt.verify(
     refreshToken,
-    config.jwt.refreshSecret
+    config.jwt.refreshSecret,
   ) as UserPayload;
 
-  if (!decoded.userId) throw new UnauthorizedError("Invalid payload");
+  if (!decoded.userId) throw new UnauthorizedError(ERROR_CODES.INVALID_TOKEN);
 
   return generateToken({ role: decoded.role, userId: decoded.userId }, true);
 };

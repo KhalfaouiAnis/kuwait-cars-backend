@@ -451,6 +451,14 @@
     "second_additional_number": "Please enter a valid phone number",
     "hide_license_plate": "Please enter a valid hide license plate value",
     "contact_whatsapp": "Please enter a valid field",
-    "public_id": "Please enter a valid file"
+    "public_id": "Please enter a valid file",
+    "token": "Invalid token"
+  },
+  "errors": {
+    "BAD_CREDENTIALS": "Bad credentials",
+    "SOCIAL_ERROR": "This account was created using Google, Apple or Facebook social logins, please use the right social provider to login.",
+    "REREQUEST_OTP": "Please wait 60 seconds before requesting a new code.",
+    "ID_TOKEN_REQUIRED": "ID token required",
+    "INVALID_TOKEN": "INVALID_TOKEN"
   }
 }

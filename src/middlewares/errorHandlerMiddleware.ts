@@ -9,7 +9,7 @@ export default function errorHandler(
   err: any,
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   let statusCode = err.statusCode || 500;
   let message = "Internal Server Error";
@@ -18,7 +18,7 @@ export default function errorHandler(
     switch (err.code) {
       case "P2002":
         statusCode = 409;
-        message = `Duplicate value: ${err.meta?.target}`;
+        message = `Duplicate value`;
         break;
       case "P2025":
         statusCode = 404;
@@ -30,6 +30,7 @@ export default function errorHandler(
         break;
       default:
         statusCode = 400;
+        Logger.error(err.message);
         message = `Database Error: ${err.code}`;
     }
   } else if (err instanceof Prisma.PrismaClientValidationError) {
@@ -45,7 +46,7 @@ export default function errorHandler(
   } else {
     Logger.error(" [CRITICAL BUG]:", err);
     if (config.env === "production") {
-      message = "Something went very wrong. Please try again later.";
+      message = "Something went wrong. Please try again later.";
     }
   }
 
