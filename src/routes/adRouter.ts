@@ -19,12 +19,8 @@ import {
   AdSearchSchema,
   PaymentObjectSchema,
 } from "types/ad.js";
-import { authenticateJWT, restrictGuest } from "@middlewares/authMiddleware.js";
-import {
-  paymentFailure,
-  paymentRequest,
-  paymentSuccess,
-} from "@controllers/payments.js";
+import { restrictGuest } from "@middlewares/authMiddleware.js";
+import { paymentRequest } from "@controllers/payments.js";
 
 const router = Router();
 
@@ -32,12 +28,9 @@ router.post("/create", restrictGuest, validate(AdModelSchema), createNewAd);
 router.post(
   "/initiate-payment",
   restrictGuest,
-  authenticateJWT,
   validate(PaymentObjectSchema),
   paymentRequest,
 );
-router.get("/payment/success", paymentSuccess);
-router.get("/payment/failure", paymentFailure);
 router.post("/", validate(AdSearchSchema), listAds);
 router.post("/batch-list", fetchAdsBatch);
 router.get("/favorite", restrictGuest, listUserFavoritedAds);
