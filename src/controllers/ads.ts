@@ -6,11 +6,16 @@ import {
   fetchUserAds,
   flagAd,
   getAdsByIds,
+  getAdDraftsByUser,
   getUserFavoritedAds,
   recordView,
   repostAd,
   softDeleteAd,
+  syncAdDraft,
   toggleFavoriteAd,
+  deleteAdDraft,
+  deleteAdDrafts,
+  createNewAdDraft,
 } from "@services/ad.js";
 import { Request, Response } from "express";
 import { Ad, AdStatus } from "generated/prisma/client.js";
@@ -47,6 +52,33 @@ export const listAds = async (
     status: "success",
     ...ads,
   });
+};
+
+export const listUserAdDrafts = async (req: Request, res: Response) => {
+  const ads = await getAdDraftsByUser(req.user.userId);
+  res.json(ads);
+};
+
+export const createAdDraft = async (req: Request, res: Response) => {
+  const userId = req.user.userId;
+  const draft = await createNewAdDraft(userId, req.body);
+  res.json(draft);
+};
+
+export const updateAdDraft = async (req: Request, res: Response) => {
+  const userId = req.user.userId;
+  const draft = await syncAdDraft(userId, req.params.id, req.body);
+  res.json(draft);
+};
+
+export const removeAdDraft = async (req: Request, res: Response) => {
+  await deleteAdDraft(req.params.id);
+  res.status(204);
+};
+
+export const removeUserAdDrafts = async (req: Request, res: Response) => {
+  await deleteAdDrafts(req.user.userId);
+  res.status(204);
 };
 
 export const listUserAds = async (req: Request, res: Response) => {

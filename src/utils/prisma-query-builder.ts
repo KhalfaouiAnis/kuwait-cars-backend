@@ -14,7 +14,7 @@ export const buildPrismaQuery = (input: AdSearchInterface) => {
   const cursorId =
     rawCursor === null || rawCursor === undefined ? undefined : rawCursor;
 
-  const where: any = { };
+  const where: any = {};
   if (filters) {
     Object.entries(filters).forEach(([key, value]) => {
       if (value === undefined || value === null) return;
@@ -33,6 +33,16 @@ export const buildPrismaQuery = (input: AdSearchInterface) => {
           gte: Prisma.Decimal(filters.mileage[0]),
           lte: Prisma.Decimal(filters.mileage[1]),
         };
+      } else if (key === "cylinders" && filters.cylinders) {
+        where.cylinders = { in: filters.cylinders };
+      } else if (key === "fuel_type" && filters.fuel_type) {
+        where.fuel_type = { in: filters.fuel_type, mode: "insensitive" };
+      } else if (key === "transmission" && filters.transmission) {
+        where.transmission = { in: filters.transmission, mode: "insensitive" };
+      } else if (key === "province" && filters.province) {
+        where.province = { in: filters.province, mode: "insensitive" };
+      } else if (key === "area" && filters.area) {
+        where.area = { in: filters.area, mode: "insensitive" };
       } else if (key === "brand" && filters.brand) {
         where.brand = { in: filters.brand, mode: "insensitive" };
       } else if (key === "model" && filters.model) {

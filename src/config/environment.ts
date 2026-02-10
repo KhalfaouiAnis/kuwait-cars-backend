@@ -18,6 +18,7 @@ const envSchema = z.object({
   DB_NAME: z.string().optional(),
   DB_USER: z.string().optional(),
   DB_PASSWORD: z.string().optional(),
+  AD_DRAFTS_LIMIT: z.coerce.number().int().default(5),
 
   //   SOCIAL
   GOOGLE_CLIENT_ID: z.string(),
@@ -73,6 +74,7 @@ export const config = {
   env: envVars.NODE_ENV,
   port: envVars.PORT,
   host: envVars.HOST,
+  adDraftsLimit: envVars.AD_DRAFTS_LIMIT,
 
   database: {
     schema: envVars.DATABASE_URL,

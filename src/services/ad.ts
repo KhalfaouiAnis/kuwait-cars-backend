@@ -2,13 +2,15 @@ import cloudinary from "config/cloudinary.js";
 import { prisma } from "database/index.js";
 
 import { PaginatedResponse } from "types/index.js";
-import { AdInterface, AdSearchInterface } from "types/ad.js";
+import { AdDraftInput, AdInterface, AdSearchInterface } from "types/ad.js";
 import { buildPrismaQuery } from "@utils/prisma-query-builder.js";
 import { Ad, AdStatus } from "generated/prisma/client.js";
 import {
   buildSelectClose,
   formatAdInteractions,
 } from "@utils/prisma-relation-builder.js";
+import { BadRequestError } from "@libs/error/BadRequestError.js";
+import { config } from "@config/environment.js";
 
 export const createAd = async (id: string, data: AdInterface) => {
   const user = await prisma.user.findUniqueOrThrow({
@@ -80,8 +82,8 @@ export const fetchUserAds = async (user_id: string, status: AdStatus) => {
   const select = buildSelectClose(user_id);
 
   return prisma.ad.findMany({
-    where: { user_id, status },
     select,
+    where: { user_id, status },
     orderBy: { created_at: "desc" },
   });
 };
@@ -228,4 +230,66 @@ export const getUserFavoritedAds = async (userId: string) => {
     ...ad,
     is_favorited: ad.favorited_by.length > 0,
   }));
+};
+
+export const createNewAdDraft = async (user_id: string, data: AdDraftInput) => {
+  const count = await prisma.adDraft.count({ where: { user_id } });
+
+  if (count >= config.adDraftsLimit)
+    throw new BadRequestError("Draft limit reached");
+
+  const { ad_type, step_index, content } = data;
+
+  return prisma.adDraft.create({
+    data: {
+      ad_type,
+      content,
+      step_index,
+      user: {
+        connect: {
+          id: user_id,
+        },
+      },
+    },
+  });
+};
+
+export const syncAdDraft = async (
+  user_id: string,
+  draft_id: string,
+  data: AdDraftInput,
+) => {
+  const { ad_type, step_index, content } = data;
+
+  return prisma.adDraft.update({
+    where: {
+      id: draft_id,
+      user_id,
+    },
+    data: {
+      user_id,
+      ad_type,
+      content,
+      step_index,
+    },
+  });
+};
+
+export const getAdDraftsByUser = async (user_id: string) => {
+  return prisma.adDraft.findMany({
+    where: { user_id },
+    orderBy: { updated_at: "desc" },
+  });
+};
+
+export const deleteAdDraft = async (id: string) => {
+  return prisma.adDraft.delete({
+    where: { id },
+  });
+};
+
+export const deleteAdDrafts = async (user_id: string) => {
+  return prisma.adDraft.deleteMany({
+    where: { user_id },
+  });
 };

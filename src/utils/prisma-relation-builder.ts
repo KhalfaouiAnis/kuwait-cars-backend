@@ -50,6 +50,10 @@ export const buildSelectClose = (
   const select: Prisma.AdSelect = {
     id: true,
     title: true,
+    ad_type: true,
+    ad_category: true,
+    brand: true,
+    model: true,
     description: true,
     price: true,
     year: true,
@@ -68,7 +72,6 @@ export const buildSelectClose = (
         created_at: true,
         id: true,
         original_url: true,
-        public_id: true,
       },
     },
     favorited_by: {

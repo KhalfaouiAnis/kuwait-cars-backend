@@ -7,13 +7,13 @@ export const paymentRequest = async (req: Request, res: Response) => {
 };
 
 export const paymentSuccess = async (req: Request, res: Response) => {
-  const appSuccessUrl = "x-car:///(protected)/(tabs)/create/success";
+  const appSuccessUrl = "x-car:///(protected)/(tabs)/create/[ad_type]?status=success";
 
   res.redirect(appSuccessUrl);
 };
 
 export const paymentFailure = async (req: Request, res: Response) => {
-  const appSuccessUrl = "x-car:///(protected)/(tabs)/create/failure";
+  const appSuccessUrl = "x-car:///(protected)/(tabs)/create/[ad_type]?status=error";
 
   res.redirect(appSuccessUrl);
 };

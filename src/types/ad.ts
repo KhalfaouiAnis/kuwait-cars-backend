@@ -46,6 +46,12 @@ export const AdModelSchema = z.object({
   xcar_chat: z.coerce.boolean().optional(),
 });
 
+export const AdDraftInputSchema = z.object({
+  ad_type: z.string(),
+  step_index: z.coerce.number().int().min(0),
+  content: z.record(z.string(), z.any())
+});
+
 export const AdSearchSchema = z.object({
   pagination: z
     .object({
@@ -65,15 +71,20 @@ export const AdSearchSchema = z.object({
       user_id: z.string().optional(),
       ad_type: z.string().optional(),
       is_mine: z.boolean().optional(),
-      status: z.enum(AdStatus).optional(),
-      title: z.string().optional(),
       year: z.array(z.coerce.number()).optional(),
-      price: z.array(z.coerce.number()).min(2).max(2).optional(),
       brand: z.array(z.string()).optional(),
       model: z.array(z.string()).optional(),
-      exterior_color: z.array(z.string()).optional(),
-      mileage: z.array(z.coerce.number()).min(2).max(2).optional(),
+      price: z.array(z.coerce.number()).min(2).max(2).optional(),
+      province: z.string().optional(),
+      area: z.string().optional(),
+      cylinders: z.array(z.coerce.number()).min(2).max(2).optional(),
       transmission: z.string().optional(),
+      under_warranty: z.boolean().optional(),
+      fuel_type: z.string().optional(),
+      mileage: z.array(z.coerce.number()).min(2).max(2).optional(),
+      exterior_color: z.array(z.string()).optional(),
+      status: z.enum(AdStatus).optional(),
+      title: z.string().optional(),
     })
     .optional()
     .default({}),
@@ -113,3 +124,4 @@ export const PaymentObjectSchema = z.object({
 export type PaymentObjectInterface = z.infer<typeof PaymentObjectSchema>;
 export type AdSearchInterface = z.infer<typeof AdSearchSchema>;
 export type AdInterface = z.infer<typeof AdModelSchema>;
+export type AdDraftInput = z.infer<typeof AdDraftInputSchema>;

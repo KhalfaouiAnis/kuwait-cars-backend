@@ -1,20 +1,26 @@
 import { Router } from "express";
 import {
   adDetails,
+  createAdDraft,
   fetchAdsBatch,
   handleFlagAd,
   incrementAdView,
   listAds,
+  listUserAdDrafts,
   listUserAds,
   listUserFavoritedAds,
   removeAd,
+  removeAdDraft,
+  removeUserAdDrafts,
   repostCompletedAd,
   softRemoveAd,
   toggleFavorite,
+  updateAdDraft,
 } from "@controllers/ads.js";
 import { createNewAd } from "@controllers/ads.js";
 import { validate } from "@middlewares/validationMiddleware.js";
 import {
+  AdDraftInputSchema,
   AdModelSchema,
   AdSearchSchema,
   PaymentObjectSchema,
@@ -23,6 +29,22 @@ import { restrictGuest } from "@middlewares/authMiddleware.js";
 import { paymentRequest } from "@controllers/payments.js";
 
 const router = Router();
+
+router.get("/drafts", restrictGuest, listUserAdDrafts);
+router.post(
+  "/drafts",
+  restrictGuest,
+  validate(AdDraftInputSchema),
+  createAdDraft,
+);
+router.put(
+  "/drafts/:id",
+  restrictGuest,
+  validate(AdDraftInputSchema),
+  updateAdDraft,
+);
+router.delete("/drafts/:id", restrictGuest, removeAdDraft);
+router.delete("/drafts/all", restrictGuest, removeUserAdDrafts);
 
 router.post("/create", restrictGuest, validate(AdModelSchema), createNewAd);
 router.post(
