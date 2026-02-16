@@ -5,10 +5,12 @@ import {
   fetchAdsBatch,
   handleFlagAd,
   incrementAdView,
+  initShadowDraft,
   listAds,
   listUserAdDrafts,
   listUserAds,
   listUserFavoritedAds,
+  promoteAdDraft,
   removeAd,
   removeAdDraft,
   removeUserAdDrafts,
@@ -37,15 +39,17 @@ router.post(
   validate(AdDraftInputSchema),
   createAdDraft,
 );
+router.post("/drafts/:id", restrictGuest, initShadowDraft);
 router.put(
   "/drafts/:id",
   restrictGuest,
   validate(AdDraftInputSchema),
   updateAdDraft,
 );
-router.delete("/drafts/:id", restrictGuest, removeAdDraft);
 router.delete("/drafts/all", restrictGuest, removeUserAdDrafts);
+router.post("/drafts/promote/:id", restrictGuest, promoteAdDraft);
 
+router.delete("/drafts/:id", restrictGuest, removeAdDraft);
 router.post("/create", restrictGuest, validate(AdModelSchema), createNewAd);
 router.post(
   "/initiate-payment",

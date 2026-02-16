@@ -16,11 +16,18 @@ import {
   deleteAdDraft,
   deleteAdDrafts,
   createNewAdDraft,
+  upsertShadowDraft,
+  promoteAd,
 } from "@services/ad.js";
 import { Request, Response } from "express";
 import { Ad, AdStatus } from "generated/prisma/client.js";
 import { PaginatedResponse } from "types";
 import { AdSearchInterface } from "types/ad.js";
+
+export const promoteAdDraft = async (req: Request, res: Response) => {
+  const newAd = await promoteAd(req.params.id);
+  res.json(newAd);
+};
 
 export const createNewAd = async (req: Request, res: Response) => {
   const newAd = await createAd(req.user.userId, req.body);
@@ -65,6 +72,12 @@ export const createAdDraft = async (req: Request, res: Response) => {
   res.json(draft);
 };
 
+export const initShadowDraft = async (req: Request, res: Response) => {
+  const userId = req.user.userId;
+  const draft = await upsertShadowDraft(userId, req.params.id, req.body);
+  res.json(draft);
+};
+
 export const updateAdDraft = async (req: Request, res: Response) => {
   const userId = req.user.userId;
   const draft = await syncAdDraft(userId, req.params.id, req.body);
@@ -73,12 +86,12 @@ export const updateAdDraft = async (req: Request, res: Response) => {
 
 export const removeAdDraft = async (req: Request, res: Response) => {
   await deleteAdDraft(req.params.id);
-  res.status(204);
+  res.status(204).json("ok");
 };
 
 export const removeUserAdDrafts = async (req: Request, res: Response) => {
   await deleteAdDrafts(req.user.userId);
-  res.status(204);
+  res.status(204).json("ok");
 };
 
 export const listUserAds = async (req: Request, res: Response) => {

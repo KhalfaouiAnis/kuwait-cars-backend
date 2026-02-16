@@ -1,4 +1,5 @@
 import { config } from "@config/environment.js";
+import { BadRequestError } from "@libs/error/BadRequestError.js";
 import { PaymentObjectInterface } from "types/ad.js";
 
 const URL = "https://api-sandbox.ecom.io/eapi/v1/api/charges";
@@ -21,9 +22,8 @@ export async function initiatePayment({
   order,
   urls,
 }: PaymentObjectInterface) {
-  // Backend Config: Set the gateway's success URL to a page on your own web server (e.g., https://api.yourdomain.com).
-  // Redirect Logic: When the gateway hits that backend endpoint after a successful payment, your backend should respond with a 302 Redirect to your app's custom scheme.
-  // Example Response: Location: myapp://new/success?orderId=123
+  if (amount.value <= 0)
+    throw new BadRequestError("Amount should be a positive number.");
 
   const body = JSON.stringify({
     urls,

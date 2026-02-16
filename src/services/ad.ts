@@ -2,7 +2,12 @@ import cloudinary from "config/cloudinary.js";
 import { prisma } from "database/index.js";
 
 import { PaginatedResponse } from "types/index.js";
-import { AdDraftInput, AdInterface, AdSearchInterface } from "types/ad.js";
+import {
+  AdDraftInput,
+  AdInterface,
+  AdModelSchema,
+  AdSearchInterface,
+} from "types/ad.js";
 import { buildPrismaQuery } from "@utils/prisma-query-builder.js";
 import { Ad, AdStatus } from "generated/prisma/client.js";
 import {
@@ -11,6 +16,25 @@ import {
 } from "@utils/prisma-relation-builder.js";
 import { BadRequestError } from "@libs/error/BadRequestError.js";
 import { config } from "@config/environment.js";
+
+export const promoteAd = async (id: string) => {
+  // 1. Find the draft
+  const draft = await prisma.adDraft.findUniqueOrThrow({
+    where: { id },
+  });
+
+  // 2. create a new real ad from the draft
+  const data = AdModelSchema.safeParse(draft.content);
+  if (!data.success) throw new BadRequestError("Validation failed");
+  const ad = await createAd(draft.user_id, data.data);
+
+  // 3. remove the draft
+  await prisma.adDraft.delete({
+    where: { id },
+  });
+
+  return ad;
+};
 
 export const createAd = async (id: string, data: AdInterface) => {
   const user = await prisma.user.findUniqueOrThrow({
@@ -271,6 +295,33 @@ export const syncAdDraft = async (
       ad_type,
       content,
       step_index,
+    },
+  });
+};
+
+/**
+ * This service will be used to either create a new edit session for a live ad or resume edit for an existing shadow draft
+ * @param user_id id of the user
+ * @param edit_ad_id id of the live ad
+ * @param data content of the live ad and metadata
+ * @returns new edit ad entry or nothing
+ */
+export const upsertShadowDraft = async (
+  user_id: string,
+  edit_ad_id: string,
+  data: AdDraftInput,
+) => {
+  return prisma.adDraft.upsert({
+    where: {
+      user_id_edit_ad_id: { user_id, edit_ad_id },
+    },
+    update: {},
+    create: {
+      user_id,
+      edit_ad_id,
+      ad_type: data.ad_type,
+      content: data.content,
+      step_index: 0,
     },
   });
 };
