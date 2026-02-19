@@ -44,3 +44,4 @@ export interface PaginatedResponse<T> {
 }
 
 export type LocationInterface = z.infer<typeof LocationSchema>;
+export type MediaModelInterface = z.infer<typeof MediaModelSchema>;

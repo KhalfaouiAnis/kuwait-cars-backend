@@ -18,17 +18,14 @@ import { BadRequestError } from "@libs/error/BadRequestError.js";
 import { config } from "@config/environment.js";
 
 export const promoteAd = async (id: string) => {
-  // 1. Find the draft
   const draft = await prisma.adDraft.findUniqueOrThrow({
     where: { id },
   });
 
-  // 2. create a new real ad from the draft
   const data = AdModelSchema.safeParse(draft.content);
   if (!data.success) throw new BadRequestError("Validation failed");
   const ad = await createAd(draft.user_id, data.data);
 
-  // 3. remove the draft
   await prisma.adDraft.delete({
     where: { id },
   });

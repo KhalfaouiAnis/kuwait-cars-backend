@@ -1,5 +1,6 @@
 import { prisma } from "database/index.js";
 import { Prisma } from "generated/prisma/client.js";
+import { MediaModelInterface } from "types";
 import { UpdateProfileInterface } from "types/user.js";
 
 export const fetchUsers = async () => {
@@ -26,9 +27,16 @@ export const deleteUser = async (userId: string) => {
 
 export const updateProfile = async (
   userId: string,
-  data: UpdateProfileInterface
+  data: UpdateProfileInterface,
 ) => {
   const { avatar, area, location, ...profileData } = data;
+
+  const parsedAvatar: Partial<MediaModelInterface> = {
+    media_type: avatar?.media_type,
+    original_url: avatar?.original_url,
+    public_id: avatar?.public_id,
+    transformed_url: avatar?.transformed_url,
+  };
 
   return prisma.user.update({
     where: { id: userId },
@@ -39,8 +47,8 @@ export const updateProfile = async (
       avatar: avatar
         ? {
             upsert: {
-              create: avatar,
-              update: avatar,
+              create: parsedAvatar as any,
+              update: parsedAvatar,
             },
           }
         : undefined,
