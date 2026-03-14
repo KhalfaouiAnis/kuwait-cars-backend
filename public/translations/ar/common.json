@@ -19,7 +19,7 @@
     "damaged_cars": "سيارات متضررة",
     "accessories": "الملحقات",
     "logistics": "رافعة + شحن خارجي",
-    "rims_and_tires": "جنوط وإطارات",
+    "rims_and_tires": "رنقات و تواير",
     "repair_garages": "ورش إصلاح",
     "transport_delivery": "النقل والتسليم",
     "Other": "أخرى"
@@ -54,6 +54,7 @@
   "yes": "نعم",
   "no": "لا",
   "textLeft": "متبقي: {{count}}",
+  "notifications": "الاشعارات",
   "provinces": {
     "Al Asimah": "العاصمة",
     "Hawalli": "حوالي",
