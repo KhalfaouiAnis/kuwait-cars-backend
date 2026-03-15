@@ -116,25 +116,28 @@ model Ad {
   favorited_by User[] @relation("UserFavoritedAds")
   flagged_by   User[] @relation("UserFlaggededAds")
 
-  media Media[]
+  main_photo     String
+  media          Media[]
+  image_embedding Unsupported("vector(512)")?
 
   expires_in Int       @default(30)
   created_at DateTime  @default(now())
   deleted_at DateTime?
 
+  @@index([image_embedding])
   @@map("ads")
 }
 
 model AdDraft {
-  id          String   @id @default(cuid())
-  content     Json
-  user_id     String
-  edit_ad_id  String?
-  user        User     @relation(fields: [user_id], references: [id])
-  ad_type     String
-  step_index  Int      @default(0)
-  updated_at  DateTime @updatedAt
-  created_at  DateTime @default(now())
+  id         String   @id @default(cuid())
+  content    Json
+  user_id    String
+  edit_ad_id String?
+  user       User     @relation(fields: [user_id], references: [id])
+  ad_type    String
+  step_index Int      @default(0)
+  updated_at DateTime @updatedAt
+  created_at DateTime @default(now())
 
   @@unique([user_id, edit_ad_id])
   @@map("ad_drafts")

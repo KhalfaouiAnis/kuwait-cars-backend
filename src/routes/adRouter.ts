@@ -1,4 +1,5 @@
 import { Router } from "express";
+import multer from "multer";
 import {
   adDetails,
   createAdDraft,
@@ -27,8 +28,11 @@ import {
   AdSearchSchema,
   PaymentObjectSchema,
 } from "types/ad.js";
+import { searchByImage } from "@controllers/vision-search.controller.js";
 import { restrictGuest } from "@middlewares/authMiddleware.js";
 import { paymentRequest } from "@controllers/payments.js";
+
+const upload = multer({ storage: multer.memoryStorage() });
 
 const router = Router();
 
@@ -59,14 +63,20 @@ router.post(
 );
 router.post("/", validate(AdSearchSchema), listAds);
 router.post("/batch-list", fetchAdsBatch);
+
 router.get("/favorite", restrictGuest, listUserFavoritedAds);
 router.get("/me/:status", restrictGuest, listUserAds);
 router.get("/:id", adDetails);
+
 router.delete("/:id", restrictGuest, removeAd);
+
 router.patch("/:id/delete", restrictGuest, softRemoveAd);
 router.patch("/:id/repost", restrictGuest, repostCompletedAd);
+
 router.post("/:id/flag", restrictGuest, handleFlagAd);
 router.post("/:id/view", restrictGuest, incrementAdView);
 router.post("/:id/toggle-favorite", restrictGuest, toggleFavorite);
+
+router.post("/search/visual", upload.single('image'), searchByImage);
 
 export default router;

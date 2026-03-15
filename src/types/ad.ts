@@ -13,8 +13,9 @@ export const AdModelSchema = z.object({
   title: z.string().min(3, "The title field is required"),
   description: z.string().min(3, "The description field is required"),
   media: z.array(MediaModelSchema),
+  main_photo: z.string(),
   plan: PlanSchema,
-
+  
   is_paid: z.boolean().optional(),
   is_free: z.boolean().optional(),
   ad_category: z.string().optional(),
