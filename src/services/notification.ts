@@ -1,4 +1,4 @@
-import { prisma } from "database";
+import { prisma } from "database/index.js";
 import { Expo } from "expo-server-sdk";
 
 const expo = new Expo();

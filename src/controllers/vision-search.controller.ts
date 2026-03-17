@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import VectorService from "../services/vector.service.js";
-import { prisma } from "database";
+import { prisma } from "database/index.js";
 import { Ad } from "generated/prisma/client.js";
 
 type Similarities = Ad & {

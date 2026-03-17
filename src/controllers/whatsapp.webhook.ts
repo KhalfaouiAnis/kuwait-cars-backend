@@ -1,5 +1,5 @@
 import { config } from "@config/environment.js";
-import { prisma } from "database";
+import { prisma } from "database/index.js";
 import { Request, Response } from "express";
 
 export const verifyWebhook = (req: Request, res: Response) => {

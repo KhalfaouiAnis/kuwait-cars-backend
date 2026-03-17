@@ -1,9 +1,9 @@
 import { Worker } from "bullmq";
 import IORedis from "ioredis";
-import VectorService from "./services/vector.service.js";
+import VectorService from "@services/vector.service.js";
 import { EMBEDDING_QUEUE_NAME } from "./queue/client.js";
 import { config } from "@config/environment.js";
-import { prisma } from "database";
+import { prisma } from "database/index.js";
 
 const connection = new IORedis(config.redis.url, {
   maxRetriesPerRequest: null,
