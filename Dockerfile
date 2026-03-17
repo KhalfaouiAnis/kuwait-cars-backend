@@ -24,9 +24,12 @@ RUN npx prisma generate
 RUN npm run build
 
 RUN mkdir -p .cache && \
-    node -e "const { env, pipeline } = require('@huggingface/transformers'); \
+    node -e "const { env, AutoProcessor, CLIPVisionModelWithProjection } = require('@huggingface/transformers'); \
     env.cacheDir = './.cache'; \
-    pipeline('feature-extraction', 'Xenova/clip-vit-base-patch16')"
+    Promise.all([ \
+      AutoProcessor.from_pretrained('Xenova/clip-vit-base-patch16'), \
+      CLIPVisionModelWithProjection.from_pretrained('Xenova/clip-vit-base-patch16', { dtype: 'auto' }) \
+    ]).then(() => console.log('Model and Processor cached successfully'));"
 
 RUN npm prune --omit=dev
 RUN curl -sfL https://gobinaries.com/tj/node-prune | sh && node-prune
@@ -41,9 +44,7 @@ ENV TRANSFORMERS_CACHE=/app/.cache
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nodejs
-RUN mkdir -p /app/.cache && chown -R nodejs:nodejs /app
 
-RUN chown -R nodejs:nodejs /app/.cache
 USER nodejs
 
 COPY --from=builder /app/dist ./dist
@@ -53,7 +54,7 @@ COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/prisma.config.ts ./
-COPY --from=builder /app/.cache /app/.cache
+COPY --from=builder --chown=nodejs:nodejs /app/.cache /app/.cache
 
 EXPOSE 5000
 

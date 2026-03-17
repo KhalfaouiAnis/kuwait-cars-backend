@@ -3,8 +3,8 @@ import { Queue } from "bullmq";
 import IORedis from "ioredis";
 
 const connection = new IORedis(config.redis.url, {
+  tls: config.env === "production" ? {} : undefined,
   maxRetriesPerRequest: null,
-  tls: {}
 });
 
 export const EMBEDDING_QUEUE_NAME = "embedding-generation";
