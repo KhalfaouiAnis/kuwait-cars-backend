@@ -12,6 +12,8 @@ FROM node:25-slim AS builder
 
 WORKDIR /app
 
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+
 ARG DATABASE_URL
 ENV DATABASE_URL=$DATABASE_URL
 
@@ -21,7 +23,9 @@ COPY . .
 RUN npx prisma generate
 RUN npm run build
 
-RUN node -e "const { pipeline } = require('@huggingface/transformers'); \
+RUN mkdir -p .cache && \
+    node -e "const { env, pipeline } = require('@huggingface/transformers'); \
+    env.cacheDir = './.cache'; \
     pipeline('feature-extraction', 'Xenova/clip-vit-base-patch16')"
 
 RUN npm prune --omit=dev
@@ -37,9 +41,9 @@ ENV TRANSFORMERS_CACHE=/app/.cache
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nodejs
-RUN chown -R nodejs:nodejs /app/.cache
 RUN mkdir -p /app/.cache && chown -R nodejs:nodejs /app
 
+RUN chown -R nodejs:nodejs /app/.cache
 USER nodejs
 
 COPY --from=builder /app/dist ./dist
@@ -49,7 +53,7 @@ COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/prisma.config.ts ./
-COPY --from=builder /root/.cache/huggingface /app/.cache/huggingface
+COPY --from=builder /app/.cache /app/.cache
 
 EXPOSE 5000
 
