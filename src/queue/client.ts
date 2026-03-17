@@ -4,6 +4,7 @@ import IORedis from "ioredis";
 
 const connection = new IORedis(config.redis.url, {
   maxRetriesPerRequest: null,
+  tls: {}
 });
 
 export const EMBEDDING_QUEUE_NAME = "embedding-generation";
