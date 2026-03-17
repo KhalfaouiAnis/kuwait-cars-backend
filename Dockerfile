@@ -1,4 +1,4 @@
-FROM node:25-alpine AS deps
+FROM node:25-slim AS deps
 
 WORKDIR /app
 
@@ -8,7 +8,7 @@ COPY package*.json ./
 COPY prisma ./prisma/
 RUN npm ci
 
-FROM node:25-alpine AS builder
+FROM node:25-slim AS builder
 
 WORKDIR /app
 
@@ -24,7 +24,7 @@ RUN npm run build
 RUN npm prune --omit=dev
 RUN wget -qO- https://gobinaries.com/tj/node-prune | sh && node-prune
 
-FROM node:25-alpine AS runner
+FROM node:25-slim AS runner
 WORKDIR /app
 
 RUN apk add --no-cache openssl
