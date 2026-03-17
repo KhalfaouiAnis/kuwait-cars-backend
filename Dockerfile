@@ -29,7 +29,7 @@ RUN mkdir -p .cache && \
     pipeline('feature-extraction', 'Xenova/clip-vit-base-patch16')"
 
 RUN npm prune --omit=dev
-RUN curl -sfL https://gobinaries.com/tj/node-prune | sh && ./bin/node-prune
+RUN curl -sfL https://gobinaries.com/tj/node-prune | sh && node-prune
 
 FROM node:25-slim AS runner
 WORKDIR /app
