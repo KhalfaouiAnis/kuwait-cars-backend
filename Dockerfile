@@ -2,7 +2,7 @@ FROM node:25-slim AS deps
 
 WORKDIR /app
 
-RUN apk add --no-cache libc6-compat openssl zlib
+RUN apt-get update && apt-get install -y openssl libssl-dev && rm -rf /var/lib/apt/lists/*
 
 COPY package*.json ./
 COPY prisma ./prisma/
@@ -27,7 +27,7 @@ RUN wget -qO- https://gobinaries.com/tj/node-prune | sh && node-prune
 FROM node:25-slim AS runner
 WORKDIR /app
 
-RUN apk add --no-cache openssl
+RUN apt-get update && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
 
 ENV NODE_ENV=production
 
