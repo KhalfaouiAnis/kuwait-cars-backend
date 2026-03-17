@@ -5,7 +5,7 @@
 
 */
 -- AlterTable
-ALTER TABLE "ads" ADD COLUMN     "main_photo" TEXT NOT NULL;
+ALTER TABLE "ads" ADD COLUMN     "main_photo" TEXT;
 
 -- RenameIndex
 ALTER INDEX "ads_embedding_idx" RENAME TO "ads_imageEmbedding_idx";
