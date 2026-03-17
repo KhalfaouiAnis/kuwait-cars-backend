@@ -116,7 +116,7 @@ model Ad {
   favorited_by User[] @relation("UserFavoritedAds")
   flagged_by   User[] @relation("UserFlaggededAds")
 
-  main_photo     String
+  main_photo     String?
   media          Media[]
   image_embedding Unsupported("vector(512)")?
 

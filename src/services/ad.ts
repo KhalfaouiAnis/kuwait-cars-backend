@@ -67,7 +67,7 @@ export const createAd = async (id: string, data: AdInterface) => {
   });
 
   await embeddingQueue.add("generate-vector", {
-    productId: ad.id,
+    adId: ad.id,
     imageUrl: ad.main_photo,
   });
 
