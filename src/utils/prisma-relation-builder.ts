@@ -66,6 +66,7 @@ export const buildSelectClose = (
     status: true,
     created_at: true,
     views: true,
+    main_photo: true,
     media: {
       omit: {
         ad_id: true,
@@ -110,8 +111,6 @@ export const buildSelectClose = (
         },
       },
     };
-    select.brand = true;
-    select.model = true;
     select.contact_whatsapp = true;
     select.xcar_calls = true;
     select.xcar_chat = true;

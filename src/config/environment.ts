@@ -20,6 +20,9 @@ const envSchema = z.object({
   DB_PASSWORD: z.string().optional(),
   AD_DRAFTS_LIMIT: z.coerce.number().int().default(5),
 
+  // REDIS
+  REDIS_URL: z.string(),
+
   //   SOCIAL
   GOOGLE_CLIENT_ID: z.string(),
   FACEBOOK_APP_SECRET: z.string(),
@@ -83,6 +86,10 @@ export const config = {
     name: envVars.DB_NAME,
     user: envVars.DB_USER,
     password: envVars.DB_PASSWORD,
+  },
+
+  redis: {
+    url: envVars.REDIS_URL,
   },
 
   jwt: {

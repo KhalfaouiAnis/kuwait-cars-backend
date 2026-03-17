@@ -16,6 +16,7 @@ import {
 } from "@utils/prisma-relation-builder.js";
 import { BadRequestError } from "@libs/error/BadRequestError.js";
 import { config } from "@config/environment.js";
+import { embeddingQueue } from "queue/client.js";
 
 export const promoteAd = async (id: string) => {
   const draft = await prisma.adDraft.findUniqueOrThrow({
@@ -63,6 +64,11 @@ export const createAd = async (id: string, data: AdInterface) => {
       },
     },
     select,
+  });
+
+  await embeddingQueue.add("generate-vector", {
+    productId: ad.id,
+    imageUrl: ad.main_photo,
   });
 
   return ad;
