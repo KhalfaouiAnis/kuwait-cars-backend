@@ -1,10 +1,18 @@
+import { config } from "@config/environment";
 import {
   AutoProcessor,
   CLIPVisionModelWithProjection,
   PreTrainedModel,
   Processor,
   RawImage,
+  env,
 } from "@huggingface/transformers";
+
+if(config.env === "production") {
+  env.cacheDir = './.cache';
+  env.allowRemoteModels = false;
+  env.allowLocalModels = true;
+}
 
 class VectorService {
   private static modelId = "Xenova/clip-vit-base-patch16";
