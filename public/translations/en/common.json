@@ -228,6 +228,7 @@
   },
   "advancedSearch": {
     "chooseYourCar": "Choose your car",
+    "mileageRange": "Mileage range",
     "priceRange": "Price range",
     "min": "Min",
     "max": "Max",
@@ -248,7 +249,7 @@
     "model_year": "Model year",
     "kms_driven": "Kms driven",
     "offersFound": "{{OffersCount}} offers",
-    "noResultsFound": "No results found",
+    "noResultsFound": "Nothing here at the moment",
     "adjustFilters": "Try adjusting your filters or search term to find what you're looking for.",
     "noFavoritedAds": "You don't have any favorited ads.",
     "noAdsYet": "You don't have any ads yet.",

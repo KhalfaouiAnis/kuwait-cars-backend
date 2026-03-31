@@ -84,6 +84,7 @@ export const buildSelectClose = (
       select: {
         id: true,
         fullname: true,
+        created_at: true,
         avatar: {
           select: { original_url: true },
         },

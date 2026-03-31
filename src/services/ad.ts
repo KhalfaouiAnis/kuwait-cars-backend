@@ -17,6 +17,7 @@ import {
 import { BadRequestError } from "@libs/error/BadRequestError.js";
 import { config } from "@config/environment.js";
 import { embeddingQueue } from "queue/client.js";
+import { ValidationError } from "@libs/error/ValidationError.js";
 
 export const promoteAd = async (id: string) => {
   const draft = await prisma.adDraft.findUniqueOrThrow({
@@ -24,7 +25,14 @@ export const promoteAd = async (id: string) => {
   });
 
   const data = AdModelSchema.safeParse(draft.content);
-  if (!data.success) throw new BadRequestError("Validation failed");
+
+  if (!data.success) {
+    const fieldErrors = data.error.issues.map((err) => ({
+      path: err.path.join("."),
+      message: err.message,
+    }));
+    throw new ValidationError(fieldErrors);
+  }
   const ad = await createAd(draft.user_id, data.data);
 
   await prisma.adDraft.delete({

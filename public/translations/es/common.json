@@ -227,6 +227,7 @@
   },
   "advancedSearch": {
     "chooseYourCar": "Elija su coche",
+    "mileageRange": "Autonomía",
     "priceRange": "Rango de precios",
     "min": "Min",
     "max": "Max",
