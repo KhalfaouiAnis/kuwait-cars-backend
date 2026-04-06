@@ -461,10 +461,11 @@
     "public_id": "يرجى إدخال ملف صحيح"
   },
   "errors": {
-    "BAD_CREDENTIALS": "Bad credentials",
-    "SOCIAL_ERROR": "This account was created using Google, Apple or Facebook social logins, please use the right social provider to login.",
-    "REREQUEST_OTP": "Please wait 60 seconds before requesting a new code.",
-    "ID_TOKEN_REQUIRED": "ID token required",
-    "INVALID_TOKEN": "INVALID_TOKEN"
+    "BAD_CREDENTIALS": "بيانات اعتماد غير صحيحة",
+    "SOCIAL_ERROR": "تم إنشاء هذا الحساب باستخدام تسجيل الدخول عبر حسابات Google أو Apple أو Facebook، يرجى استخدام مزود الخدمة المناسب لتسجيل الدخول.",
+    "REREQUEST_OTP": "يرجى الانتظار لمدة 60 ثانية قبل طلب رمز جديد.",
+    "ID_TOKEN_REQUIRED": "مطلوب رمز التعريف",
+    "INVALID_TOKEN": "رمز غير صالح",
+    "VALIDATION_FAILED": "فشلت عملية التحقق من الصحة"
   }
 }

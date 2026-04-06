@@ -465,6 +465,7 @@
     "SOCIAL_ERROR": "This account was created using Google, Apple or Facebook social logins, please use the right social provider to login.",
     "REREQUEST_OTP": "Please wait 60 seconds before requesting a new code.",
     "ID_TOKEN_REQUIRED": "ID token required",
-    "INVALID_TOKEN": "INVALID_TOKEN"
+    "INVALID_TOKEN": "Invalid token",
+    "VALIDATION_FAILED": "Validation failed"
   }
 }

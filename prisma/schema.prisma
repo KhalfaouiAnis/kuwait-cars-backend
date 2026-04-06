@@ -116,13 +116,15 @@ model Ad {
   favorited_by User[] @relation("UserFavoritedAds")
   flagged_by   User[] @relation("UserFlaggededAds")
 
-  main_photo     String?
-  media          Media[]
+  main_photo      String?
+  media           Media[]
   image_embedding Unsupported("vector(512)")?
 
-  expires_in Int       @default(30)
-  created_at DateTime  @default(now())
-  deleted_at DateTime?
+  expiry_notified Boolean?
+  expires_in      Int       @default(30)
+  expires_at      DateTime?
+  created_at      DateTime  @default(now())
+  deleted_at      DateTime?
 
   @@index([image_embedding])
   @@map("ads")

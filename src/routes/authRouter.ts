@@ -10,7 +10,6 @@ import {
   refreshToken,
   registerUser,
   resetPassword,
-  updatePassword,
   verifyOTPCode,
 } from "@controllers/auth.js";
 import { validate } from "@middlewares/validationMiddleware.js";
@@ -19,7 +18,6 @@ import {
   RequestResetPasswordSchema,
   ResetPasswordSchema,
   SignupSchema,
-  UpdatePasswordSchema,
 } from "types/user.js";
 
 const router = Router();
@@ -30,10 +28,9 @@ router.post("/guest", guestSession);
 router.post(
   "/forgot-password",
   validate(RequestResetPasswordSchema),
-  forgotPassword
+  forgotPassword,
 );
 router.post("/reset-password", validate(ResetPasswordSchema), resetPassword);
-router.post("/update-password", validate(UpdatePasswordSchema), updatePassword);
 
 router.post("/google", googleSignIn);
 router.post("/apple", appleSignIn);

@@ -4,6 +4,7 @@ import translationRouter from "@routes/translationRouter.js";
 import authRouter from "@routes/authRouter.js";
 import userRouter from "@routes/userRouter.js";
 import adRouter from "@routes/adRouter.js";
+import notificationRouter from "@routes/notificationRouter.js";
 import cronRouter from "@routes/cronRouter.js";
 import cloudinaryRouter from "@routes/cloudinaryRouter.js";
 import { NotFoundError } from "@libs/error/NotFoundError.js";
@@ -26,6 +27,7 @@ router.get("/payment/failure", paymentFailure);
 router.use("/cloudinary", cloudinaryRouter);
 router.use("/translations", translationRouter);
 router.use("/users", authenticateJWT, restrictGuest, userRouter);
+router.use("/notifications", authenticateJWT, notificationRouter);
 
 router.use((req, _, next) => {
   next(new NotFoundError(`Can't find ${req.originalUrl} on this server!`));
